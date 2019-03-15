@@ -15,6 +15,8 @@ import (
 	"path/filepath"
 	"strings"
 	"syscall"
+
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 // DefaultShmSize is the default shm size to be used in case host
@@ -271,11 +273,11 @@ func bindMount(ctx context.Context, source, destination string, readonly bool) e
 
 // bindMountContainerRootfs bind mounts a container rootfs into a 9pfs shared
 // directory between the guest and the host.
-func bindMountContainerRootfs(ctx context.Context, sharedDir, sandboxID, cID, cRootFs string, readonly bool) error {
+func bindMountContainerRootfs(ctx context.Context, sandboxID SandboxID, cID, sharedDir, cRootFs string, readonly bool) error {
 	span, _ := trace(ctx, "bindMountContainerRootfs")
 	defer span.Finish()
 
-	rootfsDest := filepath.Join(sharedDir, sandboxID, cID, rootfsDir)
+	rootfsDest := filepath.Join(sharedDir, string(sandboxID), cID, rootfsDir)
 
 	return bindMount(ctx, cRootFs, rootfsDest, readonly)
 }
@@ -303,11 +305,11 @@ type Mount struct {
 	BlockDeviceID string
 }
 
-func bindUnmountContainerRootfs(ctx context.Context, sharedDir, sandboxID, cID string) error {
+func bindUnmountContainerRootfs(ctx context.Context, sharedDir string, sandboxID SandboxID, cID string) error {
 	span, _ := trace(ctx, "bindUnmountContainerRootfs")
 	defer span.Finish()
 
-	rootfsDest := filepath.Join(sharedDir, sandboxID, cID, rootfsDir)
+	rootfsDest := filepath.Join(sharedDir, string(sandboxID), cID, rootfsDir)
 	syscall.Unmount(rootfsDest, syscall.MNT_DETACH)
 
 	return nil

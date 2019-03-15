@@ -13,6 +13,7 @@ import (
 	"reflect"
 	"testing"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
@@ -205,12 +206,12 @@ func TestNewProxyConfigNoPathFailure(t *testing.T) {
 
 const sandboxID = "123456789"
 
-func testDefaultProxyURL(expectedURL string, socketType string, sandboxID string) error {
+func testDefaultProxyURL(expectedURL string, socketType string, sandboxID SandboxID) error {
 	sandbox := &Sandbox{
 		id: sandboxID,
 	}
 
-	url, err := defaultProxyURL(sandbox.id, socketType)
+	url, err := defaultProxyURL(string(sandbox.id), socketType)
 	if err != nil {
 		return err
 	}

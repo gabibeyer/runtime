@@ -16,6 +16,7 @@ import (
 	"testing"
 
 	govmmQemu "github.com/intel/govmm/qemu"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/stretchr/testify/assert"
@@ -98,12 +99,12 @@ func TestQemuCreateSandbox(t *testing.T) {
 	}
 
 	// Create parent dir path for hypervisor.json
-	parentDir := store.SandboxConfigurationRootPath(sandbox.id)
+	parentDir := store.SandboxConfigurationRootPath(string(sandbox.id))
 	if err := os.MkdirAll(parentDir, store.DirMode); err != nil {
 		t.Fatalf("Could not create parent directory %s: %v", parentDir, err)
 	}
 
-	if err := q.createSandbox(context.Background(), sandbox.id, &sandbox.config.HypervisorConfig, sandbox.store); err != nil {
+	if err := q.createSandbox(context.Background(), string(sandbox.id), &sandbox.config.HypervisorConfig, sandbox.store); err != nil {
 		t.Fatal(err)
 	}
 
@@ -142,12 +143,12 @@ func TestQemuCreateSandboxMissingParentDirFail(t *testing.T) {
 	}
 
 	// Ensure parent dir path for hypervisor.json does not exist.
-	parentDir := store.SandboxConfigurationRootPath(sandbox.id)
+	parentDir := store.SandboxConfigurationRootPath(string(sandbox.id))
 	if err := os.RemoveAll(parentDir); err != nil {
 		t.Fatal(err)
 	}
 
-	if err := q.createSandbox(context.Background(), sandbox.id, &sandbox.config.HypervisorConfig, sandbox.store); err != nil {
+	if err := q.createSandbox(context.Background(), string(sandbox.id), &sandbox.config.HypervisorConfig, sandbox.store); err != nil {
 		t.Fatalf("Qemu createSandbox() is not expected to fail because of missing parent directory for storage: %v", err)
 	}
 }
@@ -387,7 +388,7 @@ func TestHotplugUnsupportedDeviceType(t *testing.T) {
 		config: qemuConfig,
 	}
 
-	vcStore, err := store.NewVCSandboxStore(q.ctx, q.id)
+	vcStore, err := store.NewVCSandboxStore(q.ctx, SandboxID(q.id))
 	if err != nil {
 		t.Fatal(err)
 	}

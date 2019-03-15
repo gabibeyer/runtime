@@ -207,7 +207,7 @@ func TestCreateSandboxNoopAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -252,7 +252,7 @@ func TestCreateSandboxHyperstartAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -293,7 +293,7 @@ func TestCreateSandboxKataAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -322,7 +322,7 @@ func TestDeleteSandboxNoopAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -367,7 +367,7 @@ func TestDeleteSandboxHyperstartAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -419,7 +419,7 @@ func TestDeleteSandboxKataAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -725,7 +725,7 @@ func TestRunSandboxNoopAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -762,7 +762,7 @@ func TestRunSandboxHyperstartAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -809,7 +809,7 @@ func TestRunSandboxKataAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1043,7 +1043,7 @@ func TestCreateContainerSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1080,7 +1080,7 @@ func TestCreateContainerFailingNoSandbox(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err == nil {
 		t.Fatal()
@@ -1106,7 +1106,7 @@ func TestDeleteContainerSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1158,7 +1158,7 @@ func TestDeleteContainerFailingNoContainer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1223,7 +1223,7 @@ func TestStartContainerFailingNoContainer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1247,7 +1247,7 @@ func TestStartContainerFailingSandboxNotStarted(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1443,7 +1443,7 @@ func TestStopContainerFailingNoContainer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1627,7 +1627,7 @@ func TestEnterContainerFailingNoContainer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1687,7 +1687,7 @@ func TestStatusContainerSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1739,7 +1739,7 @@ func TestStatusContainerStateReady(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1809,7 +1809,7 @@ func TestStatusContainerStateRunning(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	sandboxDir := store.SandboxConfigurationRootPath(p.ID())
+	sandboxDir := store.SandboxConfigurationRootPath(string(p.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		t.Fatal(err)
@@ -2074,7 +2074,7 @@ func createAndStartSandbox(ctx context.Context, config SandboxConfig) (sandbox V
 		return nil, "", err
 	}
 
-	sandboxDir = store.SandboxConfigurationRootPath(sandbox.ID())
+	sandboxDir = store.SandboxConfigurationRootPath(string(sandbox.ID()))
 	_, err = os.Stat(sandboxDir)
 	if err != nil {
 		return nil, "", err

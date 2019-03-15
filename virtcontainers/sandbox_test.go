@@ -23,6 +23,7 @@ import (
 	"github.com/kata-containers/runtime/virtcontainers/device/drivers"
 	"github.com/kata-containers/runtime/virtcontainers/device/manager"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
@@ -41,7 +42,7 @@ func newHypervisorConfig(kernelParams []Param, hParams []Param) HypervisorConfig
 
 }
 
-func testCreateSandbox(t *testing.T, id string,
+func testCreateSandbox(t *testing.T, id SandboxID,
 	htype HypervisorType, hconfig HypervisorConfig, atype AgentType,
 	nconfig NetworkConfig, containers []ContainerConfig,
 	volumes []types.Volume) (*Sandbox, error) {

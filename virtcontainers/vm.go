@@ -427,8 +427,8 @@ func (v *VM) assignSandbox(s *Sandbox) error {
 
 	vmSharePath := buildVMSharePath(v.id)
 	vmSockDir := v.agent.getVMPath(v.id)
-	sbSharePath := s.agent.getSharePath(s.id)
-	sbSockDir := s.agent.getVMPath(s.id)
+	sbSharePath := s.agent.getSharePath(string(s.id))
+	sbSockDir := s.agent.getVMPath(string(s.id))
 
 	v.logger().WithFields(logrus.Fields{
 		"vmSharePath": vmSharePath,

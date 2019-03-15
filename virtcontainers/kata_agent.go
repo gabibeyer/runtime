@@ -173,7 +173,7 @@ func (k *kataAgent) init(ctx context.Context, sandbox *Sandbox, config interface
 
 	switch c := config.(type) {
 	case KataAgentConfig:
-		if err := k.generateVMSocket(sandbox.id, c); err != nil {
+		if err := k.generateVMSocket(string(sandbox.id), c); err != nil {
 			return err
 		}
 		k.keepConn = c.LongLiveConn
@@ -296,7 +296,7 @@ func (k *kataAgent) createSandbox(sandbox *Sandbox) error {
 	span, _ := k.trace("createSandbox")
 	defer span.Finish()
 
-	return k.configure(sandbox.hypervisor, sandbox.id, k.getSharePath(sandbox.id), k.proxyBuiltIn, nil)
+	return k.configure(sandbox.hypervisor, string(sandbox.id), k.getSharePath(string(sandbox.id)), k.proxyBuiltIn, nil)
 }
 
 func cmdToKataProcess(cmd types.Cmd) (process *grpc.Process, err error) {
@@ -517,13 +517,13 @@ func (k *kataAgent) startProxy(sandbox *Sandbox) error {
 		return err
 	}
 
-	consoleURL, err := sandbox.hypervisor.getSandboxConsole(sandbox.id)
+	consoleURL, err := sandbox.hypervisor.getSandboxConsole(string(sandbox.id))
 	if err != nil {
 		return err
 	}
 
 	proxyParams := proxyParams{
-		id:         sandbox.id,
+		id:         string(sandbox.id),
 		path:       sandbox.config.ProxyConfig.Path,
 		agentURL:   agentURL,
 		consoleURL: consoleURL,
@@ -686,7 +686,7 @@ func (k *kataAgent) startSandbox(sandbox *Sandbox) error {
 		Hostname:      hostname,
 		Storages:      storages,
 		SandboxPidns:  sandbox.sharePidNs,
-		SandboxId:     sandbox.id,
+		SandboxId:     string(sandbox.id),
 		GuestHookPath: sandbox.config.HypervisorConfig.GuestHookPath,
 	}
 
@@ -982,7 +982,7 @@ func (k *kataAgent) buildContainerRootfs(sandbox *Sandbox, c *Container, rootPat
 	// (kataGuestSharedDir) is already mounted in the
 	// guest. We only need to mount the rootfs from
 	// the host and it will show up in the guest.
-	if err := bindMountContainerRootfs(k.ctx, kataHostSharedDir, sandbox.id, c.id, c.rootFs, false); err != nil {
+	if err := bindMountContainerRootfs(k.ctx, sandbox.id, c.id, kataHostSharedDir, c.rootFs, false); err != nil {
 		return nil, err
 	}
 

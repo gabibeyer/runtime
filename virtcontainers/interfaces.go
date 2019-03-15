@@ -64,7 +64,7 @@ type VCSandbox interface {
 	GetAllContainers() []VCContainer
 	GetAnnotations() map[string]string
 	GetContainer(containerID string) VCContainer
-	ID() string
+	ID() SandboxID
 	SetAnnotations(annotations map[string]string) error
 
 	Start() error

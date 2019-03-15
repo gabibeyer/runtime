@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"testing"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,7 +22,7 @@ func TestStoreVCRoots(t *testing.T) {
 	cConfigRoot := rootURL + "/" + sandboxID + "/" + containerID
 
 	assert.Equal(t, SandboxConfigurationRoot(sandboxID), sConfigRoot)
-	assert.Equal(t, ContainerConfigurationRoot(sandboxID, containerID), cConfigRoot)
+	assert.Equal(t, ContainerConfigurationRoot(SandboxID(sandboxID), containerID), cConfigRoot)
 }
 
 func testStoreVCSandboxDir(t *testing.T, item Item, expected string) error {

@@ -332,7 +332,7 @@ func (h *hyper) configureFromGrpc(id string, builtin bool, config interface{}) e
 }
 
 func (h *hyper) createSandbox(sandbox *Sandbox) (err error) {
-	return h.configure(sandbox.hypervisor, "", h.getSharePath(sandbox.id), false, nil)
+	return h.configure(sandbox.hypervisor, "", h.getSharePath(string(sandbox.id)), false, nil)
 }
 
 func (h *hyper) capabilities() types.Capabilities {
@@ -407,7 +407,7 @@ func (h *hyper) startProxy(sandbox *Sandbox) error {
 
 	// Start the proxy here
 	pid, uri, err := h.proxy.start(proxyParams{
-		id:     sandbox.id,
+		id:     string(sandbox.id),
 		path:   sandbox.config.ProxyConfig.Path,
 		debug:  sandbox.config.ProxyConfig.Debug,
 		logger: h.Logger(),
@@ -546,7 +546,7 @@ func (h *hyper) startOneContainer(sandbox *Sandbox, c *Container) error {
 		container.Fstype = c.state.Fstype
 	} else {
 
-		if err := bindMountContainerRootfs(c.ctx, defaultSharedDir, sandbox.id, c.id, c.rootFs, false); err != nil {
+		if err := bindMountContainerRootfs(c.ctx, sandbox.id, c.id, defaultSharedDir, c.rootFs, false); err != nil {
 			bindUnmountAllRootfs(c.ctx, defaultSharedDir, sandbox)
 			return err
 		}
@@ -623,7 +623,7 @@ func (h *hyper) stopContainer(sandbox *Sandbox, c Container) error {
 	return h.stopOneContainer(sandbox.id, c)
 }
 
-func (h *hyper) stopOneContainer(sandboxID string, c Container) error {
+func (h *hyper) stopOneContainer(sandboxID SandboxID, c Container) error {
 	removeCommand := hyperstart.RemoveCommand{
 		Container: c.id,
 	}
@@ -694,7 +694,7 @@ func (h *hyper) updateContainer(sandbox *Sandbox, c Container, resources specs.L
 	return nil
 }
 
-func (h *hyper) processListOneContainer(sandboxID, cID string, options ProcessListOptions) (ProcessList, error) {
+func (h *hyper) processListOneContainer(sandboxID SandboxID, cID string, options ProcessListOptions) (ProcessList, error) {
 	psCmd := hyperstart.PsCommand{
 		Container: cID,
 		Format:    options.Format,
@@ -819,7 +819,7 @@ func (h *hyper) register() error {
 	}
 	defer h.disconnect()
 
-	console, err := h.sandbox.hypervisor.getSandboxConsole(h.sandbox.id)
+	console, err := h.sandbox.hypervisor.getSandboxConsole(string(h.sandbox.id))
 	if err != nil {
 		return err
 	}
@@ -829,7 +829,7 @@ func (h *hyper) register() error {
 		NumIOStreams: 0,
 	}
 
-	_, err = h.client.RegisterVM(h.sandbox.id, h.sockets[0].HostPath,
+	_, err = h.client.RegisterVM(string(h.sandbox.id), h.sockets[0].HostPath,
 		h.sockets[1].HostPath, registerVMOptions)
 	return err
 }
@@ -840,7 +840,7 @@ func (h *hyper) unregister() error {
 	}
 	defer h.disconnect()
 
-	h.client.UnregisterVM(h.sandbox.id)
+	h.client.UnregisterVM(string(h.sandbox.id))
 
 	return nil
 }
@@ -856,7 +856,7 @@ func (h *hyper) attach() (string, error) {
 		NumIOStreams: numTokens,
 	}
 
-	attachVMReturn, err := h.client.AttachVM(h.sandbox.id, attachVMOptions)
+	attachVMReturn, err := h.client.AttachVM(string(h.sandbox.id), attachVMOptions)
 	if err != nil {
 		return "", err
 	}
@@ -879,7 +879,7 @@ func (h *hyper) sendCmd(proxyCmd hyperstartProxyCmd) (interface{}, error) {
 		NumIOStreams: 0,
 	}
 
-	if _, err := h.client.AttachVM(h.sandbox.id, attachVMOptions); err != nil {
+	if _, err := h.client.AttachVM(string(h.sandbox.id), attachVMOptions); err != nil {
 		return nil, err
 	}
 

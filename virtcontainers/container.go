@@ -28,6 +28,7 @@ import (
 
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	"github.com/kata-containers/runtime/virtcontainers/device/manager"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 )
 
@@ -265,7 +266,7 @@ type ContainerDevice struct {
 // A Container can be created, deleted, started, stopped, listed, entered, paused and restored.
 type Container struct {
 	id        string
-	sandboxID string
+	sandboxID SandboxID
 
 	rootFs string
 
@@ -457,7 +458,7 @@ func (c *Container) shareFiles(m Mount, idx int, hostSharedDir, guestSharedDir s
 		}
 	} else {
 		// These mounts are created in the shared dir
-		mountDest := filepath.Join(hostSharedDir, c.sandbox.id, filename)
+		mountDest := filepath.Join(hostSharedDir, string(c.sandbox.id), filename)
 		if err := bindMount(c.ctx, m.Source, mountDest, false); err != nil {
 			return "", false, err
 		}
@@ -640,7 +641,7 @@ func newContainer(sandbox *Sandbox, contConfig ContainerConfig) (*Container, err
 		sandbox:       sandbox,
 		runPath:       store.ContainerRuntimeRootPath(sandbox.id, contConfig.ID),
 		configPath:    store.ContainerConfigurationRootPath(sandbox.id, contConfig.ID),
-		containerPath: filepath.Join(sandbox.id, contConfig.ID),
+		containerPath: filepath.Join(string(sandbox.id), contConfig.ID),
 		rootfsSuffix:  "rootfs",
 		state:         types.State{},
 		process:       Process{},

@@ -41,7 +41,7 @@ const (
 
 // SandboxStatus describes a sandbox status.
 type SandboxStatus struct {
-	ID               string
+	ID               SandboxID
 	State            types.State
 	Hypervisor       HypervisorType
 	HypervisorConfig HypervisorConfig
@@ -56,7 +56,7 @@ type SandboxStatus struct {
 
 // SandboxConfig is a Sandbox configuration.
 type SandboxConfig struct {
-	ID string
+	ID SandboxID
 
 	Hostname string
 
@@ -142,7 +142,7 @@ func (sandboxConfig *SandboxConfig) valid() bool {
 // Sandbox is composed of a set of containers and a runtime environment.
 // A Sandbox can be created, deleted, started, paused, stopped, listed, entered, and restored.
 type Sandbox struct {
-	id string
+	id SandboxID
 
 	sync.Mutex
 	factory    Factory
@@ -180,7 +180,7 @@ type Sandbox struct {
 }
 
 // ID returns the sandbox identifier string.
-func (s *Sandbox) ID() string {
+func (s *Sandbox) ID() SandboxID {
 	return s.id
 }
 
@@ -497,8 +497,8 @@ func newSandbox(ctx context.Context, sandboxConfig SandboxConfig, factory Factor
 		config:          &sandboxConfig,
 		volumes:         sandboxConfig.Volumes,
 		containers:      map[string]*Container{},
-		runPath:         store.SandboxRuntimeRootPath(sandboxConfig.ID),
-		configPath:      store.SandboxConfigurationRootPath(sandboxConfig.ID),
+		runPath:         store.SandboxRuntimeRootPath(string(sandboxConfig.ID)),
+		configPath:      store.SandboxConfigurationRootPath(string(sandboxConfig.ID)),
 		state:           types.State{},
 		annotationsLock: &sync.RWMutex{},
 		wg:              &sync.WaitGroup{},
@@ -508,7 +508,7 @@ func newSandbox(ctx context.Context, sandboxConfig SandboxConfig, factory Factor
 		ctx:             ctx,
 	}
 
-	vcStore, err := store.NewVCSandboxStore(ctx, s.id)
+	vcStore, err := store.NewVCSandboxStore(ctx, SandboxID(s.id))
 	if err != nil {
 		return nil, err
 	}
@@ -532,7 +532,7 @@ func newSandbox(ctx context.Context, sandboxConfig SandboxConfig, factory Factor
 		}
 	}()
 
-	if err = s.hypervisor.createSandbox(ctx, s.id, &sandboxConfig.HypervisorConfig, s.store); err != nil {
+	if err = s.hypervisor.createSandbox(ctx, string(s.id), &sandboxConfig.HypervisorConfig, s.store); err != nil {
 		return nil, err
 	}
 
@@ -568,7 +568,7 @@ func (s *Sandbox) storeSandbox() error {
 	return nil
 }
 
-func rLockSandbox(ctx context.Context, sandboxID string) (string, error) {
+func rLockSandbox(ctx context.Context, sandboxID SandboxID) (string, error) {
 	store, err := store.NewVCSandboxStore(ctx, sandboxID)
 	if err != nil {
 		return "", err
@@ -577,7 +577,7 @@ func rLockSandbox(ctx context.Context, sandboxID string) (string, error) {
 	return store.RLock()
 }
 
-func rwLockSandbox(ctx context.Context, sandboxID string) (string, error) {
+func rwLockSandbox(ctx context.Context, sandboxID SandboxID) (string, error) {
 	store, err := store.NewVCSandboxStore(ctx, sandboxID)
 	if err != nil {
 		return "", err
@@ -586,7 +586,7 @@ func rwLockSandbox(ctx context.Context, sandboxID string) (string, error) {
 	return store.Lock()
 }
 
-func unlockSandbox(ctx context.Context, sandboxID, token string) error {
+func unlockSandbox(ctx context.Context, sandboxID SandboxID, token string) error {
 	// If the store no longer exists, we won't be able to unlock.
 	// Creating a new store for locking an item that does not even exist
 	// does not make sense.
@@ -603,7 +603,7 @@ func unlockSandbox(ctx context.Context, sandboxID, token string) error {
 }
 
 // fetchSandbox fetches a sandbox config from a sandbox ID and returns a sandbox.
-func fetchSandbox(ctx context.Context, sandboxID string) (sandbox *Sandbox, err error) {
+func fetchSandbox(ctx context.Context, sandboxID SandboxID) (sandbox *Sandbox, err error) {
 	virtLog.Info("fetch sandbox")
 	if sandboxID == "" {
 		return nil, errNeedSandboxID
@@ -711,7 +711,7 @@ func (s *Sandbox) Delete() error {
 		s.Logger().WithError(err).Error("failed to cleanup hypervisor")
 	}
 
-	s.agent.cleanup(s.id)
+	s.agent.cleanup(string(s.id))
 
 	return s.store.Delete()
 }
@@ -735,7 +735,7 @@ func (s *Sandbox) startNetworkMonitor() error {
 		debug:      s.config.NetworkConfig.NetmonConfig.Debug,
 		logLevel:   logLevel,
 		runtime:    binPath,
-		sandboxID:  s.id,
+		sandboxID:  string(s.id),
 	}
 
 	return s.network.Run(s.networkNS.NetNsPath, func() error {
@@ -1450,7 +1450,7 @@ func (s *Sandbox) setContainersState(state types.StateString) error {
 }
 
 // togglePauseSandbox pauses a sandbox if pause is set to true, else it resumes it.
-func togglePauseSandbox(ctx context.Context, sandboxID string, pause bool) (*Sandbox, error) {
+func togglePauseSandbox(ctx context.Context, sandboxID SandboxID, pause bool) (*Sandbox, error) {
 	span, ctx := trace(ctx, "togglePauseSandbox")
 	defer span.Finish()
 

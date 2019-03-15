@@ -14,6 +14,7 @@ import (
 	"github.com/kata-containers/runtime/virtcontainers/device/api"
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	"github.com/kata-containers/runtime/virtcontainers/device/drivers"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 )
 
@@ -58,19 +59,19 @@ func NewVCStore(ctx context.Context, configRoot, stateRoot string) (*VCStore, er
 }
 
 // NewVCSandboxStore creates a virtcontainers sandbox Store, with filesystem backend.
-func NewVCSandboxStore(ctx context.Context, sandboxID string) (*VCStore, error) {
+func NewVCSandboxStore(ctx context.Context, sandboxID SandboxID) (*VCStore, error) {
 	if sandboxID == "" {
 		return nil, fmt.Errorf("sandbox ID can not be empty")
 	}
 
 	return NewVCStore(ctx,
-		SandboxConfigurationRoot(sandboxID),
-		SandboxRuntimeRoot(sandboxID),
+		SandboxConfigurationRoot(string(sandboxID)),
+		SandboxRuntimeRoot(string(sandboxID)),
 	)
 }
 
 // NewVCContainerStore creates a virtcontainers container Store, with filesystem backend.
-func NewVCContainerStore(ctx context.Context, sandboxID, containerID string) (*VCStore, error) {
+func NewVCContainerStore(ctx context.Context, sandboxID SandboxID, containerID string) (*VCStore, error) {
 	if sandboxID == "" {
 		return nil, fmt.Errorf("sandbox ID can not be empty")
 	}
@@ -275,31 +276,31 @@ func SandboxRuntimeItemPath(id string, item Item) (string, error) {
 // ContainerConfigurationRoot returns a virtcontainers container configuration root URL.
 // This will hold across host reboot persistent data about a container configuration.
 // It should look like file:///var/lib/vc/sbs/<sandboxID>/<containerID>
-func ContainerConfigurationRoot(sandboxID, containerID string) string {
-	return filesystemScheme + "://" + filepath.Join(ConfigStoragePath, sandboxID, containerID)
+func ContainerConfigurationRoot(sandboxID SandboxID, containerID string) string {
+	return filesystemScheme + "://" + filepath.Join(ConfigStoragePath, string(sandboxID), containerID)
 }
 
 // ContainerConfigurationRootPath returns a virtcontainers container configuration root path.
-func ContainerConfigurationRootPath(sandboxID, containerID string) string {
-	return filepath.Join(ConfigStoragePath, sandboxID, containerID)
+func ContainerConfigurationRootPath(sandboxID SandboxID, containerID string) string {
+	return filepath.Join(ConfigStoragePath, string(sandboxID), containerID)
 }
 
 // ContainerRuntimeRoot returns a virtcontainers container runtime root URL.
 // This will hold data related to a container run-time state that will not
 // be persistent across host reboots.
 // It should look like file:///run/vc/sbs/<sandboxID>/<containerID>/
-func ContainerRuntimeRoot(sandboxID, containerID string) string {
-	return filesystemScheme + "://" + filepath.Join(RunStoragePath, sandboxID, containerID)
+func ContainerRuntimeRoot(sandboxID SandboxID, containerID string) string {
+	return filesystemScheme + "://" + filepath.Join(RunStoragePath, string(sandboxID), containerID)
 }
 
 // ContainerRuntimeRootPath returns a virtcontainers container runtime root path.
-func ContainerRuntimeRootPath(sandboxID, containerID string) string {
-	return filepath.Join(RunStoragePath, sandboxID, containerID)
+func ContainerRuntimeRootPath(sandboxID SandboxID, containerID string) string {
+	return filepath.Join(RunStoragePath, string(sandboxID), containerID)
 }
 
 // VCSandboxStoreExists returns true if a sandbox store already exists.
-func VCSandboxStoreExists(ctx context.Context, sandboxID string) bool {
-	s := stores.findStore(SandboxConfigurationRoot(sandboxID))
+func VCSandboxStoreExists(ctx context.Context, sandboxID SandboxID) bool {
+	s := stores.findStore(SandboxConfigurationRoot(string(sandboxID)))
 	if s != nil {
 		return true
 	}
