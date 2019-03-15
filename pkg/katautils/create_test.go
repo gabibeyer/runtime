@@ -21,6 +21,7 @@ import (
 
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/vcmock"
 	"github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/stretchr/testify/assert"
@@ -434,7 +435,7 @@ func TestCreateContainer(t *testing.T) {
 	defer os.RemoveAll(path)
 	ctrsMapTreePath = path
 
-	testingImpl.CreateContainerFunc = func(ctx context.Context, sandboxID string, containerConfig vc.ContainerConfig) (vc.VCSandbox, vc.VCContainer, error) {
+	testingImpl.CreateContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerConfig vc.ContainerConfig) (vc.VCSandbox, vc.VCContainer, error) {
 		return &vcmock.Sandbox{}, &vcmock.Container{}, nil
 	}
 

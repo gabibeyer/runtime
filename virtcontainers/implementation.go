@@ -42,17 +42,17 @@ func (impl *VCImpl) CreateSandbox(ctx context.Context, sandboxConfig SandboxConf
 }
 
 // DeleteSandbox implements the VC function of the same name.
-func (impl *VCImpl) DeleteSandbox(ctx context.Context, sandboxID string) (VCSandbox, error) {
+func (impl *VCImpl) DeleteSandbox(ctx context.Context, sandboxID SandboxID) (VCSandbox, error) {
 	return DeleteSandbox(ctx, sandboxID)
 }
 
 // StartSandbox implements the VC function of the same name.
-func (impl *VCImpl) StartSandbox(ctx context.Context, sandboxID string) (VCSandbox, error) {
+func (impl *VCImpl) StartSandbox(ctx context.Context, sandboxID SandboxID) (VCSandbox, error) {
 	return StartSandbox(ctx, sandboxID)
 }
 
 // StopSandbox implements the VC function of the same name.
-func (impl *VCImpl) StopSandbox(ctx context.Context, sandboxID string) (VCSandbox, error) {
+func (impl *VCImpl) StopSandbox(ctx context.Context, sandboxID SandboxID) (VCSandbox, error) {
 	return StopSandbox(ctx, sandboxID)
 }
 
@@ -68,111 +68,111 @@ func (impl *VCImpl) ListSandbox(ctx context.Context) ([]SandboxStatus, error) {
 
 // FetchSandbox will find out and connect to an existing sandbox and
 // return the sandbox structure.
-func (impl *VCImpl) FetchSandbox(ctx context.Context, sandboxID string) (VCSandbox, error) {
+func (impl *VCImpl) FetchSandbox(ctx context.Context, sandboxID SandboxID) (VCSandbox, error) {
 	return FetchSandbox(ctx, sandboxID)
 }
 
 // StatusSandbox implements the VC function of the same name.
-func (impl *VCImpl) StatusSandbox(ctx context.Context, sandboxID string) (SandboxStatus, error) {
+func (impl *VCImpl) StatusSandbox(ctx context.Context, sandboxID SandboxID) (SandboxStatus, error) {
 	return StatusSandbox(ctx, sandboxID)
 }
 
 // PauseSandbox implements the VC function of the same name.
-func (impl *VCImpl) PauseSandbox(ctx context.Context, sandboxID string) (VCSandbox, error) {
+func (impl *VCImpl) PauseSandbox(ctx context.Context, sandboxID SandboxID) (VCSandbox, error) {
 	return PauseSandbox(ctx, sandboxID)
 }
 
 // ResumeSandbox implements the VC function of the same name.
-func (impl *VCImpl) ResumeSandbox(ctx context.Context, sandboxID string) (VCSandbox, error) {
+func (impl *VCImpl) ResumeSandbox(ctx context.Context, sandboxID SandboxID) (VCSandbox, error) {
 	return ResumeSandbox(ctx, sandboxID)
 }
 
 // CreateContainer implements the VC function of the same name.
-func (impl *VCImpl) CreateContainer(ctx context.Context, sandboxID string, containerConfig ContainerConfig) (VCSandbox, VCContainer, error) {
+func (impl *VCImpl) CreateContainer(ctx context.Context, sandboxID SandboxID, containerConfig ContainerConfig) (VCSandbox, VCContainer, error) {
 	return CreateContainer(ctx, sandboxID, containerConfig)
 }
 
 // DeleteContainer implements the VC function of the same name.
-func (impl *VCImpl) DeleteContainer(ctx context.Context, sandboxID, containerID string) (VCContainer, error) {
+func (impl *VCImpl) DeleteContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (VCContainer, error) {
 	return DeleteContainer(ctx, sandboxID, containerID)
 }
 
 // StartContainer implements the VC function of the same name.
-func (impl *VCImpl) StartContainer(ctx context.Context, sandboxID, containerID string) (VCContainer, error) {
+func (impl *VCImpl) StartContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (VCContainer, error) {
 	return StartContainer(ctx, sandboxID, containerID)
 }
 
 // StopContainer implements the VC function of the same name.
-func (impl *VCImpl) StopContainer(ctx context.Context, sandboxID, containerID string) (VCContainer, error) {
+func (impl *VCImpl) StopContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (VCContainer, error) {
 	return StopContainer(ctx, sandboxID, containerID)
 }
 
 // EnterContainer implements the VC function of the same name.
-func (impl *VCImpl) EnterContainer(ctx context.Context, sandboxID, containerID string, cmd types.Cmd) (VCSandbox, VCContainer, *Process, error) {
+func (impl *VCImpl) EnterContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, cmd types.Cmd) (VCSandbox, VCContainer, *Process, error) {
 	return EnterContainer(ctx, sandboxID, containerID, cmd)
 }
 
 // StatusContainer implements the VC function of the same name.
-func (impl *VCImpl) StatusContainer(ctx context.Context, sandboxID, containerID string) (ContainerStatus, error) {
+func (impl *VCImpl) StatusContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (ContainerStatus, error) {
 	return StatusContainer(ctx, sandboxID, containerID)
 }
 
 // StatsContainer implements the VC function of the same name.
-func (impl *VCImpl) StatsContainer(ctx context.Context, sandboxID, containerID string) (ContainerStats, error) {
+func (impl *VCImpl) StatsContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (ContainerStats, error) {
 	return StatsContainer(ctx, sandboxID, containerID)
 }
 
 // KillContainer implements the VC function of the same name.
-func (impl *VCImpl) KillContainer(ctx context.Context, sandboxID, containerID string, signal syscall.Signal, all bool) error {
+func (impl *VCImpl) KillContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, signal syscall.Signal, all bool) error {
 	return KillContainer(ctx, sandboxID, containerID, signal, all)
 }
 
 // ProcessListContainer implements the VC function of the same name.
-func (impl *VCImpl) ProcessListContainer(ctx context.Context, sandboxID, containerID string, options ProcessListOptions) (ProcessList, error) {
+func (impl *VCImpl) ProcessListContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, options ProcessListOptions) (ProcessList, error) {
 	return ProcessListContainer(ctx, sandboxID, containerID, options)
 }
 
 // UpdateContainer implements the VC function of the same name.
-func (impl *VCImpl) UpdateContainer(ctx context.Context, sandboxID, containerID string, resources specs.LinuxResources) error {
+func (impl *VCImpl) UpdateContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, resources specs.LinuxResources) error {
 	return UpdateContainer(ctx, sandboxID, containerID, resources)
 }
 
 // PauseContainer implements the VC function of the same name.
-func (impl *VCImpl) PauseContainer(ctx context.Context, sandboxID, containerID string) error {
+func (impl *VCImpl) PauseContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) error {
 	return PauseContainer(ctx, sandboxID, containerID)
 }
 
 // ResumeContainer implements the VC function of the same name.
-func (impl *VCImpl) ResumeContainer(ctx context.Context, sandboxID, containerID string) error {
+func (impl *VCImpl) ResumeContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) error {
 	return ResumeContainer(ctx, sandboxID, containerID)
 }
 
 // AddDevice will add a device to sandbox
-func (impl *VCImpl) AddDevice(ctx context.Context, sandboxID string, info config.DeviceInfo) (api.Device, error) {
+func (impl *VCImpl) AddDevice(ctx context.Context, sandboxID SandboxID, info config.DeviceInfo) (api.Device, error) {
 	return AddDevice(ctx, sandboxID, info)
 }
 
 // AddInterface implements the VC function of the same name.
-func (impl *VCImpl) AddInterface(ctx context.Context, sandboxID string, inf *Interface) (*Interface, error) {
+func (impl *VCImpl) AddInterface(ctx context.Context, sandboxID SandboxID, inf *Interface) (*Interface, error) {
 	return AddInterface(ctx, sandboxID, inf)
 }
 
 // RemoveInterface implements the VC function of the same name.
-func (impl *VCImpl) RemoveInterface(ctx context.Context, sandboxID string, inf *Interface) (*Interface, error) {
+func (impl *VCImpl) RemoveInterface(ctx context.Context, sandboxID SandboxID, inf *Interface) (*Interface, error) {
 	return RemoveInterface(ctx, sandboxID, inf)
 }
 
 // ListInterfaces implements the VC function of the same name.
-func (impl *VCImpl) ListInterfaces(ctx context.Context, sandboxID string) ([]*Interface, error) {
+func (impl *VCImpl) ListInterfaces(ctx context.Context, sandboxID SandboxID) ([]*Interface, error) {
 	return ListInterfaces(ctx, sandboxID)
 }
 
 // UpdateRoutes implements the VC function of the same name.
-func (impl *VCImpl) UpdateRoutes(ctx context.Context, sandboxID string, routes []*Route) ([]*Route, error) {
+func (impl *VCImpl) UpdateRoutes(ctx context.Context, sandboxID SandboxID, routes []*Route) ([]*Route, error) {
 	return UpdateRoutes(ctx, sandboxID, routes)
 }
 
 // ListRoutes implements the VC function of the same name.
-func (impl *VCImpl) ListRoutes(ctx context.Context, sandboxID string) ([]*Route, error) {
+func (impl *VCImpl) ListRoutes(ctx context.Context, sandboxID SandboxID) ([]*Route, error) {
 	return ListRoutes(ctx, sandboxID)
 }

@@ -10,6 +10,7 @@ import (
 	"context"
 	"testing"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/stretchr/testify/assert"
 )
@@ -17,7 +18,7 @@ import (
 func testCreateNoopContainer() (*Sandbox, *Container, error) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()

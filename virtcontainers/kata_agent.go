@@ -173,7 +173,7 @@ func (k *kataAgent) init(ctx context.Context, sandbox *Sandbox, config interface
 
 	switch c := config.(type) {
 	case KataAgentConfig:
-		if err := k.generateVMSocket(sandbox.id, c); err != nil {
+		if err := k.generateVMSocket(string(sandbox.id), c); err != nil {
 			return err
 		}
 		k.keepConn = c.LongLiveConn
@@ -296,7 +296,7 @@ func (k *kataAgent) createSandbox(sandbox *Sandbox) error {
 	span, _ := k.trace("createSandbox")
 	defer span.Finish()
 
-	return k.configure(sandbox.hypervisor, sandbox.id, k.getSharePath(sandbox.id), k.proxyBuiltIn, nil)
+	return k.configure(sandbox.hypervisor, string(sandbox.id), k.getSharePath(string(sandbox.id)), k.proxyBuiltIn, nil)
 }
 
 func cmdToKataProcess(cmd types.Cmd) (process *grpc.Process, err error) {
@@ -388,7 +388,7 @@ func (k *kataAgent) exec(sandbox *Sandbox, c Container, cmd types.Cmd) (*Process
 	}
 
 	req := &grpc.ExecProcessRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 		ExecId:      uuid.Generate().String(),
 		Process:     kataProcess,
 	}
@@ -523,7 +523,7 @@ func (k *kataAgent) startProxy(sandbox *Sandbox) error {
 	}
 
 	proxyParams := proxyParams{
-		id:         sandbox.id,
+		id:         string(sandbox.id),
 		path:       sandbox.config.ProxyConfig.Path,
 		agentURL:   agentURL,
 		consoleURL: consoleURL,
@@ -686,7 +686,7 @@ func (k *kataAgent) startSandbox(sandbox *Sandbox) error {
 		Hostname:      hostname,
 		Storages:      storages,
 		SandboxPidns:  sandbox.sharePidNs,
-		SandboxId:     sandbox.id,
+		SandboxId:     string(sandbox.id),
 		GuestHookPath: sandbox.config.HypervisorConfig.GuestHookPath,
 	}
 
@@ -982,7 +982,7 @@ func (k *kataAgent) buildContainerRootfs(sandbox *Sandbox, c *Container, rootPat
 	// (kataGuestSharedDir) is already mounted in the
 	// guest. We only need to mount the rootfs from
 	// the host and it will show up in the guest.
-	if err := bindMountContainerRootfs(k.ctx, kataHostSharedDir, sandbox.id, c.id, c.rootFs, false); err != nil {
+	if err := bindMountContainerRootfs(k.ctx, sandbox.id, c.id, kataHostSharedDir, c.rootFs, false); err != nil {
 		return nil, err
 	}
 
@@ -1003,7 +1003,7 @@ func (k *kataAgent) createContainer(sandbox *Sandbox, c *Container) (p *Process,
 	var rootfs *grpc.Storage
 
 	// This is the guest absolute root path for that container.
-	rootPathParent := filepath.Join(kataGuestSharedDir, c.id)
+	rootPathParent := filepath.Join(kataGuestSharedDir, string(c.id))
 	rootPath := filepath.Join(rootPathParent, c.rootfsSuffix)
 
 	// In case the container creation fails, the following defer statement
@@ -1085,8 +1085,8 @@ func (k *kataAgent) createContainer(sandbox *Sandbox, c *Container) (p *Process,
 	k.handleShm(grpcSpec, sandbox)
 
 	req := &grpc.CreateContainerRequest{
-		ContainerId:  c.id,
-		ExecId:       c.id,
+		ContainerId:  string(c.id),
+		ExecId:       string(c.id),
 		Storages:     ctrStorages,
 		Devices:      ctrDevices,
 		OCI:          grpcSpec,
@@ -1239,7 +1239,7 @@ func (k *kataAgent) startContainer(sandbox *Sandbox, c *Container) error {
 	defer span.Finish()
 
 	req := &grpc.StartContainerRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 	}
 
 	_, err := k.sendReq(req)
@@ -1251,7 +1251,7 @@ func (k *kataAgent) stopContainer(sandbox *Sandbox, c Container) error {
 	defer span.Finish()
 
 	req := &grpc.RemoveContainerRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 	}
 
 	if _, err := k.sendReq(req); err != nil {
@@ -1272,7 +1272,7 @@ func (k *kataAgent) signalProcess(c *Container, processID string, signal syscall
 		execID = ""
 	}
 	req := &grpc.SignalProcessRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 		ExecId:      execID,
 		Signal:      uint32(signal),
 	}
@@ -1283,7 +1283,7 @@ func (k *kataAgent) signalProcess(c *Container, processID string, signal syscall
 
 func (k *kataAgent) winsizeProcess(c *Container, processID string, height, width uint32) error {
 	req := &grpc.TtyWinResizeRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 		ExecId:      processID,
 		Row:         height,
 		Column:      width,
@@ -1295,7 +1295,7 @@ func (k *kataAgent) winsizeProcess(c *Container, processID string, height, width
 
 func (k *kataAgent) processListContainer(sandbox *Sandbox, c Container, options ProcessListOptions) (ProcessList, error) {
 	req := &grpc.ListProcessesRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 		Format:      options.Format,
 		Args:        options.Args,
 	}
@@ -1320,7 +1320,7 @@ func (k *kataAgent) updateContainer(sandbox *Sandbox, c Container, resources spe
 	}
 
 	req := &grpc.UpdateContainerRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 		Resources:   grpcResources,
 	}
 
@@ -1330,7 +1330,7 @@ func (k *kataAgent) updateContainer(sandbox *Sandbox, c Container, resources spe
 
 func (k *kataAgent) pauseContainer(sandbox *Sandbox, c Container) error {
 	req := &grpc.PauseContainerRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 	}
 
 	_, err := k.sendReq(req)
@@ -1339,7 +1339,7 @@ func (k *kataAgent) pauseContainer(sandbox *Sandbox, c Container) error {
 
 func (k *kataAgent) resumeContainer(sandbox *Sandbox, c Container) error {
 	req := &grpc.ResumeContainerRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 	}
 
 	_, err := k.sendReq(req)
@@ -1359,7 +1359,7 @@ func (k *kataAgent) onlineCPUMem(cpus uint32, cpuOnly bool) error {
 
 func (k *kataAgent) statsContainer(sandbox *Sandbox, c Container) (*ContainerStats, error) {
 	req := &grpc.StatsContainerRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 	}
 
 	returnStats, err := k.sendReq(req)
@@ -1455,7 +1455,7 @@ func (k *kataAgent) waitProcess(c *Container, processID string) (int32, error) {
 	defer span.Finish()
 
 	resp, err := k.sendReq(&grpc.WaitProcessRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 		ExecId:      processID,
 	})
 	if err != nil {
@@ -1467,7 +1467,7 @@ func (k *kataAgent) waitProcess(c *Container, processID string) (int32, error) {
 
 func (k *kataAgent) writeProcessStdin(c *Container, ProcessID string, data []byte) (int, error) {
 	resp, err := k.sendReq(&grpc.WriteStreamRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 		ExecId:      ProcessID,
 		Data:        data,
 	})
@@ -1481,7 +1481,7 @@ func (k *kataAgent) writeProcessStdin(c *Container, ProcessID string, data []byt
 
 func (k *kataAgent) closeProcessStdin(c *Container, ProcessID string) error {
 	_, err := k.sendReq(&grpc.CloseStdinRequest{
-		ContainerId: c.id,
+		ContainerId: string(c.id),
 		ExecId:      ProcessID,
 	})
 
@@ -1638,9 +1638,9 @@ func (k *kataAgent) readProcessStderr(c *Container, processID string, data []byt
 
 type readFn func(context.Context, *grpc.ReadStreamRequest, ...golangGrpc.CallOption) (*grpc.ReadStreamResponse, error)
 
-func (k *kataAgent) readProcessStream(containerID, processID string, data []byte, read readFn) (int, error) {
+func (k *kataAgent) readProcessStream(containerID ContainerID, processID string, data []byte, read readFn) (int, error) {
 	resp, err := read(k.ctx, &grpc.ReadStreamRequest{
-		ContainerId: containerID,
+		ContainerId: string(containerID),
 		ExecId:      processID,
 		Len:         uint32(len(data))})
 	if err == nil {

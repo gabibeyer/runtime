@@ -8,15 +8,17 @@ package virtcontainers
 import (
 	"fmt"
 	"sync"
+
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 type sandboxList struct {
 	lock      sync.RWMutex
-	sandboxes map[string]*Sandbox
+	sandboxes map[SandboxID]*Sandbox
 }
 
 // globalSandboxList tracks sandboxes globally
-var globalSandboxList = &sandboxList{sandboxes: make(map[string]*Sandbox)}
+var globalSandboxList = &sandboxList{sandboxes: make(map[SandboxID]*Sandbox)}
 
 func (p *sandboxList) addSandbox(sandbox *Sandbox) (err error) {
 	if sandbox == nil {
@@ -33,13 +35,13 @@ func (p *sandboxList) addSandbox(sandbox *Sandbox) (err error) {
 	return err
 }
 
-func (p *sandboxList) removeSandbox(id string) {
+func (p *sandboxList) removeSandbox(id SandboxID) {
 	p.lock.Lock()
 	defer p.lock.Unlock()
 	delete(p.sandboxes, id)
 }
 
-func (p *sandboxList) lookupSandbox(id string) (*Sandbox, error) {
+func (p *sandboxList) lookupSandbox(id SandboxID) (*Sandbox, error) {
 	p.lock.RLock()
 	defer p.lock.RUnlock()
 	if p.sandboxes[id] != nil {

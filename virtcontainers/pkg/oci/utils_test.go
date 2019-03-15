@@ -24,15 +24,16 @@ import (
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	vcAnnotations "github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 )
 
 const (
-	tempBundlePath = "/tmp/virtc/ocibundle/"
-	containerID    = "virtc-oci-test"
-	consolePath    = "/tmp/virtc/console"
-	fileMode       = os.FileMode(0640)
-	dirMode        = os.FileMode(0750)
+	tempBundlePath             = "/tmp/virtc/ocibundle/"
+	containerID    ContainerID = "virtc-oci-test"
+	consolePath                = "/tmp/virtc/console"
+	fileMode                   = os.FileMode(0640)
+	dirMode                    = os.FileMode(0750)
 
 	capabilitiesSpecArray = `
 		{
@@ -218,7 +219,7 @@ func TestMinimalSandboxConfig(t *testing.T) {
 	expectedNetworkConfig := vc.NetworkConfig{}
 
 	expectedSandboxConfig := vc.SandboxConfig{
-		ID:       containerID,
+		ID:       SandboxID(containerID),
 		Hostname: "testHostname",
 
 		HypervisorType: vc.QemuHypervisor,
@@ -243,7 +244,7 @@ func TestMinimalSandboxConfig(t *testing.T) {
 		t.Fatalf("Could not parse config.json: %v", err)
 	}
 
-	sandboxConfig, err := SandboxConfig(ociSpec, runtimeConfig, tempBundlePath, containerID, consolePath, false, true)
+	sandboxConfig, err := SandboxConfig(ociSpec, runtimeConfig, containerID, tempBundlePath, consolePath, false, true)
 	if err != nil {
 		t.Fatalf("Could not create Sandbox configuration %v", err)
 	}
@@ -267,7 +268,7 @@ func testStatusToOCIStateSuccessful(t *testing.T, cStatus vc.ContainerStatus, ex
 
 func TestStatusToOCIStateSuccessfulWithReadyState(t *testing.T) {
 
-	testContID := "testContID"
+	testContID := ContainerID("testContID")
 	testPID := 12345
 	testRootFs := "testRootFs"
 
@@ -290,7 +291,7 @@ func TestStatusToOCIStateSuccessfulWithReadyState(t *testing.T) {
 
 	expected := specs.State{
 		Version:     specs.Version,
-		ID:          testContID,
+		ID:          string(testContID),
 		Status:      "created",
 		Pid:         testPID,
 		Bundle:      tempBundlePath,
@@ -303,7 +304,7 @@ func TestStatusToOCIStateSuccessfulWithReadyState(t *testing.T) {
 
 func TestStatusToOCIStateSuccessfulWithRunningState(t *testing.T) {
 
-	testContID := "testContID"
+	testContID := ContainerID("testContID")
 	testPID := 12345
 	testRootFs := "testRootFs"
 
@@ -326,7 +327,7 @@ func TestStatusToOCIStateSuccessfulWithRunningState(t *testing.T) {
 
 	expected := specs.State{
 		Version:     specs.Version,
-		ID:          testContID,
+		ID:          string(testContID),
 		Status:      "running",
 		Pid:         testPID,
 		Bundle:      tempBundlePath,
@@ -338,7 +339,7 @@ func TestStatusToOCIStateSuccessfulWithRunningState(t *testing.T) {
 }
 
 func TestStatusToOCIStateSuccessfulWithStoppedState(t *testing.T) {
-	testContID := "testContID"
+	testContID := ContainerID("testContID")
 	testPID := 12345
 	testRootFs := "testRootFs"
 
@@ -361,7 +362,7 @@ func TestStatusToOCIStateSuccessfulWithStoppedState(t *testing.T) {
 
 	expected := specs.State{
 		Version:     specs.Version,
-		ID:          testContID,
+		ID:          string(testContID),
 		Status:      "stopped",
 		Pid:         testPID,
 		Bundle:      tempBundlePath,
@@ -373,7 +374,7 @@ func TestStatusToOCIStateSuccessfulWithStoppedState(t *testing.T) {
 }
 
 func TestStatusToOCIStateSuccessfulWithNoState(t *testing.T) {
-	testContID := "testContID"
+	testContID := ContainerID("testContID")
 	testPID := 12345
 	testRootFs := "testRootFs"
 
@@ -391,7 +392,7 @@ func TestStatusToOCIStateSuccessfulWithNoState(t *testing.T) {
 
 	expected := specs.State{
 		Version:     specs.Version,
-		ID:          testContID,
+		ID:          string(testContID),
 		Status:      "",
 		Pid:         testPID,
 		Bundle:      tempBundlePath,
@@ -591,10 +592,10 @@ func TestContainerTypeFailure(t *testing.T) {
 
 func TestSandboxIDSuccessful(t *testing.T) {
 	var ociSpec CompatOCISpec
-	testSandboxID := "testSandboxID"
+	var testSandboxID SandboxID = "testSandboxID"
 
 	ociSpec.Annotations = map[string]string{
-		annotations.SandboxID: testSandboxID,
+		annotations.SandboxID: string(testSandboxID),
 	}
 
 	sandboxID, err := ociSpec.SandboxID()

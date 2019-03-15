@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"net"
 	"sync"
+
+	vct "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 type ctlDataType string
@@ -60,7 +62,7 @@ func startCtlMonitor(ctlConn net.Conn, done chan<- interface{}) *multicast {
 	return ctlMulticast
 }
 
-func (m *multicast) buildEventID(containerID, processID string) string {
+func (m *multicast) buildEventID(containerID vct.ContainerID, processID string) string {
 	return fmt.Sprintf("%s-%s", containerID, processID)
 }
 
@@ -72,7 +74,7 @@ func (m *multicast) sendEvent(msg *DecodedMessage) error {
 		return err
 	}
 
-	uniqueID := m.buildEventID(paeData.Container, paeData.Process)
+	uniqueID := m.buildEventID(vct.ContainerID(paeData.Container), paeData.Process)
 	channel, exist := m.event[uniqueID]
 	if !exist {
 		return nil
@@ -139,7 +141,7 @@ func (m *multicast) write(msg *DecodedMessage) error {
 	}
 }
 
-func (m *multicast) listen(containerID, processID string, dataType ctlDataType) (chan *DecodedMessage, error) {
+func (m *multicast) listen(containerID vct.ContainerID, processID string, dataType ctlDataType) (chan *DecodedMessage, error) {
 	switch dataType {
 	case replyType:
 		newChan := make(chan *DecodedMessage)

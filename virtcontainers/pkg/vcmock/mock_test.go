@@ -20,8 +20,8 @@ import (
 )
 
 const (
-	testSandboxID   = "testSandboxID"
-	testContainerID = "testContainerID"
+	testSandboxID   SandboxID   = "testSandboxID"
+	testContainerID ContainerID = "testContainerID"
 )
 
 var (
@@ -154,7 +154,7 @@ func TestVCMockDeleteSandbox(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.DeleteSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	m.DeleteSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return &Sandbox{}, nil
 	}
 
@@ -208,7 +208,7 @@ func TestVCMockPauseSandbox(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.PauseSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	m.PauseSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return &Sandbox{}, nil
 	}
 
@@ -235,7 +235,7 @@ func TestVCMockResumeSandbox(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.ResumeSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	m.ResumeSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return &Sandbox{}, nil
 	}
 
@@ -289,7 +289,7 @@ func TestVCMockStartSandbox(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.StartSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	m.StartSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return &Sandbox{}, nil
 	}
 
@@ -316,7 +316,7 @@ func TestVCMockStatusSandbox(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.StatusSandboxFunc = func(ctx context.Context, sandboxID string) (vc.SandboxStatus, error) {
+	m.StatusSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.SandboxStatus, error) {
 		return vc.SandboxStatus{}, nil
 	}
 
@@ -343,7 +343,7 @@ func TestVCMockStopSandbox(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.StopSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	m.StopSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return &Sandbox{}, nil
 	}
 
@@ -371,7 +371,7 @@ func TestVCMockCreateContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.CreateContainerFunc = func(ctx context.Context, sandboxID string, containerConfig vc.ContainerConfig) (vc.VCSandbox, vc.VCContainer, error) {
+	m.CreateContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerConfig vc.ContainerConfig) (vc.VCSandbox, vc.VCContainer, error) {
 		return &Sandbox{}, &Container{}, nil
 	}
 
@@ -399,7 +399,7 @@ func TestVCMockDeleteContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.DeleteContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error) {
+	m.DeleteContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error) {
 		return &Container{}, nil
 	}
 
@@ -427,7 +427,7 @@ func TestVCMockEnterContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.EnterContainerFunc = func(ctx context.Context, sandboxID, containerID string, cmd types.Cmd) (vc.VCSandbox, vc.VCContainer, *vc.Process, error) {
+	m.EnterContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID, cmd types.Cmd) (vc.VCSandbox, vc.VCContainer, *vc.Process, error) {
 		return &Sandbox{}, &Container{}, &vc.Process{}, nil
 	}
 
@@ -460,7 +460,7 @@ func TestVCMockKillContainer(t *testing.T) {
 		assert.True(IsMockError(err))
 	}
 
-	m.KillContainerFunc = func(ctx context.Context, sandboxID, containerID string, signal syscall.Signal, all bool) error {
+	m.KillContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID, signal syscall.Signal, all bool) error {
 		return nil
 	}
 
@@ -490,7 +490,7 @@ func TestVCMockStartContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.StartContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error) {
+	m.StartContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error) {
 		return &Container{}, nil
 	}
 
@@ -517,7 +517,7 @@ func TestVCMockStatusContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	m.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{}, nil
 	}
 
@@ -545,7 +545,7 @@ func TestVCMockStatsContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.StatsContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStats, error) {
+	m.StatsContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStats, error) {
 		return vc.ContainerStats{}, nil
 	}
 
@@ -572,7 +572,7 @@ func TestVCMockStopContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.StopContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error) {
+	m.StopContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error) {
 		return &Container{}, nil
 	}
 
@@ -606,7 +606,7 @@ func TestVCMockProcessListContainer(t *testing.T) {
 
 	processList := vc.ProcessList("hi")
 
-	m.ProcessListContainerFunc = func(ctx context.Context, sandboxID, containerID string, options vc.ProcessListOptions) (vc.ProcessList, error) {
+	m.ProcessListContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID, options vc.ProcessListOptions) (vc.ProcessList, error) {
 		return processList, nil
 	}
 
@@ -634,7 +634,7 @@ func TestVCMockFetchSandbox(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.FetchSandboxFunc = func(ctx context.Context, id string) (vc.VCSandbox, error) {
+	m.FetchSandboxFunc = func(ctx context.Context, id SandboxID) (vc.VCSandbox, error) {
 		return &Sandbox{}, nil
 	}
 
@@ -658,22 +658,25 @@ func TestVCMockPauseContainer(t *testing.T) {
 	config := &vc.SandboxConfig{}
 	assert.Nil(m.PauseContainerFunc)
 
+	sandboxID := SandboxID(config.ID)
+	containerID := ContainerID(config.ID)
+
 	ctx := context.Background()
-	err := m.PauseContainer(ctx, config.ID, config.ID)
+	err := m.PauseContainer(ctx, sandboxID, containerID)
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.PauseContainerFunc = func(ctx context.Context, sid, cid string) error {
+	m.PauseContainerFunc = func(ctx context.Context, sid SandboxID, cid ContainerID) error {
 		return nil
 	}
 
-	err = m.PauseContainer(ctx, config.ID, config.ID)
+	err = m.PauseContainer(ctx, sandboxID, containerID)
 	assert.NoError(err)
 
 	// reset
 	m.PauseContainerFunc = nil
 
-	err = m.PauseContainer(ctx, config.ID, config.ID)
+	err = m.PauseContainer(ctx, sandboxID, containerID)
 	assert.Error(err)
 	assert.True(IsMockError(err))
 }
@@ -685,22 +688,25 @@ func TestVCMockResumeContainer(t *testing.T) {
 	config := &vc.SandboxConfig{}
 	assert.Nil(m.ResumeContainerFunc)
 
+	sandboxID := SandboxID(config.ID)
+	containerID := ContainerID(config.ID)
+
 	ctx := context.Background()
-	err := m.ResumeContainer(ctx, config.ID, config.ID)
+	err := m.ResumeContainer(ctx, sandboxID, containerID)
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.ResumeContainerFunc = func(ctx context.Context, sid, cid string) error {
+	m.ResumeContainerFunc = func(ctx context.Context, sid SandboxID, cid ContainerID) error {
 		return nil
 	}
 
-	err = m.ResumeContainer(ctx, config.ID, config.ID)
+	err = m.ResumeContainer(ctx, sandboxID, containerID)
 	assert.NoError(err)
 
 	// reset
 	m.ResumeContainerFunc = nil
 
-	err = m.ResumeContainer(ctx, config.ID, config.ID)
+	err = m.ResumeContainer(ctx, sandboxID, containerID)
 	assert.Error(err)
 	assert.True(IsMockError(err))
 }
@@ -749,7 +755,7 @@ func TestVCMockAddInterface(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.AddInterfaceFunc = func(ctx context.Context, sid string, inf *Interface) (*Interface, error) {
+	m.AddInterfaceFunc = func(ctx context.Context, sid SandboxID, inf *Interface) (*Interface, error) {
 		return nil, nil
 	}
 
@@ -776,7 +782,7 @@ func TestVCMockRemoveInterface(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.RemoveInterfaceFunc = func(ctx context.Context, sid string, inf *Interface) (*Interface, error) {
+	m.RemoveInterfaceFunc = func(ctx context.Context, sid SandboxID, inf *Interface) (*Interface, error) {
 		return nil, nil
 	}
 
@@ -803,7 +809,7 @@ func TestVCMockListInterfaces(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.ListInterfacesFunc = func(ctx context.Context, sid string) ([]*Interface, error) {
+	m.ListInterfacesFunc = func(ctx context.Context, sid SandboxID) ([]*Interface, error) {
 		return nil, nil
 	}
 
@@ -830,7 +836,7 @@ func TestVCMockUpdateRoutes(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.UpdateRoutesFunc = func(ctx context.Context, sid string, routes []*Route) ([]*Route, error) {
+	m.UpdateRoutesFunc = func(ctx context.Context, sid SandboxID, routes []*Route) ([]*Route, error) {
 		return nil, nil
 	}
 
@@ -857,7 +863,7 @@ func TestVCMockListRoutes(t *testing.T) {
 	assert.Error(err)
 	assert.True(IsMockError(err))
 
-	m.ListRoutesFunc = func(ctx context.Context, sid string) ([]*Route, error) {
+	m.ListRoutesFunc = func(ctx context.Context, sid SandboxID) ([]*Route, error) {
 		return nil, nil
 	}
 

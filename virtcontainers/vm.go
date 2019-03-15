@@ -14,6 +14,7 @@ import (
 	"time"
 
 	pb "github.com/kata-containers/runtime/protocols/cache"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/uuid"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/sirupsen/logrus"
@@ -113,7 +114,7 @@ func GrpcToVMConfig(j *pb.GrpcVMConfig) (*VMConfig, error) {
 }
 
 func setupProxy(h hypervisor, agent agent, config VMConfig, id string) (int, string, proxy, error) {
-	consoleURL, err := h.getSandboxConsole(id)
+	consoleURL, err := h.getSandboxConsole(SandboxID(id))
 	if err != nil {
 		return -1, "", nil, err
 	}
@@ -171,8 +172,8 @@ func NewVM(ctx context.Context, config VMConfig) (*VM, error) {
 	virtLog.WithField("vm", id).WithField("config", config).Info("create new vm")
 
 	vcStore, err := store.NewVCStore(ctx,
-		store.SandboxConfigurationRoot(id),
-		store.SandboxRuntimeRoot(id))
+		store.SandboxConfigurationRoot(SandboxID(id)),
+		store.SandboxRuntimeRoot(SandboxID(id)))
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +186,7 @@ func NewVM(ctx context.Context, config VMConfig) (*VM, error) {
 		}
 	}()
 
-	if err = hypervisor.createSandbox(ctx, id, &config.HypervisorConfig, vcStore); err != nil {
+	if err = hypervisor.createSandbox(ctx, SandboxID(id), &config.HypervisorConfig, vcStore); err != nil {
 		return nil, err
 	}
 
@@ -257,8 +258,8 @@ func NewVMFromGrpc(ctx context.Context, v *pb.GrpcVM, config VMConfig) (*VM, err
 	}
 
 	vcStore, err := store.NewVCStore(ctx,
-		store.SandboxConfigurationRoot(v.Id),
-		store.SandboxRuntimeRoot(v.Id))
+		store.SandboxConfigurationRoot(SandboxID(v.Id)),
+		store.SandboxRuntimeRoot(SandboxID(v.Id)))
 	if err != nil {
 		return nil, err
 	}
@@ -427,8 +428,8 @@ func (v *VM) assignSandbox(s *Sandbox) error {
 
 	vmSharePath := buildVMSharePath(v.id)
 	vmSockDir := v.agent.getVMPath(v.id)
-	sbSharePath := s.agent.getSharePath(s.id)
-	sbSockDir := s.agent.getVMPath(s.id)
+	sbSharePath := s.agent.getSharePath(string(s.id))
+	sbSockDir := s.agent.getVMPath(string(s.id))
 
 	v.logger().WithFields(logrus.Fields{
 		"vmSharePath": vmSharePath,

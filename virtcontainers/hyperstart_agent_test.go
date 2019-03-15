@@ -285,12 +285,12 @@ func TestHyperCleanupSandbox(t *testing.T) {
 	s := Sandbox{
 		id: "testFoo",
 	}
-	dir := path.Join(defaultSharedDir, s.id)
+	dir := path.Join(defaultSharedDir, string(s.id))
 	err := os.MkdirAll(dir, 0777)
 	assert.Nil(err)
 
 	h := &hyper{}
-	h.cleanup(s.id)
+	h.cleanup(string(s.id))
 
 	if _, err = os.Stat(dir); os.IsExist(err) {
 		t.Fatalf("%s still exists\n", dir)

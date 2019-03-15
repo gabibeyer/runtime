@@ -11,6 +11,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 const ctrsMappingDirMode = os.FileMode(0750)
@@ -26,12 +28,12 @@ func SetCtrsMapTreePath(path string) {
 // ID directory. If there are several files, we could not determine which
 // file name corresponds to the sandbox ID associated, and this would throw
 // an error.
-func FetchContainerIDMapping(containerID string) (string, error) {
+func FetchContainerIDMapping(containerID ContainerID) (string, error) {
 	if containerID == "" {
 		return "", fmt.Errorf("Missing container ID")
 	}
 
-	dirPath := filepath.Join(ctrsMapTreePath, containerID)
+	dirPath := filepath.Join(ctrsMapTreePath, string(containerID))
 
 	files, err := ioutil.ReadDir(dirPath)
 	if err != nil {
@@ -50,7 +52,7 @@ func FetchContainerIDMapping(containerID string) (string, error) {
 }
 
 // AddContainerIDMapping add a container id mapping to sandbox id
-func AddContainerIDMapping(ctx context.Context, containerID, sandboxID string) error {
+func AddContainerIDMapping(ctx context.Context, containerID ContainerID, sandboxID SandboxID) error {
 	span, _ := Trace(ctx, "addContainerIDMapping")
 	defer span.Finish()
 
@@ -62,13 +64,13 @@ func AddContainerIDMapping(ctx context.Context, containerID, sandboxID string) e
 		return fmt.Errorf("Missing sandbox ID")
 	}
 
-	parentPath := filepath.Join(ctrsMapTreePath, containerID)
+	parentPath := filepath.Join(ctrsMapTreePath, string(containerID))
 
 	if err := os.RemoveAll(parentPath); err != nil {
 		return err
 	}
 
-	path := filepath.Join(parentPath, sandboxID)
+	path := filepath.Join(parentPath, string(sandboxID))
 
 	if err := os.MkdirAll(path, ctrsMappingDirMode); err != nil {
 		return err
@@ -78,7 +80,7 @@ func AddContainerIDMapping(ctx context.Context, containerID, sandboxID string) e
 }
 
 // DelContainerIDMapping delete container id mapping from a sandbox
-func DelContainerIDMapping(ctx context.Context, containerID string) error {
+func DelContainerIDMapping(ctx context.Context, containerID ContainerID) error {
 	span, _ := Trace(ctx, "delContainerIDMapping")
 	defer span.Finish()
 
@@ -86,7 +88,7 @@ func DelContainerIDMapping(ctx context.Context, containerID string) error {
 		return fmt.Errorf("Missing container ID")
 	}
 
-	path := filepath.Join(ctrsMapTreePath, containerID)
+	path := filepath.Join(ctrsMapTreePath, string(containerID))
 
 	return os.RemoveAll(path)
 }

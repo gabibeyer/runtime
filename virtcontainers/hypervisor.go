@@ -15,6 +15,7 @@ import (
 	"strings"
 
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 )
@@ -592,7 +593,7 @@ func RunningOnVMM(cpuInfoPath string) (bool, error) {
 // hypervisor is the virtcontainers hypervisor interface.
 // The default hypervisor implementation is Qemu.
 type hypervisor interface {
-	createSandbox(ctx context.Context, id string, hypervisorConfig *HypervisorConfig, store *store.VCStore) error
+	createSandbox(ctx context.Context, id SandboxID, hypervisorConfig *HypervisorConfig, store *store.VCStore) error
 	startSandbox(timeout int) error
 	stopSandbox() error
 	pauseSandbox() error
@@ -603,7 +604,7 @@ type hypervisor interface {
 	hotplugRemoveDevice(devInfo interface{}, devType deviceType) (interface{}, error)
 	resizeMemory(memMB uint32, memoryBlockSizeMB uint32) (uint32, error)
 	resizeVCPUs(vcpus uint32) (uint32, uint32, error)
-	getSandboxConsole(sandboxID string) (string, error)
+	getSandboxConsole(sandboxID SandboxID) (string, error)
 	disconnect()
 	capabilities() types.Capabilities
 	hypervisorConfig() HypervisorConfig

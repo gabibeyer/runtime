@@ -10,10 +10,12 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 func TestMonitorSuccess(t *testing.T) {
-	contID := "505"
+	contID := ContainerID("505")
 	contConfig := newTestContainerConfigNoop(contID)
 	hConfig := newHypervisorConfig(nil, nil)
 
@@ -38,7 +40,7 @@ func TestMonitorSuccess(t *testing.T) {
 }
 
 func TestMonitorClosedChannel(t *testing.T) {
-	contID := "505"
+	contID := ContainerID("505")
 	contConfig := newTestContainerConfigNoop(contID)
 	hConfig := newHypervisorConfig(nil, nil)
 

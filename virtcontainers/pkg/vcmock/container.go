@@ -7,10 +7,11 @@ package vcmock
 
 import (
 	vc "github.com/kata-containers/runtime/virtcontainers"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 // ID implements the VCContainer function of the same name.
-func (c *Container) ID() string {
+func (c *Container) ID() ContainerID {
 	return c.MockID
 }
 

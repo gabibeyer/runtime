@@ -28,6 +28,7 @@ import (
 
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	"github.com/kata-containers/runtime/virtcontainers/device/manager"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 )
 
@@ -69,7 +70,7 @@ type Process struct {
 
 // ContainerStatus describes a container status.
 type ContainerStatus struct {
-	ID        string
+	ID        ContainerID
 	State     types.State
 	PID       int
 	StartTime time.Time
@@ -205,7 +206,7 @@ type ContainerResources struct {
 
 // ContainerConfig describes one container runtime configuration.
 type ContainerConfig struct {
-	ID string
+	ID ContainerID
 
 	// RootFs is the container workload image on the host.
 	RootFs string
@@ -264,8 +265,8 @@ type ContainerDevice struct {
 // Container is composed of a set of containers and a runtime environment.
 // A Container can be created, deleted, started, stopped, listed, entered, paused and restored.
 type Container struct {
-	id        string
-	sandboxID string
+	id        ContainerID
+	sandboxID SandboxID
 
 	rootFs string
 
@@ -294,7 +295,7 @@ type Container struct {
 }
 
 // ID returns the container identifier string.
-func (c *Container) ID() string {
+func (c *Container) ID() ContainerID {
 	return c.id
 }
 
@@ -457,7 +458,7 @@ func (c *Container) shareFiles(m Mount, idx int, hostSharedDir, guestSharedDir s
 		}
 	} else {
 		// These mounts are created in the shared dir
-		mountDest := filepath.Join(hostSharedDir, c.sandbox.id, filename)
+		mountDest := filepath.Join(hostSharedDir, string(c.sandbox.id), filename)
 		if err := bindMount(c.ctx, m.Source, mountDest, false); err != nil {
 			return "", false, err
 		}
@@ -640,7 +641,7 @@ func newContainer(sandbox *Sandbox, contConfig ContainerConfig) (*Container, err
 		sandbox:       sandbox,
 		runPath:       store.ContainerRuntimeRootPath(sandbox.id, contConfig.ID),
 		configPath:    store.ContainerConfigurationRootPath(sandbox.id, contConfig.ID),
-		containerPath: filepath.Join(sandbox.id, contConfig.ID),
+		containerPath: filepath.Join(string(sandbox.id), string(contConfig.ID)),
 		rootfsSuffix:  "rootfs",
 		state:         types.State{},
 		process:       Process{},
@@ -928,7 +929,7 @@ func (c *Container) stop() error {
 	// wait the process here to make sure the process has exited before to
 	// issue stopContainer, otherwise the RemoveContainerRequest in it will
 	// get failed if the process hasn't exited.
-	c.sandbox.agent.waitProcess(c, c.id)
+	c.sandbox.agent.waitProcess(c, string(c.id))
 
 	// container was killed by force, container MUST change its state
 	// as soon as possible just in case one of below operations fail leaving
@@ -1161,7 +1162,7 @@ func (c *Container) hotplugDrive() error {
 	if c.checkBlockDeviceSupport() && stat.Mode&unix.S_IFBLK == unix.S_IFBLK {
 		b, err := c.sandbox.devManager.NewDevice(config.DeviceInfo{
 			HostPath:      devicePath,
-			ContainerPath: filepath.Join(kataGuestSharedDir, c.id),
+			ContainerPath: filepath.Join(kataGuestSharedDir, string(c.id)),
 			DevType:       "b",
 			Major:         int64(unix.Major(stat.Rdev)),
 			Minor:         int64(unix.Minor(stat.Rdev)),

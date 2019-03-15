@@ -16,6 +16,8 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+
+	vct "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 // Control command IDs
@@ -465,7 +467,7 @@ func (h *Hyperstart) WaitForReady() error {
 }
 
 // WaitForPAE waits for a PROCESSASYNCEVENT message on CTL channel.
-func (h *Hyperstart) WaitForPAE(containerID, processID string) (*PAECommand, error) {
+func (h *Hyperstart) WaitForPAE(containerID vct.ContainerID, processID string) (*PAECommand, error) {
 	if h.ctlMulticast == nil {
 		return nil, fmt.Errorf("No multicast available for CTL channel")
 	}

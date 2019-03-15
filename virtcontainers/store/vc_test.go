@@ -10,15 +10,16 @@ import (
 	"fmt"
 	"testing"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestStoreVCRoots(t *testing.T) {
+	var sandboxID SandboxID = "sandbox"
+	var containerID ContainerID = "container"
 	rootURL := filesystemScheme + "://" + ConfigStoragePath
-	sandboxID := "sandbox"
-	containerID := "container"
-	sConfigRoot := rootURL + "/" + sandboxID
-	cConfigRoot := rootURL + "/" + sandboxID + "/" + containerID
+	sConfigRoot := fmt.Sprintf("%s/%v", rootURL, sandboxID)
+	cConfigRoot := fmt.Sprintf("%s/%v/%v", rootURL, sandboxID, containerID)
 
 	assert.Equal(t, SandboxConfigurationRoot(sandboxID), sConfigRoot)
 	assert.Equal(t, ContainerConfigurationRoot(sandboxID, containerID), cConfigRoot)

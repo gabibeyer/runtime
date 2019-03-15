@@ -16,6 +16,7 @@ import (
 	"testing"
 
 	govmmQemu "github.com/intel/govmm/qemu"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/stretchr/testify/assert"
@@ -304,8 +305,8 @@ func TestQemuGetSandboxConsole(t *testing.T) {
 	q := &qemu{
 		ctx: context.Background(),
 	}
-	sandboxID := "testSandboxID"
-	expected := filepath.Join(store.RunVMStoragePath, sandboxID, consoleSocket)
+	var sandboxID SandboxID = "testSandboxID"
+	expected := filepath.Join(store.RunVMStoragePath, string(sandboxID), consoleSocket)
 
 	result, err := q.getSandboxConsole(sandboxID)
 	if err != nil {
@@ -387,7 +388,7 @@ func TestHotplugUnsupportedDeviceType(t *testing.T) {
 		config: qemuConfig,
 	}
 
-	vcStore, err := store.NewVCSandboxStore(q.ctx, q.id)
+	vcStore, err := store.NewVCSandboxStore(q.ctx, SandboxID(q.id))
 	if err != nil {
 		t.Fatal(err)
 	}

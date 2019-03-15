@@ -20,6 +20,7 @@ import (
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	"github.com/kata-containers/runtime/virtcontainers/device/drivers"
 	"github.com/kata-containers/runtime/virtcontainers/device/manager"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/stretchr/testify/assert"
@@ -232,7 +233,7 @@ func TestContainerAddDriveDir(t *testing.T) {
 	assert.Nil(t, err)
 	sandbox.store = sandboxStore
 
-	contID := "100"
+	contID := ContainerID("100")
 	container := Container{
 		sandbox: sandbox,
 		id:      contID,

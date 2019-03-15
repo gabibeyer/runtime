@@ -11,6 +11,8 @@ import (
 	"syscall"
 
 	"github.com/sirupsen/logrus"
+
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 // NetmonConfig is the structure providing specific configuration
@@ -28,7 +30,7 @@ type netmonParams struct {
 	debug      bool
 	logLevel   string
 	runtime    string
-	sandboxID  string
+	sandboxID  SandboxID
 }
 
 func netmonLogger() *logrus.Entry {
@@ -48,7 +50,7 @@ func prepareNetMonParams(params netmonParams) ([]string, error) {
 
 	args := []string{params.netmonPath,
 		"-r", params.runtime,
-		"-s", params.sandboxID,
+		"-s", string(params.sandboxID),
 	}
 
 	if params.debug {

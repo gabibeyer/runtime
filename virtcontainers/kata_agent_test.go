@@ -788,7 +788,7 @@ func TestAgentCreateContainer(t *testing.T) {
 	dir, err := ioutil.TempDir("", "kata-agent-test")
 	assert.Nil(err)
 
-	err = k.configure(&mockHypervisor{}, sandbox.id, dir, true, KataAgentConfig{})
+	err = k.configure(&mockHypervisor{}, string(sandbox.id), dir, true, KataAgentConfig{})
 	assert.Nil(err)
 
 	// We'll fail on container metadata file creation, but it helps increasing coverage...
@@ -934,12 +934,12 @@ func TestKataCleanupSandbox(t *testing.T) {
 	s := Sandbox{
 		id: "testFoo",
 	}
-	dir := path.Join(kataHostSharedDir, s.id)
+	dir := path.Join(kataHostSharedDir, string(s.id))
 	err := os.MkdirAll(dir, 0777)
 	assert.Nil(err)
 
 	k := &kataAgent{}
-	k.cleanup(s.id)
+	k.cleanup(string(s.id))
 
 	if _, err = os.Stat(dir); os.IsExist(err) {
 		t.Fatalf("%s still exists\n", dir)

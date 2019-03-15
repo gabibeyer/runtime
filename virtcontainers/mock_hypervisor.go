@@ -10,6 +10,7 @@ import (
 	"errors"
 	"os"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 )
@@ -26,7 +27,7 @@ func (m *mockHypervisor) hypervisorConfig() HypervisorConfig {
 	return HypervisorConfig{}
 }
 
-func (m *mockHypervisor) createSandbox(ctx context.Context, id string, hypervisorConfig *HypervisorConfig, store *store.VCStore) error {
+func (m *mockHypervisor) createSandbox(ctx context.Context, id SandboxID, hypervisorConfig *HypervisorConfig, store *store.VCStore) error {
 	err := hypervisorConfig.valid()
 	if err != nil {
 		return err
@@ -80,7 +81,7 @@ func (m *mockHypervisor) hotplugRemoveDevice(devInfo interface{}, devType device
 	return nil, nil
 }
 
-func (m *mockHypervisor) getSandboxConsole(sandboxID string) (string, error) {
+func (m *mockHypervisor) getSandboxConsole(sandboxID SandboxID) (string, error) {
 	return "", nil
 }
 

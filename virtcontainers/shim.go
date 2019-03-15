@@ -13,6 +13,7 @@ import (
 	"time"
 
 	ns "github.com/kata-containers/runtime/virtcontainers/pkg/nsenter"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/mitchellh/mapstructure"
 	"github.com/sirupsen/logrus"
@@ -156,7 +157,7 @@ func stopShim(pid int) error {
 	return nil
 }
 
-func prepareAndStartShim(sandbox *Sandbox, shim shim, cid, token, url string, cmd types.Cmd,
+func prepareAndStartShim(sandbox *Sandbox, shim shim, cid ContainerID, token, url string, cmd types.Cmd,
 	createNSList []ns.NSType, enterNSList []ns.Namespace) (*Process, error) {
 	process := &Process{
 		Token:     token,
@@ -164,7 +165,7 @@ func prepareAndStartShim(sandbox *Sandbox, shim shim, cid, token, url string, cm
 	}
 
 	shimParams := ShimParams{
-		Container: cid,
+		Container: string(cid),
 		Token:     token,
 		URL:       url,
 		Console:   cmd.Console,

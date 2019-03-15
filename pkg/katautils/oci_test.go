@@ -13,17 +13,18 @@ import (
 	"path/filepath"
 	"testing"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
-func createTempContainerIDMapping(containerID, sandboxID string) (string, error) {
+func createTempContainerIDMapping(containerID ContainerID, sandboxID SandboxID) (string, error) {
 	tmpDir, err := ioutil.TempDir("", "containers-mapping")
 	if err != nil {
 		return "", err
 	}
 	ctrsMapTreePath = tmpDir
 
-	path := filepath.Join(ctrsMapTreePath, containerID, sandboxID)
+	path := filepath.Join(ctrsMapTreePath, string(containerID), string(sandboxID))
 	if err := os.MkdirAll(path, 0750); err != nil {
 		return "", err
 	}

@@ -578,7 +578,7 @@ func TestPauseThenResumeSandboxNoopAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contID := "100"
+	contID := ContainerID("100")
 	contConfig := newTestContainerConfigNoop(contID)
 
 	_, c, err := CreateContainer(ctx, p.ID(), contConfig)
@@ -1022,7 +1022,7 @@ func TestStatusPodSandboxFailingFetchSandboxState(t *testing.T) {
 	}
 }
 
-func newTestContainerConfigNoop(contID string) ContainerConfig {
+func newTestContainerConfigNoop(contID ContainerID) ContainerConfig {
 	// Define the container command and bundle.
 	container := ContainerConfig{
 		ID:          contID,
@@ -1037,7 +1037,7 @@ func newTestContainerConfigNoop(contID string) ContainerConfig {
 func TestCreateContainerSuccessful(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1059,7 +1059,7 @@ func TestCreateContainerSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1069,7 +1069,7 @@ func TestCreateContainerSuccessful(t *testing.T) {
 func TestCreateContainerFailingNoSandbox(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1100,7 +1100,7 @@ func TestCreateContainerFailingNoSandbox(t *testing.T) {
 func TestDeleteContainerSuccessful(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1122,7 +1122,7 @@ func TestDeleteContainerSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1142,7 +1142,7 @@ func TestDeleteContainerSuccessful(t *testing.T) {
 func TestDeleteContainerFailingNoSandbox(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	c, err := DeleteContainer(context.Background(), testSandboxID, contID)
 	if c != nil || err == nil {
 		t.Fatal()
@@ -1152,7 +1152,7 @@ func TestDeleteContainerFailingNoSandbox(t *testing.T) {
 func TestDeleteContainerFailingNoContainer(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1176,7 +1176,7 @@ func TestDeleteContainerFailingNoContainer(t *testing.T) {
 func TestStartContainerNoopAgentSuccessful(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1192,7 +1192,7 @@ func TestStartContainerNoopAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1207,7 +1207,7 @@ func TestStartContainerNoopAgentSuccessful(t *testing.T) {
 func TestStartContainerFailingNoSandbox(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	c, err := StartContainer(context.Background(), testSandboxID, contID)
 	if c != nil || err == nil {
 		t.Fatal()
@@ -1217,7 +1217,7 @@ func TestStartContainerFailingNoSandbox(t *testing.T) {
 func TestStartContainerFailingNoContainer(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1241,7 +1241,7 @@ func TestStartContainerFailingNoContainer(t *testing.T) {
 func TestStartContainerFailingSandboxNotStarted(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1263,7 +1263,7 @@ func TestStartContainerFailingSandboxNotStarted(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1278,7 +1278,7 @@ func TestStartContainerFailingSandboxNotStarted(t *testing.T) {
 func TestStopContainerNoopAgentSuccessful(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1295,7 +1295,7 @@ func TestStopContainerNoopAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1319,7 +1319,7 @@ func TestStartStopContainerHyperstartAgentSuccessful(t *testing.T) {
 
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigHyperstartAgent()
 
 	sockDir, err := testGenerateCCProxySockDir()
@@ -1351,7 +1351,7 @@ func TestStartStopContainerHyperstartAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1427,7 +1427,7 @@ func TestStartStopSandboxHyperstartAgentSuccessfulWithDefaultNetwork(t *testing.
 func TestStopContainerFailingNoSandbox(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	c, err := StopContainer(context.Background(), testSandboxID, contID)
 	if c != nil || err == nil {
 		t.Fatal()
@@ -1437,7 +1437,7 @@ func TestStopContainerFailingNoSandbox(t *testing.T) {
 func TestStopContainerFailingNoContainer(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1461,7 +1461,7 @@ func TestStopContainerFailingNoContainer(t *testing.T) {
 func testKillContainerFromContReadySuccessful(t *testing.T, signal syscall.Signal) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1478,7 +1478,7 @@ func testKillContainerFromContReadySuccessful(t *testing.T, signal syscall.Signa
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1503,7 +1503,7 @@ func TestKillContainerFromContReadySuccessful(t *testing.T) {
 func TestEnterContainerNoopAgentSuccessful(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1520,7 +1520,7 @@ func TestEnterContainerNoopAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1546,7 +1546,7 @@ func TestEnterContainerHyperstartAgentSuccessful(t *testing.T) {
 
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigHyperstartAgent()
 
 	sockDir, err := testGenerateCCProxySockDir()
@@ -1578,7 +1578,7 @@ func TestEnterContainerHyperstartAgentSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1609,7 +1609,7 @@ func TestEnterContainerHyperstartAgentSuccessful(t *testing.T) {
 
 func TestEnterContainerFailingNoSandbox(t *testing.T) {
 	cleanUp()
-	contID := "100"
+	contID := ContainerID("100")
 	cmd := newBasicTestCmd()
 
 	_, c, _, err := EnterContainer(context.Background(), testSandboxID, contID, cmd)
@@ -1621,7 +1621,7 @@ func TestEnterContainerFailingNoSandbox(t *testing.T) {
 func TestEnterContainerFailingNoContainer(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1647,7 +1647,7 @@ func TestEnterContainerFailingNoContainer(t *testing.T) {
 func TestEnterContainerFailingContNotStarted(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1664,7 +1664,7 @@ func TestEnterContainerFailingContNotStarted(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1681,7 +1681,7 @@ func TestEnterContainerFailingContNotStarted(t *testing.T) {
 func TestStatusContainerSuccessful(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1703,7 +1703,7 @@ func TestStatusContainerSuccessful(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1733,7 +1733,7 @@ func TestStatusContainerStateReady(t *testing.T) {
 	cleanUp()
 
 	// (homage to a great album! ;)
-	contID := "101"
+	contID := ContainerID("101")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1755,7 +1755,7 @@ func TestStatusContainerStateReady(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1799,7 +1799,7 @@ func TestStatusContainerStateRunning(t *testing.T) {
 	cleanUp()
 
 	// (homage to a great album! ;)
-	contID := "101"
+	contID := ContainerID("101")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1831,7 +1831,7 @@ func TestStatusContainerStateRunning(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	if err != nil {
 		t.Fatal(err)
@@ -1874,7 +1874,7 @@ func TestStatusContainerStateRunning(t *testing.T) {
 func TestStatusContainerFailing(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1895,7 +1895,7 @@ func TestStatusContainerFailing(t *testing.T) {
 func TestStatsContainerFailing(t *testing.T) {
 	cleanUp()
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	ctx := context.Background()
@@ -1917,7 +1917,7 @@ func TestStatsContainer(t *testing.T) {
 	cleanUp()
 
 	assert := assert.New(t)
-	contID := "100"
+	contID := ContainerID("100")
 
 	ctx := context.Background()
 	_, err := StatsContainer(ctx, "", "")
@@ -1964,7 +1964,7 @@ func TestProcessListContainer(t *testing.T) {
 
 	assert := assert.New(t)
 
-	contID := "abc"
+	contID := ContainerID("abc")
 	options := ProcessListOptions{
 		Format: "json",
 		Args:   []string{"-ef"},
@@ -2057,7 +2057,7 @@ func createNewContainerConfigs(numOfContainers int) []ContainerConfig {
 
 	for i := 0; i < numOfContainers; i++ {
 		contConfig := ContainerConfig{
-			ID:     fmt.Sprintf("%d", i),
+			ID:     ContainerID(fmt.Sprintf("%d", i)),
 			RootFs: rootFs,
 			Cmd:    cmd,
 		}
@@ -2340,7 +2340,7 @@ func TestUpdateContainer(t *testing.T) {
 	err = UpdateContainer(ctx, "abc", "", resources)
 	assert.Error(err)
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	s, sandboxDir, err := createAndStartSandbox(ctx, config)
@@ -2352,7 +2352,7 @@ func TestUpdateContainer(t *testing.T) {
 	assert.NoError(err)
 	assert.NotNil(c)
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	assert.NoError(err)
 
@@ -2379,7 +2379,7 @@ func TestPauseResumeContainer(t *testing.T) {
 	err = PauseContainer(ctx, "abc", "")
 	assert.Error(err)
 
-	contID := "100"
+	contID := ContainerID("100")
 	config := newTestSandboxConfigNoop()
 
 	s, sandboxDir, err := createAndStartSandbox(ctx, config)
@@ -2391,7 +2391,7 @@ func TestPauseResumeContainer(t *testing.T) {
 	assert.NoError(err)
 	assert.NotNil(c)
 
-	contDir := filepath.Join(sandboxDir, contID)
+	contDir := filepath.Join(sandboxDir, string(contID))
 	_, err = os.Stat(contDir)
 	assert.NoError(err)
 

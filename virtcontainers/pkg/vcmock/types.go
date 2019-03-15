@@ -20,7 +20,7 @@ import (
 
 // Sandbox is a fake Sandbox type used for testing
 type Sandbox struct {
-	MockID          string
+	MockID          SandboxID
 	MockURL         string
 	MockAnnotations map[string]string
 	MockContainers  []*Container
@@ -29,7 +29,7 @@ type Sandbox struct {
 
 // Container is a fake Container type used for testing
 type Container struct {
-	MockID          string
+	MockID          ContainerID
 	MockURL         string
 	MockToken       string
 	MockProcess     vc.Process
@@ -45,34 +45,34 @@ type VCMock struct {
 	SetFactoryFunc func(ctx context.Context, factory vc.Factory)
 
 	CreateSandboxFunc  func(ctx context.Context, sandboxConfig vc.SandboxConfig) (vc.VCSandbox, error)
-	DeleteSandboxFunc  func(ctx context.Context, sandboxID string) (vc.VCSandbox, error)
+	DeleteSandboxFunc  func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error)
 	ListSandboxFunc    func(ctx context.Context) ([]vc.SandboxStatus, error)
-	FetchSandboxFunc   func(ctx context.Context, sandboxID string) (vc.VCSandbox, error)
-	PauseSandboxFunc   func(ctx context.Context, sandboxID string) (vc.VCSandbox, error)
-	ResumeSandboxFunc  func(ctx context.Context, sandboxID string) (vc.VCSandbox, error)
+	FetchSandboxFunc   func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error)
+	PauseSandboxFunc   func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error)
+	ResumeSandboxFunc  func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error)
 	RunSandboxFunc     func(ctx context.Context, sandboxConfig vc.SandboxConfig) (vc.VCSandbox, error)
-	StartSandboxFunc   func(ctx context.Context, sandboxID string) (vc.VCSandbox, error)
-	StatusSandboxFunc  func(ctx context.Context, sandboxID string) (vc.SandboxStatus, error)
-	StatsContainerFunc func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStats, error)
-	StopSandboxFunc    func(ctx context.Context, sandboxID string) (vc.VCSandbox, error)
+	StartSandboxFunc   func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error)
+	StatusSandboxFunc  func(ctx context.Context, sandboxID SandboxID) (vc.SandboxStatus, error)
+	StatsContainerFunc func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStats, error)
+	StopSandboxFunc    func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error)
 
-	CreateContainerFunc      func(ctx context.Context, sandboxID string, containerConfig vc.ContainerConfig) (vc.VCSandbox, vc.VCContainer, error)
-	DeleteContainerFunc      func(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error)
-	EnterContainerFunc       func(ctx context.Context, sandboxID, containerID string, cmd types.Cmd) (vc.VCSandbox, vc.VCContainer, *vc.Process, error)
-	KillContainerFunc        func(ctx context.Context, sandboxID, containerID string, signal syscall.Signal, all bool) error
-	StartContainerFunc       func(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error)
-	StatusContainerFunc      func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error)
-	StopContainerFunc        func(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error)
-	ProcessListContainerFunc func(ctx context.Context, sandboxID, containerID string, options vc.ProcessListOptions) (vc.ProcessList, error)
-	UpdateContainerFunc      func(ctx context.Context, sandboxID, containerID string, resources specs.LinuxResources) error
-	PauseContainerFunc       func(ctx context.Context, sandboxID, containerID string) error
-	ResumeContainerFunc      func(ctx context.Context, sandboxID, containerID string) error
+	CreateContainerFunc      func(ctx context.Context, sandboxID SandboxID, containerConfig vc.ContainerConfig) (vc.VCSandbox, vc.VCContainer, error)
+	DeleteContainerFunc      func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error)
+	EnterContainerFunc       func(ctx context.Context, sandboxID SandboxID, containerID ContainerID, cmd types.Cmd) (vc.VCSandbox, vc.VCContainer, *vc.Process, error)
+	KillContainerFunc        func(ctx context.Context, sandboxID SandboxID, containerID ContainerID, signal syscall.Signal, all bool) error
+	StartContainerFunc       func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error)
+	StatusContainerFunc      func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error)
+	StopContainerFunc        func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error)
+	ProcessListContainerFunc func(ctx context.Context, sandboxID SandboxID, containerID ContainerID, options vc.ProcessListOptions) (vc.ProcessList, error)
+	UpdateContainerFunc      func(ctx context.Context, sandboxID SandboxID, containerID ContainerID, resources specs.LinuxResources) error
+	PauseContainerFunc       func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) error
+	ResumeContainerFunc      func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) error
 
-	AddDeviceFunc func(ctx context.Context, sandboxID string, info config.DeviceInfo) (api.Device, error)
+	AddDeviceFunc func(ctx context.Context, sandboxID SandboxID, info config.DeviceInfo) (api.Device, error)
 
-	AddInterfaceFunc    func(ctx context.Context, sandboxID string, inf *Interface) (*Interface, error)
-	RemoveInterfaceFunc func(ctx context.Context, sandboxID string, inf *Interface) (*Interface, error)
-	ListInterfacesFunc  func(ctx context.Context, sandboxID string) ([]*Interface, error)
-	UpdateRoutesFunc    func(ctx context.Context, sandboxID string, routes []*Route) ([]*Route, error)
-	ListRoutesFunc      func(ctx context.Context, sandboxID string) ([]*Route, error)
+	AddInterfaceFunc    func(ctx context.Context, sandboxID SandboxID, inf *Interface) (*Interface, error)
+	RemoveInterfaceFunc func(ctx context.Context, sandboxID SandboxID, inf *Interface) (*Interface, error)
+	ListInterfacesFunc  func(ctx context.Context, sandboxID SandboxID) ([]*Interface, error)
+	UpdateRoutesFunc    func(ctx context.Context, sandboxID SandboxID, routes []*Route) ([]*Route, error)
+	ListRoutesFunc      func(ctx context.Context, sandboxID SandboxID) ([]*Route, error)
 }

@@ -13,6 +13,7 @@ import (
 	"testing"
 
 	"github.com/containerd/cgroups"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/stretchr/testify/assert"
@@ -164,7 +165,7 @@ func TestUpdateCgroups(t *testing.T) {
 	s.config = &SandboxConfig{}
 	s.config.HypervisorConfig.NumVCPUs = 1
 
-	s.containers = map[string]*Container{
+	s.containers = map[ContainerID]*Container{
 		"abc": {
 			process: Process{
 				Pid: s.state.Pid,

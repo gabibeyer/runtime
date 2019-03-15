@@ -23,6 +23,7 @@ import (
 	"github.com/kata-containers/runtime/virtcontainers/device/drivers"
 	"github.com/kata-containers/runtime/virtcontainers/device/manager"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
@@ -41,7 +42,7 @@ func newHypervisorConfig(kernelParams []Param, hParams []Param) HypervisorConfig
 
 }
 
-func testCreateSandbox(t *testing.T, id string,
+func testCreateSandbox(t *testing.T, id SandboxID,
 	htype HypervisorType, hconfig HypervisorConfig, atype AgentType,
 	nconfig NetworkConfig, containers []ContainerConfig,
 	volumes []types.Volume) (*Sandbox, error) {
@@ -508,7 +509,7 @@ func testCheckContainerOnDiskState(c *Container, containerState types.State) err
 }
 
 func TestSandboxSetSandboxAndContainerState(t *testing.T) {
-	contID := "505"
+	contID := ContainerID("505")
 	contConfig := newTestContainerConfigNoop(contID)
 	hConfig := newHypervisorConfig(nil, nil)
 
@@ -598,8 +599,8 @@ func TestSandboxSetSandboxAndContainerState(t *testing.T) {
 }
 
 func TestGetContainer(t *testing.T) {
-	containerIDs := []string{"abc", "123", "xyz", "rgb"}
-	containers := map[string]*Container{}
+	containerIDs := []ContainerID{"abc", "123", "xyz", "rgb"}
+	containers := map[ContainerID]*Container{}
 
 	for _, id := range containerIDs {
 		c := Container{id: id}
@@ -624,8 +625,8 @@ func TestGetContainer(t *testing.T) {
 }
 
 func TestGetAllContainers(t *testing.T) {
-	containerIDs := []string{"abc", "123", "xyz", "rgb"}
-	containers := map[string]*Container{}
+	containerIDs := []ContainerID{"abc", "123", "xyz", "rgb"}
+	containers := map[ContainerID]*Container{}
 
 	for _, id := range containerIDs {
 		c := &Container{id: id}
@@ -717,7 +718,7 @@ func TestSandboxGetContainer(t *testing.T) {
 	}
 	defer cleanUp()
 
-	contID := "999"
+	contID := ContainerID("999")
 	contConfig := newTestContainerConfigNoop(contID)
 	nc, err := newContainer(p, contConfig)
 	if err != nil {
@@ -986,7 +987,7 @@ func TestSandboxAttachDevicesVFIO(t *testing.T) {
 		},
 	}
 
-	containers := map[string]*Container{}
+	containers := map[ContainerID]*Container{}
 	containers[c.id] = c
 
 	sandbox := Sandbox{
@@ -1066,7 +1067,7 @@ func TestSandboxCreateAssets(t *testing.T) {
 	assert.NotNil(err)
 }
 
-func testFindContainerFailure(t *testing.T, sandbox *Sandbox, cid string) {
+func testFindContainerFailure(t *testing.T, sandbox *Sandbox, cid ContainerID) {
 	c, err := sandbox.findContainer(cid)
 	assert.Nil(t, c, "Container pointer should be nil")
 	assert.NotNil(t, err, "Should have returned an error")
@@ -1088,7 +1089,7 @@ func TestFindContainerNoContainerMatchFailure(t *testing.T) {
 
 func TestFindContainerSuccess(t *testing.T) {
 	sandbox := &Sandbox{
-		containers: map[string]*Container{
+		containers: map[ContainerID]*Container{
 			testContainerID: {id: testContainerID},
 		},
 	}
@@ -1115,7 +1116,7 @@ func TestRemoveContainerNoContainerMatchFailure(t *testing.T) {
 
 func TestRemoveContainerSuccess(t *testing.T) {
 	sandbox := &Sandbox{
-		containers: map[string]*Container{
+		containers: map[ContainerID]*Container{
 			testContainerID: {id: testContainerID},
 		},
 	}
@@ -1130,7 +1131,7 @@ func TestCreateContainer(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "999"
+	contID := ContainerID("999")
 	contConfig := newTestContainerConfigNoop(contID)
 	_, err = s.CreateContainer(contConfig)
 	assert.Nil(t, err, "Failed to create container %+v in sandbox %+v: %v", contConfig, s, err)
@@ -1141,7 +1142,7 @@ func TestDeleteContainer(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "999"
+	contID := ContainerID("999")
 	_, err = s.DeleteContainer(contID)
 	assert.NotNil(t, err, "Deletng non-existing container should fail")
 
@@ -1158,7 +1159,7 @@ func TestStartContainer(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "999"
+	contID := ContainerID("999")
 	_, err = s.StartContainer(contID)
 	assert.NotNil(t, err, "Starting non-existing container should fail")
 
@@ -1178,7 +1179,7 @@ func TestStatusContainer(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "999"
+	contID := ContainerID("999")
 	_, err = s.StatusContainer(contID)
 	assert.NotNil(t, err, "Status non-existing container should fail")
 
@@ -1206,7 +1207,7 @@ func TestEnterContainer(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "999"
+	contID := ContainerID("999")
 	cmd := types.Cmd{}
 	_, _, err = s.EnterContainer(contID, cmd)
 	assert.NotNil(t, err, "Entering non-existing container should fail")
@@ -1250,7 +1251,7 @@ func TestWaitProcess(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "foo"
+	contID := ContainerID("foo")
 	execID := "bar"
 	_, err = s.WaitProcess(contID, execID)
 	assert.NotNil(t, err, "Wait process in stopped sandbox should fail")
@@ -1280,7 +1281,7 @@ func TestSignalProcess(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "foo"
+	contID := ContainerID("foo")
 	execID := "bar"
 	err = s.SignalProcess(contID, execID, syscall.SIGKILL, true)
 	assert.NotNil(t, err, "Wait process in stopped sandbox should fail")
@@ -1310,7 +1311,7 @@ func TestWinsizeProcess(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "foo"
+	contID := ContainerID("foo")
 	execID := "bar"
 	err = s.WinsizeProcess(contID, execID, 100, 200)
 	assert.NotNil(t, err, "Winsize process in stopped sandbox should fail")
@@ -1340,7 +1341,7 @@ func TestContainerProcessIOStream(t *testing.T) {
 	assert.Nil(t, err, "VirtContainers should not allow empty sandboxes")
 	defer cleanUp()
 
-	contID := "foo"
+	contID := ContainerID("foo")
 	execID := "bar"
 	_, _, _, err = s.IOStream(contID, execID)
 	assert.NotNil(t, err, "Winsize process in stopped sandbox should fail")
@@ -1387,7 +1388,7 @@ func TestAttachBlockDevice(t *testing.T) {
 	assert.Nil(t, err)
 	sandbox.store = vcStore
 
-	contID := "100"
+	contID := ContainerID("100")
 	container := Container{
 		sandbox: sandbox,
 		id:      contID,
@@ -1478,7 +1479,7 @@ func TestPreAddDevice(t *testing.T) {
 	assert.Nil(t, err)
 	sandbox.store = vcStore
 
-	contID := "100"
+	contID := ContainerID("100")
 	container := Container{
 		sandbox:   sandbox,
 		id:        contID,

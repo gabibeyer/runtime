@@ -41,7 +41,7 @@ const (
 
 // SandboxStatus describes a sandbox status.
 type SandboxStatus struct {
-	ID               string
+	ID               SandboxID
 	State            types.State
 	Hypervisor       HypervisorType
 	HypervisorConfig HypervisorConfig
@@ -56,7 +56,7 @@ type SandboxStatus struct {
 
 // SandboxConfig is a Sandbox configuration.
 type SandboxConfig struct {
-	ID string
+	ID SandboxID
 
 	Hostname string
 
@@ -142,7 +142,7 @@ func (sandboxConfig *SandboxConfig) valid() bool {
 // Sandbox is composed of a set of containers and a runtime environment.
 // A Sandbox can be created, deleted, started, paused, stopped, listed, entered, and restored.
 type Sandbox struct {
-	id string
+	id SandboxID
 
 	sync.Mutex
 	factory    Factory
@@ -158,7 +158,7 @@ type Sandbox struct {
 
 	volumes []types.Volume
 
-	containers map[string]*Container
+	containers map[ContainerID]*Container
 
 	runPath    string
 	configPath string
@@ -180,7 +180,7 @@ type Sandbox struct {
 }
 
 // ID returns the sandbox identifier string.
-func (s *Sandbox) ID() string {
+func (s *Sandbox) ID() SandboxID {
 	return s.id
 }
 
@@ -241,7 +241,7 @@ func (s *Sandbox) GetAllContainers() []VCContainer {
 }
 
 // GetContainer returns the container named by the containerID.
-func (s *Sandbox) GetContainer(containerID string) VCContainer {
+func (s *Sandbox) GetContainer(containerID ContainerID) VCContainer {
 	for id, c := range s.containers {
 		if id == containerID {
 			return c
@@ -311,7 +311,7 @@ func (s *Sandbox) Monitor() (chan error, error) {
 }
 
 // WaitProcess waits on a container process and return its exit code
-func (s *Sandbox) WaitProcess(containerID, processID string) (int32, error) {
+func (s *Sandbox) WaitProcess(containerID ContainerID, processID string) (int32, error) {
 	if s.state.State != types.StateRunning {
 		return 0, fmt.Errorf("Sandbox not running")
 	}
@@ -326,7 +326,7 @@ func (s *Sandbox) WaitProcess(containerID, processID string) (int32, error) {
 
 // SignalProcess sends a signal to a process of a container when all is false.
 // When all is true, it sends the signal to all processes of a container.
-func (s *Sandbox) SignalProcess(containerID, processID string, signal syscall.Signal, all bool) error {
+func (s *Sandbox) SignalProcess(containerID ContainerID, processID string, signal syscall.Signal, all bool) error {
 	if s.state.State != types.StateRunning {
 		return fmt.Errorf("Sandbox not running")
 	}
@@ -340,7 +340,7 @@ func (s *Sandbox) SignalProcess(containerID, processID string, signal syscall.Si
 }
 
 // WinsizeProcess resizes the tty window of a process
-func (s *Sandbox) WinsizeProcess(containerID, processID string, height, width uint32) error {
+func (s *Sandbox) WinsizeProcess(containerID ContainerID, processID string, height, width uint32) error {
 	if s.state.State != types.StateRunning {
 		return fmt.Errorf("Sandbox not running")
 	}
@@ -354,7 +354,7 @@ func (s *Sandbox) WinsizeProcess(containerID, processID string, height, width ui
 }
 
 // IOStream returns stdin writer, stdout reader and stderr reader of a process
-func (s *Sandbox) IOStream(containerID, processID string) (io.WriteCloser, io.Reader, io.Reader, error) {
+func (s *Sandbox) IOStream(containerID ContainerID, processID string) (io.WriteCloser, io.Reader, io.Reader, error) {
 	if s.state.State != types.StateRunning {
 		return nil, nil, nil, fmt.Errorf("Sandbox not running")
 	}
@@ -496,7 +496,7 @@ func newSandbox(ctx context.Context, sandboxConfig SandboxConfig, factory Factor
 		agent:           agent,
 		config:          &sandboxConfig,
 		volumes:         sandboxConfig.Volumes,
-		containers:      map[string]*Container{},
+		containers:      map[ContainerID]*Container{},
 		runPath:         store.SandboxRuntimeRootPath(sandboxConfig.ID),
 		configPath:      store.SandboxConfigurationRootPath(sandboxConfig.ID),
 		state:           types.State{},
@@ -568,7 +568,7 @@ func (s *Sandbox) storeSandbox() error {
 	return nil
 }
 
-func rLockSandbox(ctx context.Context, sandboxID string) (string, error) {
+func rLockSandbox(ctx context.Context, sandboxID SandboxID) (string, error) {
 	store, err := store.NewVCSandboxStore(ctx, sandboxID)
 	if err != nil {
 		return "", err
@@ -577,7 +577,7 @@ func rLockSandbox(ctx context.Context, sandboxID string) (string, error) {
 	return store.RLock()
 }
 
-func rwLockSandbox(ctx context.Context, sandboxID string) (string, error) {
+func rwLockSandbox(ctx context.Context, sandboxID SandboxID) (string, error) {
 	store, err := store.NewVCSandboxStore(ctx, sandboxID)
 	if err != nil {
 		return "", err
@@ -586,7 +586,7 @@ func rwLockSandbox(ctx context.Context, sandboxID string) (string, error) {
 	return store.Lock()
 }
 
-func unlockSandbox(ctx context.Context, sandboxID, token string) error {
+func unlockSandbox(ctx context.Context, sandboxID SandboxID, token string) error {
 	// If the store no longer exists, we won't be able to unlock.
 	// Creating a new store for locking an item that does not even exist
 	// does not make sense.
@@ -603,7 +603,7 @@ func unlockSandbox(ctx context.Context, sandboxID, token string) error {
 }
 
 // fetchSandbox fetches a sandbox config from a sandbox ID and returns a sandbox.
-func fetchSandbox(ctx context.Context, sandboxID string) (sandbox *Sandbox, err error) {
+func fetchSandbox(ctx context.Context, sandboxID SandboxID) (sandbox *Sandbox, err error) {
 	virtLog.Info("fetch sandbox")
 	if sandboxID == "" {
 		return nil, errNeedSandboxID
@@ -642,7 +642,7 @@ func fetchSandbox(ctx context.Context, sandboxID string) (sandbox *Sandbox, err 
 
 // findContainer returns a container from the containers list held by the
 // sandbox structure, based on a container ID.
-func (s *Sandbox) findContainer(containerID string) (*Container, error) {
+func (s *Sandbox) findContainer(containerID ContainerID) (*Container, error) {
 	if s == nil {
 		return nil, errNeedSandbox
 	}
@@ -663,7 +663,7 @@ func (s *Sandbox) findContainer(containerID string) (*Container, error) {
 
 // removeContainer removes a container from the containers list held by the
 // sandbox structure, based on a container ID.
-func (s *Sandbox) removeContainer(containerID string) error {
+func (s *Sandbox) removeContainer(containerID ContainerID) error {
 	if s == nil {
 		return errNeedSandbox
 	}
@@ -711,7 +711,7 @@ func (s *Sandbox) Delete() error {
 		s.Logger().WithError(err).Error("failed to cleanup hypervisor")
 	}
 
-	s.agent.cleanup(s.id)
+	s.agent.cleanup(string(s.id))
 
 	return s.store.Delete()
 }
@@ -1056,7 +1056,7 @@ func (s *Sandbox) CreateContainer(contConfig ContainerConfig) (VCContainer, erro
 }
 
 // StartContainer starts a container in the sandbox
-func (s *Sandbox) StartContainer(containerID string) (VCContainer, error) {
+func (s *Sandbox) StartContainer(containerID ContainerID) (VCContainer, error) {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1074,7 +1074,7 @@ func (s *Sandbox) StartContainer(containerID string) (VCContainer, error) {
 }
 
 // StopContainer stops a container in the sandbox
-func (s *Sandbox) StopContainer(containerID string) (VCContainer, error) {
+func (s *Sandbox) StopContainer(containerID ContainerID) (VCContainer, error) {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1090,7 +1090,7 @@ func (s *Sandbox) StopContainer(containerID string) (VCContainer, error) {
 }
 
 // KillContainer signals a container in the sandbox
-func (s *Sandbox) KillContainer(containerID string, signal syscall.Signal, all bool) error {
+func (s *Sandbox) KillContainer(containerID ContainerID, signal syscall.Signal, all bool) error {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1102,7 +1102,7 @@ func (s *Sandbox) KillContainer(containerID string, signal syscall.Signal, all b
 }
 
 // DeleteContainer deletes a container from the sandbox
-func (s *Sandbox) DeleteContainer(containerID string) (VCContainer, error) {
+func (s *Sandbox) DeleteContainer(containerID ContainerID) (VCContainer, error) {
 	if containerID == "" {
 		return nil, errNeedContainerID
 	}
@@ -1137,7 +1137,7 @@ func (s *Sandbox) DeleteContainer(containerID string) (VCContainer, error) {
 
 // ProcessListContainer lists every process running inside a specific
 // container in the sandbox.
-func (s *Sandbox) ProcessListContainer(containerID string, options ProcessListOptions) (ProcessList, error) {
+func (s *Sandbox) ProcessListContainer(containerID ContainerID, options ProcessListOptions) (ProcessList, error) {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1150,7 +1150,7 @@ func (s *Sandbox) ProcessListContainer(containerID string, options ProcessListOp
 
 // StatusContainer gets the status of a container
 // TODO: update container status properly, see kata-containers/runtime#253
-func (s *Sandbox) StatusContainer(containerID string) (ContainerStatus, error) {
+func (s *Sandbox) StatusContainer(containerID ContainerID) (ContainerStatus, error) {
 	if containerID == "" {
 		return ContainerStatus{}, errNeedContainerID
 	}
@@ -1173,7 +1173,7 @@ func (s *Sandbox) StatusContainer(containerID string) (ContainerStatus, error) {
 
 // EnterContainer is the virtcontainers container command execution entry point.
 // EnterContainer enters an already running container and runs a given command.
-func (s *Sandbox) EnterContainer(containerID string, cmd types.Cmd) (VCContainer, *Process, error) {
+func (s *Sandbox) EnterContainer(containerID ContainerID, cmd types.Cmd) (VCContainer, *Process, error) {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1190,7 +1190,7 @@ func (s *Sandbox) EnterContainer(containerID string, cmd types.Cmd) (VCContainer
 }
 
 // UpdateContainer update a running container.
-func (s *Sandbox) UpdateContainer(containerID string, resources specs.LinuxResources) error {
+func (s *Sandbox) UpdateContainer(containerID ContainerID, resources specs.LinuxResources) error {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1210,7 +1210,7 @@ func (s *Sandbox) UpdateContainer(containerID string, resources specs.LinuxResou
 }
 
 // StatsContainer return the stats of a running container
-func (s *Sandbox) StatsContainer(containerID string) (ContainerStats, error) {
+func (s *Sandbox) StatsContainer(containerID ContainerID) (ContainerStats, error) {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1225,7 +1225,7 @@ func (s *Sandbox) StatsContainer(containerID string) (ContainerStats, error) {
 }
 
 // PauseContainer pauses a running container.
-func (s *Sandbox) PauseContainer(containerID string) error {
+func (s *Sandbox) PauseContainer(containerID ContainerID) error {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1237,7 +1237,7 @@ func (s *Sandbox) PauseContainer(containerID string) error {
 }
 
 // ResumeContainer resumes a paused container.
-func (s *Sandbox) ResumeContainer(containerID string) error {
+func (s *Sandbox) ResumeContainer(containerID ContainerID) error {
 	// Fetch the container.
 	c, err := s.findContainer(containerID)
 	if err != nil {
@@ -1450,7 +1450,7 @@ func (s *Sandbox) setContainersState(state types.StateString) error {
 }
 
 // togglePauseSandbox pauses a sandbox if pause is set to true, else it resumes it.
-func togglePauseSandbox(ctx context.Context, sandboxID string, pause bool) (*Sandbox, error) {
+func togglePauseSandbox(ctx context.Context, sandboxID SandboxID, pause bool) (*Sandbox, error) {
 	span, ctx := trace(ctx, "togglePauseSandbox")
 	defer span.Finish()
 

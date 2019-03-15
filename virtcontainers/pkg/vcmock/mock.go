@@ -57,7 +57,7 @@ func (m *VCMock) CreateSandbox(ctx context.Context, sandboxConfig vc.SandboxConf
 }
 
 // DeleteSandbox implements the VC function of the same name.
-func (m *VCMock) DeleteSandbox(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+func (m *VCMock) DeleteSandbox(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 	if m.DeleteSandboxFunc != nil {
 		return m.DeleteSandboxFunc(ctx, sandboxID)
 	}
@@ -66,7 +66,7 @@ func (m *VCMock) DeleteSandbox(ctx context.Context, sandboxID string) (vc.VCSand
 }
 
 // FetchSandbox implements the VC function of the same name.
-func (m *VCMock) FetchSandbox(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+func (m *VCMock) FetchSandbox(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 	if m.FetchSandboxFunc != nil {
 		return m.FetchSandboxFunc(ctx, sandboxID)
 	}
@@ -75,7 +75,7 @@ func (m *VCMock) FetchSandbox(ctx context.Context, sandboxID string) (vc.VCSandb
 }
 
 // StartSandbox implements the VC function of the same name.
-func (m *VCMock) StartSandbox(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+func (m *VCMock) StartSandbox(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 	if m.StartSandboxFunc != nil {
 		return m.StartSandboxFunc(ctx, sandboxID)
 	}
@@ -84,7 +84,7 @@ func (m *VCMock) StartSandbox(ctx context.Context, sandboxID string) (vc.VCSandb
 }
 
 // StopSandbox implements the VC function of the same name.
-func (m *VCMock) StopSandbox(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+func (m *VCMock) StopSandbox(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 	if m.StopSandboxFunc != nil {
 		return m.StopSandboxFunc(ctx, sandboxID)
 	}
@@ -111,7 +111,7 @@ func (m *VCMock) ListSandbox(ctx context.Context) ([]vc.SandboxStatus, error) {
 }
 
 // StatusSandbox implements the VC function of the same name.
-func (m *VCMock) StatusSandbox(ctx context.Context, sandboxID string) (vc.SandboxStatus, error) {
+func (m *VCMock) StatusSandbox(ctx context.Context, sandboxID SandboxID) (vc.SandboxStatus, error) {
 	if m.StatusSandboxFunc != nil {
 		return m.StatusSandboxFunc(ctx, sandboxID)
 	}
@@ -120,7 +120,7 @@ func (m *VCMock) StatusSandbox(ctx context.Context, sandboxID string) (vc.Sandbo
 }
 
 // PauseSandbox implements the VC function of the same name.
-func (m *VCMock) PauseSandbox(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+func (m *VCMock) PauseSandbox(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 	if m.PauseSandboxFunc != nil {
 		return m.PauseSandboxFunc(ctx, sandboxID)
 	}
@@ -129,7 +129,7 @@ func (m *VCMock) PauseSandbox(ctx context.Context, sandboxID string) (vc.VCSandb
 }
 
 // ResumeSandbox implements the VC function of the same name.
-func (m *VCMock) ResumeSandbox(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+func (m *VCMock) ResumeSandbox(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 	if m.ResumeSandboxFunc != nil {
 		return m.ResumeSandboxFunc(ctx, sandboxID)
 	}
@@ -138,7 +138,7 @@ func (m *VCMock) ResumeSandbox(ctx context.Context, sandboxID string) (vc.VCSand
 }
 
 // CreateContainer implements the VC function of the same name.
-func (m *VCMock) CreateContainer(ctx context.Context, sandboxID string, containerConfig vc.ContainerConfig) (vc.VCSandbox, vc.VCContainer, error) {
+func (m *VCMock) CreateContainer(ctx context.Context, sandboxID SandboxID, containerConfig vc.ContainerConfig) (vc.VCSandbox, vc.VCContainer, error) {
 	if m.CreateContainerFunc != nil {
 		return m.CreateContainerFunc(ctx, sandboxID, containerConfig)
 	}
@@ -147,7 +147,7 @@ func (m *VCMock) CreateContainer(ctx context.Context, sandboxID string, containe
 }
 
 // DeleteContainer implements the VC function of the same name.
-func (m *VCMock) DeleteContainer(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error) {
+func (m *VCMock) DeleteContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error) {
 	if m.DeleteContainerFunc != nil {
 		return m.DeleteContainerFunc(ctx, sandboxID, containerID)
 	}
@@ -156,7 +156,7 @@ func (m *VCMock) DeleteContainer(ctx context.Context, sandboxID, containerID str
 }
 
 // StartContainer implements the VC function of the same name.
-func (m *VCMock) StartContainer(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error) {
+func (m *VCMock) StartContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error) {
 	if m.StartContainerFunc != nil {
 		return m.StartContainerFunc(ctx, sandboxID, containerID)
 	}
@@ -165,7 +165,7 @@ func (m *VCMock) StartContainer(ctx context.Context, sandboxID, containerID stri
 }
 
 // StopContainer implements the VC function of the same name.
-func (m *VCMock) StopContainer(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error) {
+func (m *VCMock) StopContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error) {
 	if m.StopContainerFunc != nil {
 		return m.StopContainerFunc(ctx, sandboxID, containerID)
 	}
@@ -174,7 +174,7 @@ func (m *VCMock) StopContainer(ctx context.Context, sandboxID, containerID strin
 }
 
 // EnterContainer implements the VC function of the same name.
-func (m *VCMock) EnterContainer(ctx context.Context, sandboxID, containerID string, cmd types.Cmd) (vc.VCSandbox, vc.VCContainer, *vc.Process, error) {
+func (m *VCMock) EnterContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, cmd types.Cmd) (vc.VCSandbox, vc.VCContainer, *vc.Process, error) {
 	if m.EnterContainerFunc != nil {
 		return m.EnterContainerFunc(ctx, sandboxID, containerID, cmd)
 	}
@@ -183,7 +183,7 @@ func (m *VCMock) EnterContainer(ctx context.Context, sandboxID, containerID stri
 }
 
 // StatusContainer implements the VC function of the same name.
-func (m *VCMock) StatusContainer(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+func (m *VCMock) StatusContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 	if m.StatusContainerFunc != nil {
 		return m.StatusContainerFunc(ctx, sandboxID, containerID)
 	}
@@ -192,7 +192,7 @@ func (m *VCMock) StatusContainer(ctx context.Context, sandboxID, containerID str
 }
 
 // StatsContainer implements the VC function of the same name.
-func (m *VCMock) StatsContainer(ctx context.Context, sandboxID, containerID string) (vc.ContainerStats, error) {
+func (m *VCMock) StatsContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStats, error) {
 	if m.StatsContainerFunc != nil {
 		return m.StatsContainerFunc(ctx, sandboxID, containerID)
 	}
@@ -201,7 +201,7 @@ func (m *VCMock) StatsContainer(ctx context.Context, sandboxID, containerID stri
 }
 
 // KillContainer implements the VC function of the same name.
-func (m *VCMock) KillContainer(ctx context.Context, sandboxID, containerID string, signal syscall.Signal, all bool) error {
+func (m *VCMock) KillContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, signal syscall.Signal, all bool) error {
 	if m.KillContainerFunc != nil {
 		return m.KillContainerFunc(ctx, sandboxID, containerID, signal, all)
 	}
@@ -210,7 +210,7 @@ func (m *VCMock) KillContainer(ctx context.Context, sandboxID, containerID strin
 }
 
 // ProcessListContainer implements the VC function of the same name.
-func (m *VCMock) ProcessListContainer(ctx context.Context, sandboxID, containerID string, options vc.ProcessListOptions) (vc.ProcessList, error) {
+func (m *VCMock) ProcessListContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, options vc.ProcessListOptions) (vc.ProcessList, error) {
 	if m.ProcessListContainerFunc != nil {
 		return m.ProcessListContainerFunc(ctx, sandboxID, containerID, options)
 	}
@@ -219,7 +219,7 @@ func (m *VCMock) ProcessListContainer(ctx context.Context, sandboxID, containerI
 }
 
 // UpdateContainer implements the VC function of the same name.
-func (m *VCMock) UpdateContainer(ctx context.Context, sandboxID, containerID string, resources specs.LinuxResources) error {
+func (m *VCMock) UpdateContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, resources specs.LinuxResources) error {
 	if m.UpdateContainerFunc != nil {
 		return m.UpdateContainerFunc(ctx, sandboxID, containerID, resources)
 	}
@@ -228,7 +228,7 @@ func (m *VCMock) UpdateContainer(ctx context.Context, sandboxID, containerID str
 }
 
 // PauseContainer implements the VC function of the same name.
-func (m *VCMock) PauseContainer(ctx context.Context, sandboxID, containerID string) error {
+func (m *VCMock) PauseContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) error {
 	if m.PauseContainerFunc != nil {
 		return m.PauseContainerFunc(ctx, sandboxID, containerID)
 	}
@@ -237,7 +237,7 @@ func (m *VCMock) PauseContainer(ctx context.Context, sandboxID, containerID stri
 }
 
 // ResumeContainer implements the VC function of the same name.
-func (m *VCMock) ResumeContainer(ctx context.Context, sandboxID, containerID string) error {
+func (m *VCMock) ResumeContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID) error {
 	if m.ResumeContainerFunc != nil {
 		return m.ResumeContainerFunc(ctx, sandboxID, containerID)
 	}
@@ -246,7 +246,7 @@ func (m *VCMock) ResumeContainer(ctx context.Context, sandboxID, containerID str
 }
 
 // AddDevice implements the VC function of the same name.
-func (m *VCMock) AddDevice(ctx context.Context, sandboxID string, info config.DeviceInfo) (api.Device, error) {
+func (m *VCMock) AddDevice(ctx context.Context, sandboxID SandboxID, info config.DeviceInfo) (api.Device, error) {
 	if m.AddDeviceFunc != nil {
 		return m.AddDeviceFunc(ctx, sandboxID, info)
 	}
@@ -255,7 +255,7 @@ func (m *VCMock) AddDevice(ctx context.Context, sandboxID string, info config.De
 }
 
 // AddInterface implements the VC function of the same name.
-func (m *VCMock) AddInterface(ctx context.Context, sandboxID string, inf *Interface) (*Interface, error) {
+func (m *VCMock) AddInterface(ctx context.Context, sandboxID SandboxID, inf *Interface) (*Interface, error) {
 	if m.AddInterfaceFunc != nil {
 		return m.AddInterfaceFunc(ctx, sandboxID, inf)
 	}
@@ -264,7 +264,7 @@ func (m *VCMock) AddInterface(ctx context.Context, sandboxID string, inf *Interf
 }
 
 // RemoveInterface implements the VC function of the same name.
-func (m *VCMock) RemoveInterface(ctx context.Context, sandboxID string, inf *Interface) (*Interface, error) {
+func (m *VCMock) RemoveInterface(ctx context.Context, sandboxID SandboxID, inf *Interface) (*Interface, error) {
 	if m.RemoveInterfaceFunc != nil {
 		return m.RemoveInterfaceFunc(ctx, sandboxID, inf)
 	}
@@ -273,7 +273,7 @@ func (m *VCMock) RemoveInterface(ctx context.Context, sandboxID string, inf *Int
 }
 
 // ListInterfaces implements the VC function of the same name.
-func (m *VCMock) ListInterfaces(ctx context.Context, sandboxID string) ([]*Interface, error) {
+func (m *VCMock) ListInterfaces(ctx context.Context, sandboxID SandboxID) ([]*Interface, error) {
 	if m.ListInterfacesFunc != nil {
 		return m.ListInterfacesFunc(ctx, sandboxID)
 	}
@@ -282,7 +282,7 @@ func (m *VCMock) ListInterfaces(ctx context.Context, sandboxID string) ([]*Inter
 }
 
 // UpdateRoutes implements the VC function of the same name.
-func (m *VCMock) UpdateRoutes(ctx context.Context, sandboxID string, routes []*Route) ([]*Route, error) {
+func (m *VCMock) UpdateRoutes(ctx context.Context, sandboxID SandboxID, routes []*Route) ([]*Route, error) {
 	if m.UpdateRoutesFunc != nil {
 		return m.UpdateRoutesFunc(ctx, sandboxID, routes)
 	}
@@ -291,7 +291,7 @@ func (m *VCMock) UpdateRoutes(ctx context.Context, sandboxID string, routes []*R
 }
 
 // ListRoutes implements the VC function of the same name.
-func (m *VCMock) ListRoutes(ctx context.Context, sandboxID string) ([]*Route, error) {
+func (m *VCMock) ListRoutes(ctx context.Context, sandboxID SandboxID) ([]*Route, error) {
 	if m.ListRoutesFunc != nil {
 		return m.ListRoutesFunc(ctx, sandboxID)
 	}

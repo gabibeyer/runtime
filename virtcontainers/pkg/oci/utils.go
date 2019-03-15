@@ -25,6 +25,7 @@ import (
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	vcAnnotations "github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
 	dockershimAnnotations "github.com/kata-containers/runtime/virtcontainers/pkg/annotations/dockershim"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 )
 
@@ -415,11 +416,11 @@ func (spec *CompatOCISpec) ContainerType() (vc.ContainerType, error) {
 
 // SandboxID determines the sandbox ID related to an OCI configuration. This function
 // is expected to be called only when the container type is "PodContainer".
-func (spec *CompatOCISpec) SandboxID() (string, error) {
+func (spec *CompatOCISpec) SandboxID() (SandboxID, error) {
 	for _, key := range CRISandboxNameKeyList {
 		sandboxID, ok := spec.Annotations[key]
 		if ok {
-			return sandboxID, nil
+			return SandboxID(sandboxID), nil
 		}
 	}
 
@@ -448,8 +449,8 @@ func addAssetAnnotations(ocispec CompatOCISpec, config *vc.SandboxConfig) {
 
 // SandboxConfig converts an OCI compatible runtime configuration file
 // to a virtcontainers sandbox configuration structure.
-func SandboxConfig(ocispec CompatOCISpec, runtime RuntimeConfig, bundlePath, cid, console string, detach, systemdCgroup bool) (vc.SandboxConfig, error) {
-	containerConfig, err := ContainerConfig(ocispec, bundlePath, cid, console, detach)
+func SandboxConfig(ocispec CompatOCISpec, runtime RuntimeConfig, cid ContainerID, bundlePath, console string, detach, systemdCgroup bool) (vc.SandboxConfig, error) {
+	containerConfig, err := ContainerConfig(ocispec, cid, bundlePath, console, detach)
 	if err != nil {
 		return vc.SandboxConfig{}, err
 	}
@@ -470,7 +471,7 @@ func SandboxConfig(ocispec CompatOCISpec, runtime RuntimeConfig, bundlePath, cid
 	}
 
 	sandboxConfig := vc.SandboxConfig{
-		ID: cid,
+		ID: SandboxID(cid),
 
 		Hostname: ocispec.Hostname,
 
@@ -509,8 +510,7 @@ func SandboxConfig(ocispec CompatOCISpec, runtime RuntimeConfig, bundlePath, cid
 
 // ContainerConfig converts an OCI compatible runtime configuration
 // file to a virtcontainers container configuration structure.
-func ContainerConfig(ocispec CompatOCISpec, bundlePath, cid, console string, detach bool) (vc.ContainerConfig, error) {
-
+func ContainerConfig(ocispec CompatOCISpec, cid ContainerID, bundlePath, console string, detach bool) (vc.ContainerConfig, error) {
 	ociSpecJSON, err := json.Marshal(ocispec)
 	if err != nil {
 		return vc.ContainerConfig{}, err
@@ -606,7 +606,7 @@ func getShmSize(c vc.ContainerConfig) (uint64, error) {
 func StatusToOCIState(status vc.ContainerStatus) spec.State {
 	return spec.State{
 		Version:     spec.Version,
-		ID:          status.ID,
+		ID:          string(status.ID),
 		Status:      StateToOCIState(status.State),
 		Pid:         status.PID,
 		Bundle:      status.Annotations[vcAnnotations.BundlePathKey],

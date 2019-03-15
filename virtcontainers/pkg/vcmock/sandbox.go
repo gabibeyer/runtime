@@ -18,7 +18,7 @@ import (
 )
 
 // ID implements the VCSandbox function of the same name.
-func (s *Sandbox) ID() string {
+func (s *Sandbox) ID() SandboxID {
 	return s.MockID
 }
 
@@ -54,7 +54,7 @@ func (s *Sandbox) GetAllContainers() []vc.VCContainer {
 }
 
 // GetContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) GetContainer(containerID string) vc.VCContainer {
+func (s *Sandbox) GetContainer(containerID ContainerID) vc.VCContainer {
 	for _, c := range s.MockContainers {
 		if c.MockID == containerID {
 			return c
@@ -99,42 +99,42 @@ func (s *Sandbox) CreateContainer(conf vc.ContainerConfig) (vc.VCContainer, erro
 }
 
 // DeleteContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) DeleteContainer(contID string) (vc.VCContainer, error) {
+func (s *Sandbox) DeleteContainer(contID ContainerID) (vc.VCContainer, error) {
 	return &Container{}, nil
 }
 
 // StartContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) StartContainer(contID string) (vc.VCContainer, error) {
+func (s *Sandbox) StartContainer(containerID ContainerID) (vc.VCContainer, error) {
 	return &Container{}, nil
 }
 
 // StopContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) StopContainer(contID string) (vc.VCContainer, error) {
+func (s *Sandbox) StopContainer(containerID ContainerID) (vc.VCContainer, error) {
 	return &Container{}, nil
 }
 
 // KillContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) KillContainer(contID string, signal syscall.Signal, all bool) error {
+func (s *Sandbox) KillContainer(contID ContainerID, signal syscall.Signal, all bool) error {
 	return nil
 }
 
 // StatusContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) StatusContainer(contID string) (vc.ContainerStatus, error) {
+func (s *Sandbox) StatusContainer(contID ContainerID) (vc.ContainerStatus, error) {
 	return vc.ContainerStatus{}, nil
 }
 
 // StatsContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) StatsContainer(contID string) (vc.ContainerStats, error) {
+func (s *Sandbox) StatsContainer(contID ContainerID) (vc.ContainerStats, error) {
 	return vc.ContainerStats{}, nil
 }
 
 // PauseContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) PauseContainer(contID string) error {
+func (s *Sandbox) PauseContainer(contID ContainerID) error {
 	return nil
 }
 
 // ResumeContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) ResumeContainer(contID string) error {
+func (s *Sandbox) ResumeContainer(contID ContainerID) error {
 	return nil
 }
 
@@ -144,7 +144,7 @@ func (s *Sandbox) Status() vc.SandboxStatus {
 }
 
 // EnterContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) EnterContainer(containerID string, cmd types.Cmd) (vc.VCContainer, *vc.Process, error) {
+func (s *Sandbox) EnterContainer(containerID ContainerID, cmd types.Cmd) (vc.VCContainer, *vc.Process, error) {
 	return &Container{}, &vc.Process{}, nil
 }
 
@@ -154,32 +154,32 @@ func (s *Sandbox) Monitor() (chan error, error) {
 }
 
 // UpdateContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) UpdateContainer(containerID string, resources specs.LinuxResources) error {
+func (s *Sandbox) UpdateContainer(containerID ContainerID, resources specs.LinuxResources) error {
 	return nil
 }
 
 // ProcessListContainer implements the VCSandbox function of the same name.
-func (s *Sandbox) ProcessListContainer(containerID string, options vc.ProcessListOptions) (vc.ProcessList, error) {
+func (s *Sandbox) ProcessListContainer(containerID ContainerID, options vc.ProcessListOptions) (vc.ProcessList, error) {
 	return nil, nil
 }
 
 // WaitProcess implements the VCSandbox function of the same name.
-func (s *Sandbox) WaitProcess(containerID, processID string) (int32, error) {
+func (s *Sandbox) WaitProcess(containerID ContainerID, processID string) (int32, error) {
 	return 0, nil
 }
 
 // SignalProcess implements the VCSandbox function of the same name.
-func (s *Sandbox) SignalProcess(containerID, processID string, signal syscall.Signal, all bool) error {
+func (s *Sandbox) SignalProcess(containerID ContainerID, processID string, signal syscall.Signal, all bool) error {
 	return nil
 }
 
 // WinsizeProcess implements the VCSandbox function of the same name.
-func (s *Sandbox) WinsizeProcess(containerID, processID string, height, width uint32) error {
+func (s *Sandbox) WinsizeProcess(containerID ContainerID, processID string, height, width uint32) error {
 	return nil
 }
 
 // IOStream implements the VCSandbox function of the same name.
-func (s *Sandbox) IOStream(containerID, processID string) (io.WriteCloser, io.Reader, io.Reader, error) {
+func (s *Sandbox) IOStream(containerID ContainerID, processID string) (io.WriteCloser, io.Reader, io.Reader, error) {
 	return nil, nil, nil, nil
 }
 

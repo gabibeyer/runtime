@@ -8,6 +8,7 @@ package virtcontainers
 import (
 	"testing"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,7 +20,7 @@ func TestIOStream(t *testing.T) {
 	}
 	defer cleanUp()
 
-	contID := "foo"
+	contID := ContainerID("foo")
 	processID := "bar"
 	config := newTestContainerConfigNoop(contID)
 	c := &Container{

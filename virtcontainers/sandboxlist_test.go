@@ -8,12 +8,13 @@ package virtcontainers
 import (
 	"testing"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSandboxListOperations(t *testing.T) {
 	p := &Sandbox{id: "testsandboxListsandbox"}
-	l := &sandboxList{sandboxes: make(map[string]*Sandbox)}
+	l := &sandboxList{sandboxes: make(map[SandboxID]*Sandbox)}
 	err := l.addSandbox(p)
 	assert.Nil(t, err, "addSandbox failed")
 

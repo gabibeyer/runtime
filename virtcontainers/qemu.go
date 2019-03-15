@@ -21,6 +21,7 @@ import (
 	"unsafe"
 
 	govmmQemu "github.com/intel/govmm/qemu"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/uuid"
 	"github.com/opentracing/opentracing-go"
 	"github.com/sirupsen/logrus"
@@ -214,7 +215,7 @@ func (q *qemu) trace(name string) (opentracing.Span, context.Context) {
 }
 
 // setup sets the Qemu structure up.
-func (q *qemu) setup(id string, hypervisorConfig *HypervisorConfig, vcStore *store.VCStore) error {
+func (q *qemu) setup(id SandboxID, hypervisorConfig *HypervisorConfig, vcStore *store.VCStore) error {
 	span, _ := q.trace("setup")
 	defer span.Finish()
 
@@ -223,7 +224,7 @@ func (q *qemu) setup(id string, hypervisorConfig *HypervisorConfig, vcStore *sto
 		return err
 	}
 
-	q.id = id
+	q.id = string(id)
 	q.store = vcStore
 	q.config = *hypervisorConfig
 	q.arch = newQemuArch(q.config)
@@ -372,7 +373,7 @@ func (q *qemu) createQmpSocket() ([]govmmQemu.QMPSocket, error) {
 func (q *qemu) buildDevices(initrdPath string) ([]govmmQemu.Device, *govmmQemu.IOThread, error) {
 	var devices []govmmQemu.Device
 
-	console, err := q.getSandboxConsole(q.id)
+	console, err := q.getSandboxConsole(SandboxID(q.id))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -420,7 +421,7 @@ func (q *qemu) setupTemplate(knobs *govmmQemu.Knobs, memory *govmmQemu.Memory) g
 }
 
 // createSandbox is the Hypervisor sandbox creation implementation for govmmQemu.
-func (q *qemu) createSandbox(ctx context.Context, id string, hypervisorConfig *HypervisorConfig, store *store.VCStore) error {
+func (q *qemu) createSandbox(ctx context.Context, id SandboxID, hypervisorConfig *HypervisorConfig, store *store.VCStore) error {
 	// Save the tracing context
 	q.ctx = ctx
 
@@ -1288,11 +1289,11 @@ func (q *qemu) addDevice(devInfo interface{}, devType deviceType) error {
 
 // getSandboxConsole builds the path of the console where we can read
 // logs coming from the sandbox.
-func (q *qemu) getSandboxConsole(id string) (string, error) {
+func (q *qemu) getSandboxConsole(id SandboxID) (string, error) {
 	span, _ := q.trace("getSandboxConsole")
 	defer span.Finish()
 
-	return utils.BuildSocketPath(store.RunVMStoragePath, id, consoleSocket)
+	return utils.BuildSocketPath(store.RunVMStoragePath, string(id), consoleSocket)
 }
 
 func (q *qemu) saveSandbox() error {

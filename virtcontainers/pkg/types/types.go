@@ -5,6 +5,12 @@
 
 package types
 
+// ContainerID descibes a containerID.
+type ContainerID string
+
+// SandboxID describes a sandboxID.
+type SandboxID string
+
 // IPAddress describes an IP address.
 type IPAddress struct {
 	Family  int

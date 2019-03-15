@@ -13,6 +13,7 @@ import (
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	vf "github.com/kata-containers/runtime/virtcontainers/factory"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 )
 
 // GetKernelParamsFunc use a variable to allow tests to modify its value
@@ -170,11 +171,11 @@ func SetEphemeralStorageType(ociSpec oci.CompatOCISpec) oci.CompatOCISpec {
 
 // CreateSandbox create a sandbox container
 func CreateSandbox(ctx context.Context, vci vc.VC, ociSpec oci.CompatOCISpec, runtimeConfig oci.RuntimeConfig,
-	containerID, bundlePath, console string, disableOutput, systemdCgroup, builtIn bool) (vc.VCSandbox, vc.Process, error) {
+	containerID ContainerID, bundlePath, console string, disableOutput, systemdCgroup, builtIn bool) (vc.VCSandbox, vc.Process, error) {
 	span, ctx := Trace(ctx, "createSandbox")
 	defer span.Finish()
 
-	sandboxConfig, err := oci.SandboxConfig(ociSpec, runtimeConfig, bundlePath, containerID, console, disableOutput, systemdCgroup)
+	sandboxConfig, err := oci.SandboxConfig(ociSpec, runtimeConfig, containerID, bundlePath, console, disableOutput, systemdCgroup)
 	if err != nil {
 		return nil, vc.Process{}, err
 	}
@@ -223,7 +224,7 @@ func CreateSandbox(ctx context.Context, vci vc.VC, ociSpec oci.CompatOCISpec, ru
 }
 
 // CreateContainer create a container
-func CreateContainer(ctx context.Context, vci vc.VC, sandbox vc.VCSandbox, ociSpec oci.CompatOCISpec, containerID, bundlePath, console string, disableOutput, builtIn bool) (vc.Process, error) {
+func CreateContainer(ctx context.Context, vci vc.VC, sandbox vc.VCSandbox, ociSpec oci.CompatOCISpec, containerID ContainerID, bundlePath, console string, disableOutput, builtIn bool) (vc.Process, error) {
 	var c vc.VCContainer
 
 	span, ctx := Trace(ctx, "createContainer")
@@ -231,7 +232,7 @@ func CreateContainer(ctx context.Context, vci vc.VC, sandbox vc.VCSandbox, ociSp
 
 	ociSpec = SetEphemeralStorageType(ociSpec)
 
-	contConfig, err := oci.ContainerConfig(ociSpec, bundlePath, containerID, console, disableOutput)
+	contConfig, err := oci.ContainerConfig(ociSpec, containerID, bundlePath, console, disableOutput)
 	if err != nil {
 		return vc.Process{}, err
 	}

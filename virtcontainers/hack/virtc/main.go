@@ -13,6 +13,7 @@ import (
 	"strings"
 	"text/tabwriter"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/uuid"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/sirupsen/logrus"
@@ -186,10 +187,10 @@ func buildSandboxConfig(context *cli.Context) (vc.SandboxConfig, error) {
 
 	shimConfig := getShimConfig(*shimType, shimPath)
 
-	id := context.String("id")
+	id := context.Generic("id").(SandboxID)
 	if id == "" {
 		// auto-generate sandbox name
-		id = uuid.Generate().String()
+		id = SandboxID(uuid.Generate().String())
 	}
 
 	sandboxConfig := vc.SandboxConfig{
@@ -286,7 +287,7 @@ func checkRequiredContainerArgs(context *cli.Context) error {
 	// sub-sub-command name
 	name := context.Command.Name
 
-	sandboxID := context.String("sandbox-id")
+	sandboxID := SandboxID(context.Generic("sandbox-id").(SandboxID))
 	if sandboxID == "" {
 		return errNeedSandboxID
 	}
@@ -351,7 +352,7 @@ func checkContainerArgs(context *cli.Context, f func(context *cli.Context) error
 }
 
 func deleteSandbox(context *cli.Context) error {
-	p, err := vc.DeleteSandbox(ctx, context.String("id"))
+	p, err := vc.DeleteSandbox(ctx, context.Generic("id").(SandboxID))
 	if err != nil {
 		return fmt.Errorf("Could not delete sandbox: %s", err)
 	}
@@ -362,7 +363,7 @@ func deleteSandbox(context *cli.Context) error {
 }
 
 func startSandbox(context *cli.Context) error {
-	p, err := vc.StartSandbox(ctx, context.String("id"))
+	p, err := vc.StartSandbox(ctx, context.Generic("id").(SandboxID))
 	if err != nil {
 		return fmt.Errorf("Could not start sandbox: %s", err)
 	}
@@ -373,7 +374,7 @@ func startSandbox(context *cli.Context) error {
 }
 
 func stopSandbox(context *cli.Context) error {
-	p, err := vc.StopSandbox(ctx, context.String("id"))
+	p, err := vc.StopSandbox(ctx, context.Generic("id").(SandboxID))
 	if err != nil {
 		return fmt.Errorf("Could not stop sandbox: %s", err)
 	}
@@ -384,7 +385,7 @@ func stopSandbox(context *cli.Context) error {
 }
 
 func pauseSandbox(context *cli.Context) error {
-	p, err := vc.PauseSandbox(ctx, context.String("id"))
+	p, err := vc.PauseSandbox(ctx, context.Generic("id").(SandboxID))
 	if err != nil {
 		return fmt.Errorf("Could not pause sandbox: %s", err)
 	}
@@ -395,7 +396,7 @@ func pauseSandbox(context *cli.Context) error {
 }
 
 func resumeSandbox(context *cli.Context) error {
-	p, err := vc.ResumeSandbox(ctx, context.String("id"))
+	p, err := vc.ResumeSandbox(ctx, context.Generic("id").(SandboxID))
 	if err != nil {
 		return fmt.Errorf("Could not resume sandbox: %s", err)
 	}
@@ -425,7 +426,7 @@ func listSandboxes(context *cli.Context) error {
 }
 
 func statusSandbox(context *cli.Context) error {
-	sandboxStatus, err := vc.StatusSandbox(ctx, context.String("id"))
+	sandboxStatus, err := vc.StatusSandbox(ctx, context.Generic("id").(SandboxID))
 	if err != nil {
 		return fmt.Errorf("Could not get sandbox status: %s", err)
 	}
@@ -598,7 +599,7 @@ func createContainer(context *cli.Context) error {
 		Cmd:    cmd,
 	}
 
-	_, c, err := vc.CreateContainer(ctx, context.String("sandbox-id"), containerConfig)
+	_, c, err := vc.CreateContainer(ctx, context.Generic("sandbox-id").(SandboxID), containerConfig)
 	if err != nil {
 		return fmt.Errorf("Could not create container: %s", err)
 	}
@@ -609,7 +610,7 @@ func createContainer(context *cli.Context) error {
 }
 
 func deleteContainer(context *cli.Context) error {
-	c, err := vc.DeleteContainer(ctx, context.String("sandbox-id"), context.String("id"))
+	c, err := vc.DeleteContainer(ctx, context.Generic("sandbox-id").(SandboxID), context.String("id"))
 	if err != nil {
 		return fmt.Errorf("Could not delete container: %s", err)
 	}
@@ -620,7 +621,7 @@ func deleteContainer(context *cli.Context) error {
 }
 
 func startContainer(context *cli.Context) error {
-	c, err := vc.StartContainer(ctx, context.String("sandbox-id"), context.String("id"))
+	c, err := vc.StartContainer(ctx, context.Generic("sandbox-id").(SandboxID), context.String("id"))
 	if err != nil {
 		return fmt.Errorf("Could not start container: %s", err)
 	}
@@ -631,7 +632,7 @@ func startContainer(context *cli.Context) error {
 }
 
 func stopContainer(context *cli.Context) error {
-	c, err := vc.StopContainer(ctx, context.String("sandbox-id"), context.String("id"))
+	c, err := vc.StopContainer(ctx, context.Generic("sandbox-id").(SandboxID), context.String("id"))
 	if err != nil {
 		return fmt.Errorf("Could not stop container: %s", err)
 	}
@@ -664,7 +665,7 @@ func enterContainer(context *cli.Context) error {
 		Console:     console,
 	}
 
-	_, c, _, err := vc.EnterContainer(ctx, context.String("sandbox-id"), context.String("id"), cmd)
+	_, c, _, err := vc.EnterContainer(ctx, context.Generic("sandbox-id").(SandboxID), context.String("id"), cmd)
 	if err != nil {
 		return fmt.Errorf("Could not enter container: %s", err)
 	}
@@ -675,7 +676,7 @@ func enterContainer(context *cli.Context) error {
 }
 
 func statusContainer(context *cli.Context) error {
-	contStatus, err := vc.StatusContainer(ctx, context.String("sandbox-id"), context.String("id"))
+	contStatus, err := vc.StatusContainer(ctx, context.Generic("sandbox-id").(SandboxID), context.String("id"))
 	if err != nil {
 		return fmt.Errorf("Could not get container status: %s", err)
 	}
@@ -701,6 +702,7 @@ var createContainerCommand = cli.Command{
 		cli.StringFlag{
 			Name:  "sandbox-id",
 			Value: "",
+
 			Usage: "the sandbox identifier",
 		},
 		cli.StringFlag{

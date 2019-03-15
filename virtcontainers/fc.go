@@ -23,6 +23,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 
@@ -132,7 +133,7 @@ func (fc *firecracker) trace(name string) (opentracing.Span, context.Context) {
 
 // For firecracker this call only sets the internal structure up.
 // The sandbox will be created and started through startSandbox().
-func (fc *firecracker) createSandbox(ctx context.Context, id string, hypervisorConfig *HypervisorConfig, vcStore *store.VCStore) error {
+func (fc *firecracker) createSandbox(ctx context.Context, id SandboxID, hypervisorConfig *HypervisorConfig, vcStore *store.VCStore) error {
 	fc.ctx = ctx
 
 	span, _ := fc.trace("createSandbox")
@@ -140,8 +141,8 @@ func (fc *firecracker) createSandbox(ctx context.Context, id string, hypervisorC
 
 	//TODO: check validity of the hypervisor config provided
 	//https://github.com/kata-containers/runtime/issues/1065
-	fc.id = id
-	fc.socketPath = filepath.Join(store.SandboxRuntimeRootPath(fc.id), fireSocket)
+	fc.id = string(id)
+	fc.socketPath = filepath.Join(store.SandboxRuntimeRootPath(id), fireSocket)
 	fc.store = vcStore
 	fc.config = *hypervisorConfig
 	fc.state.set(notReady)
@@ -657,7 +658,7 @@ func (fc *firecracker) hotplugRemoveDevice(devInfo interface{}, devType deviceTy
 //
 // we can get logs from firecracker itself; WIP on enabling.  Who needs
 // logs when you're just hacking?
-func (fc *firecracker) getSandboxConsole(id string) (string, error) {
+func (fc *firecracker) getSandboxConsole(id SandboxID) (string, error) {
 	return "", nil
 }
 

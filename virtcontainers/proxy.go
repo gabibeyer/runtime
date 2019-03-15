@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/sirupsen/logrus"
 )
@@ -149,7 +150,7 @@ func validateProxyConfig(proxyConfig ProxyConfig) error {
 func defaultProxyURL(id, socketType string) (string, error) {
 	switch socketType {
 	case SocketTypeUNIX:
-		socketPath := filepath.Join(store.SandboxRuntimeRootPath(id), "proxy.sock")
+		socketPath := filepath.Join(store.SandboxRuntimeRootPath(SandboxID(id)), "proxy.sock")
 		return fmt.Sprintf("unix://%s", socketPath), nil
 	case SocketTypeVSOCK:
 		// TODO Build the VSOCK default URL
