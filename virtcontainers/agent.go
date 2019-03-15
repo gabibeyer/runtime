@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/kata-containers/agent/protocols/grpc"
-	vcTypes "github.com/kata-containers/runtime/virtcontainers/pkg/types"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/mitchellh/mapstructure"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
@@ -241,16 +241,16 @@ type agent interface {
 	reseedRNG(data []byte) error
 
 	// updateInterface will tell the agent to update a nic for an existed Sandbox.
-	updateInterface(inf *vcTypes.Interface) (*vcTypes.Interface, error)
+	updateInterface(inf *Interface) (*Interface, error)
 
 	// listInterfaces will tell the agent to list interfaces of an existed Sandbox
-	listInterfaces() ([]*vcTypes.Interface, error)
+	listInterfaces() ([]*Interface, error)
 
 	// updateRoutes will tell the agent to update route table for an existed Sandbox.
-	updateRoutes(routes []*vcTypes.Route) ([]*vcTypes.Route, error)
+	updateRoutes(routes []*Route) ([]*Route, error)
 
 	// listRoutes will tell the agent to list routes of an existed Sandbox
-	listRoutes() ([]*vcTypes.Route, error)
+	listRoutes() ([]*Route, error)
 
 	// getGuestDetails will tell the agent to get some information of guest
 	getGuestDetails(*grpc.GuestDetailsRequest) (*grpc.GuestDetailsResponse, error)

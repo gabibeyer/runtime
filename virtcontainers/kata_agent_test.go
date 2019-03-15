@@ -32,7 +32,7 @@ import (
 	"github.com/kata-containers/runtime/virtcontainers/device/manager"
 	vcAnnotations "github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/mock"
-	vcTypes "github.com/kata-containers/runtime/virtcontainers/pkg/types"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 )
@@ -831,7 +831,7 @@ func TestAgentNetworkOperation(t *testing.T) {
 	_, err = k.listInterfaces()
 	assert.Nil(err)
 
-	_, err = k.updateRoutes([]*vcTypes.Route{})
+	_, err = k.updateRoutes([]*Route{})
 	assert.Nil(err)
 
 	_, err = k.listRoutes()

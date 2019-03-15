@@ -22,7 +22,7 @@ import (
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/hyperstart"
 	ns "github.com/kata-containers/runtime/virtcontainers/pkg/nsenter"
-	vcTypes "github.com/kata-containers/runtime/virtcontainers/pkg/types"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/kata-containers/runtime/virtcontainers/utils"
@@ -896,22 +896,22 @@ func (h *hyper) onlineCPUMem(cpus uint32, cpuOnly bool) error {
 	return nil
 }
 
-func (h *hyper) updateInterface(inf *vcTypes.Interface) (*vcTypes.Interface, error) {
+func (h *hyper) updateInterface(inf *Interface) (*Interface, error) {
 	// hyperstart-agent does not support update interface
 	return nil, nil
 }
 
-func (h *hyper) listInterfaces() ([]*vcTypes.Interface, error) {
+func (h *hyper) listInterfaces() ([]*Interface, error) {
 	// hyperstart-agent does not support list interfaces
 	return nil, nil
 }
 
-func (h *hyper) updateRoutes(routes []*vcTypes.Route) ([]*vcTypes.Route, error) {
+func (h *hyper) updateRoutes(routes []*Route) ([]*Route, error) {
 	// hyperstart-agent does not support update routes
 	return nil, nil
 }
 
-func (h *hyper) listRoutes() ([]*vcTypes.Route, error) {
+func (h *hyper) listRoutes() ([]*Route, error) {
 	// hyperstart-agent does not support list routes
 	return nil, nil
 }

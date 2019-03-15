@@ -26,7 +26,7 @@ import (
 	"github.com/kata-containers/runtime/virtcontainers/device/drivers"
 	deviceManager "github.com/kata-containers/runtime/virtcontainers/device/manager"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
-	vcTypes "github.com/kata-containers/runtime/virtcontainers/pkg/types"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/store"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/kata-containers/runtime/virtcontainers/utils"
@@ -799,7 +799,7 @@ func (s *Sandbox) removeNetwork() error {
 	return s.network.Remove(s.ctx, &s.networkNS, s.hypervisor, s.factory != nil)
 }
 
-func (s *Sandbox) generateNetInfo(inf *vcTypes.Interface) (NetworkInfo, error) {
+func (s *Sandbox) generateNetInfo(inf *Interface) (NetworkInfo, error) {
 	hw, err := net.ParseMAC(inf.HwAddr)
 	if err != nil {
 		return NetworkInfo{}, err
@@ -830,7 +830,7 @@ func (s *Sandbox) generateNetInfo(inf *vcTypes.Interface) (NetworkInfo, error) {
 }
 
 // AddInterface adds new nic to the sandbox.
-func (s *Sandbox) AddInterface(inf *vcTypes.Interface) (*vcTypes.Interface, error) {
+func (s *Sandbox) AddInterface(inf *Interface) (*Interface, error) {
 	netInfo, err := s.generateNetInfo(inf)
 	if err != nil {
 		return nil, err
@@ -861,7 +861,7 @@ func (s *Sandbox) AddInterface(inf *vcTypes.Interface) (*vcTypes.Interface, erro
 }
 
 // RemoveInterface removes a nic of the sandbox.
-func (s *Sandbox) RemoveInterface(inf *vcTypes.Interface) (*vcTypes.Interface, error) {
+func (s *Sandbox) RemoveInterface(inf *Interface) (*Interface, error) {
 	for i, endpoint := range s.networkNS.Endpoints {
 		if endpoint.HardwareAddr() == inf.HwAddr {
 			s.Logger().WithField("endpoint-type", endpoint.Type()).Info("Hot detaching endpoint")
@@ -879,17 +879,17 @@ func (s *Sandbox) RemoveInterface(inf *vcTypes.Interface) (*vcTypes.Interface, e
 }
 
 // ListInterfaces lists all nics and their configurations in the sandbox.
-func (s *Sandbox) ListInterfaces() ([]*vcTypes.Interface, error) {
+func (s *Sandbox) ListInterfaces() ([]*Interface, error) {
 	return s.agent.listInterfaces()
 }
 
 // UpdateRoutes updates the sandbox route table (e.g. for portmapping support).
-func (s *Sandbox) UpdateRoutes(routes []*vcTypes.Route) ([]*vcTypes.Route, error) {
+func (s *Sandbox) UpdateRoutes(routes []*Route) ([]*Route, error) {
 	return s.agent.updateRoutes(routes)
 }
 
 // ListRoutes lists all routes and their configurations in the sandbox.
-func (s *Sandbox) ListRoutes() ([]*vcTypes.Route, error) {
+func (s *Sandbox) ListRoutes() ([]*Route, error) {
 	return s.agent.listRoutes()
 }
 
