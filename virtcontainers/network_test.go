@@ -11,7 +11,7 @@ import (
 	"reflect"
 	"testing"
 
-	vcTypes "github.com/kata-containers/runtime/virtcontainers/pkg/types"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/vishvananda/netlink"
 )
@@ -87,16 +87,16 @@ func TestGenerateInterfacesAndRoutes(t *testing.T) {
 	//
 	// Build expected results:
 	//
-	expectedAddresses := []*vcTypes.IPAddress{
+	expectedAddresses := []*IPAddress{
 		{Family: netlink.FAMILY_V4, Address: "172.17.0.2", Mask: "16"},
 		{Family: netlink.FAMILY_V4, Address: "182.17.0.2", Mask: "16"},
 	}
 
-	expectedInterfaces := []*vcTypes.Interface{
+	expectedInterfaces := []*Interface{
 		{Device: "eth0", Name: "eth0", IPAddresses: expectedAddresses, Mtu: 1500, HwAddr: "02:00:ca:fe:00:04"},
 	}
 
-	expectedRoutes := []*vcTypes.Route{
+	expectedRoutes := []*Route{
 		{Dest: "", Gateway: "172.17.0.1", Device: "eth0", Source: "", Scope: uint32(254)},
 		{Dest: "172.17.0.0/16", Gateway: "172.17.0.1", Device: "eth0", Source: "172.17.0.2"},
 	}

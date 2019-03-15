@@ -12,7 +12,7 @@ import (
 
 	"github.com/kata-containers/runtime/virtcontainers/device/api"
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
-	vcTypes "github.com/kata-containers/runtime/virtcontainers/pkg/types"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/sirupsen/logrus"
@@ -49,11 +49,11 @@ type VC interface {
 
 	AddDevice(ctx context.Context, sandboxID string, info config.DeviceInfo) (api.Device, error)
 
-	AddInterface(ctx context.Context, sandboxID string, inf *vcTypes.Interface) (*vcTypes.Interface, error)
-	RemoveInterface(ctx context.Context, sandboxID string, inf *vcTypes.Interface) (*vcTypes.Interface, error)
-	ListInterfaces(ctx context.Context, sandboxID string) ([]*vcTypes.Interface, error)
-	UpdateRoutes(ctx context.Context, sandboxID string, routes []*vcTypes.Route) ([]*vcTypes.Route, error)
-	ListRoutes(ctx context.Context, sandboxID string) ([]*vcTypes.Route, error)
+	AddInterface(ctx context.Context, sandboxID string, inf *Interface) (*Interface, error)
+	RemoveInterface(ctx context.Context, sandboxID string, inf *Interface) (*Interface, error)
+	ListInterfaces(ctx context.Context, sandboxID string) ([]*Interface, error)
+	UpdateRoutes(ctx context.Context, sandboxID string, routes []*Route) ([]*Route, error)
+	ListRoutes(ctx context.Context, sandboxID string) ([]*Route, error)
 }
 
 // VCSandbox is the Sandbox interface
@@ -94,11 +94,11 @@ type VCSandbox interface {
 
 	AddDevice(info config.DeviceInfo) (api.Device, error)
 
-	AddInterface(inf *vcTypes.Interface) (*vcTypes.Interface, error)
-	RemoveInterface(inf *vcTypes.Interface) (*vcTypes.Interface, error)
-	ListInterfaces() ([]*vcTypes.Interface, error)
-	UpdateRoutes(routes []*vcTypes.Route) ([]*vcTypes.Route, error)
-	ListRoutes() ([]*vcTypes.Route, error)
+	AddInterface(inf *Interface) (*Interface, error)
+	RemoveInterface(inf *Interface) (*Interface, error)
+	ListInterfaces() ([]*Interface, error)
+	UpdateRoutes(routes []*Route) ([]*Route, error)
+	ListRoutes() ([]*Route, error)
 }
 
 // VCContainer is the Container interface
