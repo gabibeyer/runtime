@@ -14,6 +14,7 @@ import (
 
 	"github.com/kata-containers/runtime/pkg/katautils"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/urfave/cli"
 )
 
@@ -40,7 +41,7 @@ instance of a container.`,
 	},
 }
 
-func state(ctx context.Context, containerID string) error {
+func state(ctx context.Context, containerID ContainerID) error {
 	span, _ := katautils.Trace(ctx, "state")
 	defer span.Finish()
 

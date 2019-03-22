@@ -28,7 +28,7 @@ func SetCtrsMapTreePath(path string) {
 // ID directory. If there are several files, we could not determine which
 // file name corresponds to the sandbox ID associated, and this would throw
 // an error.
-func FetchContainerIDMapping(containerID ContainerID) (string, error) {
+func FetchContainerIDMapping(containerID ContainerID) (SandboxID, error) {
 	if containerID == "" {
 		return "", fmt.Errorf("Missing container ID")
 	}
@@ -48,7 +48,7 @@ func FetchContainerIDMapping(containerID ContainerID) (string, error) {
 		return "", fmt.Errorf("Too many files (%d) in %q", len(files), dirPath)
 	}
 
-	return files[0].Name(), nil
+	return SandboxID(files[0].Name()), nil
 }
 
 // AddContainerIDMapping add a container id mapping to sandbox id

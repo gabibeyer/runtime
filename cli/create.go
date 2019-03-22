@@ -15,6 +15,7 @@ import (
 	"github.com/kata-containers/runtime/pkg/katautils"
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/urfave/cli"
 )
 
@@ -86,7 +87,7 @@ var createCLICommand = cli.Command{
 	},
 }
 
-func create(ctx context.Context, containerID, bundlePath, console, pidFilePath string, detach, systemdCgroup bool,
+func create(ctx context.Context, containerID ContainerID, bundlePath, console, pidFilePath string, detach, systemdCgroup bool,
 	runtimeConfig oci.RuntimeConfig) error {
 	var err error
 

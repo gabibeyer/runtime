@@ -16,6 +16,7 @@ import (
 
 	"github.com/kata-containers/runtime/pkg/katautils"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 
 	specs "github.com/opencontainers/runtime-spec/specs-go"
@@ -24,7 +25,7 @@ import (
 
 type execParams struct {
 	ociProcess   oci.CompatOCIProcess
-	cID          string
+	cID          ContainerID
 	pidFile      string
 	console      string
 	consoleSock  string
@@ -123,7 +124,7 @@ func generateExecParams(context *cli.Context, specProcess *oci.CompatOCIProcess)
 	ctxArgs := context.Args()
 
 	params := execParams{
-		cID:          ctxArgs.First(),
+		cID:          ContainerID(ctxArgs.First()),
 		pidFile:      context.String("pid-file"),
 		console:      context.String("console"),
 		consoleSock:  context.String("console-socket"),
@@ -193,7 +194,7 @@ func execute(ctx context.Context, context *cli.Context) error {
 	span, ctx := katautils.Trace(ctx, "execute")
 	defer span.Finish()
 
-	containerID := context.Args().First()
+	containerID := ContainerID(context.Args().First())
 
 	kataLog = kataLog.WithField("container", containerID)
 	setExternalLoggers(ctx, kataLog)

@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	vcTypes "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/sirupsen/logrus"
@@ -116,7 +117,7 @@ var listRoutesCommand = cli.Command{
 	},
 }
 
-func networkModifyCommand(ctx context.Context, containerID, input string, opType networkType, add bool) (err error) {
+func networkModifyCommand(ctx context.Context, containerID ContainerID, input string, opType networkType, add bool) (err error) {
 	status, sandboxID, err := getExistingContainerInfo(ctx, containerID)
 	if err != nil {
 		return err
@@ -185,7 +186,7 @@ func networkModifyCommand(ctx context.Context, containerID, input string, opType
 	return err
 }
 
-func networkListCommand(ctx context.Context, containerID string, opType networkType) (err error) {
+func networkListCommand(ctx context.Context, containerID ContainerID, opType networkType) (err error) {
 	status, sandboxID, err := getExistingContainerInfo(ctx, containerID)
 	if err != nil {
 		return err

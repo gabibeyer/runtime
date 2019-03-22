@@ -10,6 +10,7 @@ import (
 	"context"
 
 	"github.com/kata-containers/runtime/pkg/katautils"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
@@ -54,10 +55,10 @@ func toggle(c *cli.Context, pause bool) error {
 		return err
 	}
 
-	return toggleContainerPause(ctx, c.Args().First(), pause)
+	return toggleContainerPause(ctx, ContainerID(c.Args().First()), pause)
 }
 
-func toggleContainerPause(ctx context.Context, containerID string, pause bool) (err error) {
+func toggleContainerPause(ctx context.Context, containerID ContainerID, pause bool) (err error) {
 	span, _ := katautils.Trace(ctx, "pause")
 	defer span.Finish()
 	span.SetTag("pause", pause)

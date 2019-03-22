@@ -15,6 +15,7 @@ import (
 
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	vcAnnotations "github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/vcmock"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/stretchr/testify/assert"
@@ -78,13 +79,17 @@ func TestDeleteMissingContainerTypeAnnotation(t *testing.T) {
 		MockID: testSandboxID,
 	}
 
-	path, err := createTempContainerIDMapping(sandbox.ID(), sandbox.ID())
+	container := &vcmock.Container{
+		MockID: testContainerID,
+	}
+
+	path, err := createTempContainerIDMapping(container.ID(), sandbox.ID())
 	assert.NoError(err)
 	defer os.RemoveAll(path)
 
-	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{
-			ID:          sandbox.ID(),
+			ID:          containerID,
 			Annotations: map[string]string{},
 		}, nil
 	}
@@ -93,7 +98,7 @@ func TestDeleteMissingContainerTypeAnnotation(t *testing.T) {
 		testingImpl.StatusContainerFunc = nil
 	}()
 
-	err = delete(context.Background(), sandbox.ID(), false)
+	err = delete(context.Background(), container.ID(), false)
 	assert.Error(err)
 	assert.False(vcmock.IsMockError(err))
 }
@@ -105,13 +110,17 @@ func TestDeleteInvalidConfig(t *testing.T) {
 		MockID: testSandboxID,
 	}
 
+	container := &vcmock.Container{
+		MockID: testContainerID,
+	}
+
 	path, err := createTempContainerIDMapping(sandbox.ID(), sandbox.ID())
 	assert.NoError(err)
 	defer os.RemoveAll(path)
 
-	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{
-			ID: sandbox.ID(),
+			ID: container.ID(),
 			Annotations: map[string]string{
 				vcAnnotations.ContainerTypeKey: string(vc.PodSandbox),
 			},
@@ -122,7 +131,7 @@ func TestDeleteInvalidConfig(t *testing.T) {
 		testingImpl.StatusContainerFunc = nil
 	}()
 
-	err = delete(context.Background(), sandbox.ID(), false)
+	err = delete(context.Background(), container.ID(), false)
 	assert.Error(err)
 	assert.False(vcmock.IsMockError(err))
 }
@@ -152,6 +161,10 @@ func TestDeleteSandbox(t *testing.T) {
 		MockID: testSandboxID,
 	}
 
+	container := &vcmock.Container{
+		MockID: testContainerID,
+	}
+
 	rootPath, configPath := testConfigSetup(t)
 	defer os.RemoveAll(rootPath)
 	configJSON, err := readOCIConfigJSON(configPath)
@@ -161,9 +174,9 @@ func TestDeleteSandbox(t *testing.T) {
 	assert.NoError(err)
 	defer os.RemoveAll(path)
 
-	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{
-			ID: sandbox.ID(),
+			ID: containerID,
 			Annotations: map[string]string{
 				vcAnnotations.ContainerTypeKey: string(vc.PodSandbox),
 				vcAnnotations.ConfigJSONKey:    configJSON,
@@ -178,11 +191,11 @@ func TestDeleteSandbox(t *testing.T) {
 		testingImpl.StatusContainerFunc = nil
 	}()
 
-	err = delete(context.Background(), sandbox.ID(), false)
+	err = delete(context.Background(), container.ID(), false)
 	assert.Error(err)
 	assert.True(vcmock.IsMockError(err))
 
-	testingImpl.StatusSandboxFunc = func(ctx context.Context, sandboxID string) (vc.SandboxStatus, error) {
+	testingImpl.StatusSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.SandboxStatus, error) {
 		return vc.SandboxStatus{
 			ID: sandbox.ID(),
 			State: types.State{
@@ -195,11 +208,11 @@ func TestDeleteSandbox(t *testing.T) {
 		testingImpl.StatusSandboxFunc = nil
 	}()
 
-	err = delete(context.Background(), sandbox.ID(), false)
+	err = delete(context.Background(), container.ID(), false)
 	assert.Error(err)
 	assert.True(vcmock.IsMockError(err))
 
-	testingImpl.StopSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	testingImpl.StopSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return sandbox, nil
 	}
 
@@ -207,11 +220,11 @@ func TestDeleteSandbox(t *testing.T) {
 		testingImpl.StopSandboxFunc = nil
 	}()
 
-	err = delete(context.Background(), sandbox.ID(), false)
+	err = delete(context.Background(), container.ID(), false)
 	assert.Error(err)
 	assert.True(vcmock.IsMockError(err))
 
-	testingImpl.DeleteSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	testingImpl.DeleteSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return sandbox, nil
 	}
 
@@ -219,7 +232,7 @@ func TestDeleteSandbox(t *testing.T) {
 		testingImpl.DeleteSandboxFunc = nil
 	}()
 
-	err = delete(context.Background(), sandbox.ID(), false)
+	err = delete(context.Background(), container.ID(), false)
 	assert.Nil(err)
 }
 
@@ -228,6 +241,10 @@ func TestDeleteInvalidContainerType(t *testing.T) {
 
 	sandbox := &vcmock.Sandbox{
 		MockID: testSandboxID,
+	}
+
+	container := &vcmock.Container{
+		MockID: testContainerID,
 	}
 
 	rootPath, configPath := testConfigSetup(t)
@@ -239,9 +256,9 @@ func TestDeleteInvalidContainerType(t *testing.T) {
 	assert.NoError(err)
 	defer os.RemoveAll(path)
 
-	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{
-			ID: sandbox.ID(),
+			ID: containerID,
 			Annotations: map[string]string{
 				vcAnnotations.ContainerTypeKey: "InvalidType",
 				vcAnnotations.ConfigJSONKey:    configJSON,
@@ -257,7 +274,7 @@ func TestDeleteInvalidContainerType(t *testing.T) {
 	}()
 
 	// Delete an invalid container type
-	err = delete(context.Background(), sandbox.ID(), false)
+	err = delete(context.Background(), container.ID(), false)
 	assert.Error(err)
 	assert.False(vcmock.IsMockError(err))
 }
@@ -269,6 +286,10 @@ func TestDeleteSandboxRunning(t *testing.T) {
 		MockID: testSandboxID,
 	}
 
+	container := &vcmock.Container{
+		MockID: testContainerID,
+	}
+
 	rootPath, configPath := testConfigSetup(t)
 	defer os.RemoveAll(rootPath)
 	configJSON, err := readOCIConfigJSON(configPath)
@@ -278,9 +299,9 @@ func TestDeleteSandboxRunning(t *testing.T) {
 	assert.NoError(err)
 	defer os.RemoveAll(path)
 
-	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{
-			ID: sandbox.ID(),
+			ID: containerID,
 			Annotations: map[string]string{
 				vcAnnotations.ContainerTypeKey: string(vc.PodSandbox),
 				vcAnnotations.ConfigJSONKey:    configJSON,
@@ -296,11 +317,11 @@ func TestDeleteSandboxRunning(t *testing.T) {
 	}()
 
 	// Delete on a running sandbox should fail
-	err = delete(context.Background(), sandbox.ID(), false)
+	err = delete(context.Background(), container.ID(), false)
 	assert.Error(err)
 	assert.False(vcmock.IsMockError(err))
 
-	testingImpl.StatusSandboxFunc = func(ctx context.Context, sandboxID string) (vc.SandboxStatus, error) {
+	testingImpl.StatusSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.SandboxStatus, error) {
 		return vc.SandboxStatus{
 			ID: sandbox.ID(),
 			State: types.State{
@@ -309,7 +330,7 @@ func TestDeleteSandboxRunning(t *testing.T) {
 		}, nil
 	}
 
-	testingImpl.StopSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	testingImpl.StopSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return sandbox, nil
 	}
 
@@ -319,11 +340,11 @@ func TestDeleteSandboxRunning(t *testing.T) {
 	}()
 
 	// Force delete a running sandbox
-	err = delete(context.Background(), sandbox.ID(), true)
+	err = delete(context.Background(), container.ID(), true)
 	assert.Error(err)
 	assert.True(vcmock.IsMockError(err))
 
-	testingImpl.DeleteSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	testingImpl.DeleteSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return sandbox, nil
 	}
 
@@ -331,7 +352,7 @@ func TestDeleteSandboxRunning(t *testing.T) {
 		testingImpl.DeleteSandboxFunc = nil
 	}()
 
-	err = delete(context.Background(), sandbox.ID(), true)
+	err = delete(context.Background(), container.ID(), true)
 	assert.Nil(err)
 }
 
@@ -358,7 +379,7 @@ func TestDeleteRunningContainer(t *testing.T) {
 	assert.NoError(err)
 	defer os.RemoveAll(path)
 
-	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{
 			ID: sandbox.MockContainers[0].ID(),
 			Annotations: map[string]string{
@@ -402,7 +423,7 @@ func TestDeleteRunningContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(vcmock.IsMockError(err))
 
-	testingImpl.DeleteContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error) {
+	testingImpl.DeleteContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error) {
 		return &vcmock.Container{}, nil
 	}
 
@@ -441,7 +462,7 @@ func TestDeleteContainer(t *testing.T) {
 	assert.NoError(err)
 	defer os.RemoveAll(path)
 
-	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{
 			ID: sandbox.MockContainers[0].ID(),
 			Annotations: map[string]string{
@@ -475,7 +496,7 @@ func TestDeleteContainer(t *testing.T) {
 	assert.Error(err)
 	assert.True(vcmock.IsMockError(err))
 
-	testingImpl.DeleteContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.VCContainer, error) {
+	testingImpl.DeleteContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.VCContainer, error) {
 		return &vcmock.Container{}, nil
 	}
 
@@ -541,9 +562,9 @@ func TestDeleteCLIFunctionSuccess(t *testing.T) {
 	assert.NoError(err)
 	defer os.RemoveAll(path)
 
-	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID, containerID string) (vc.ContainerStatus, error) {
+	testingImpl.StatusContainerFunc = func(ctx context.Context, sandboxID SandboxID, containerID ContainerID) (vc.ContainerStatus, error) {
 		return vc.ContainerStatus{
-			ID: sandbox.ID(),
+			ID: containerID,
 			Annotations: map[string]string{
 				vcAnnotations.ContainerTypeKey: string(vc.PodSandbox),
 				vcAnnotations.ConfigJSONKey:    configJSON,
@@ -554,7 +575,7 @@ func TestDeleteCLIFunctionSuccess(t *testing.T) {
 		}, nil
 	}
 
-	testingImpl.StatusSandboxFunc = func(ctx context.Context, sandboxID string) (vc.SandboxStatus, error) {
+	testingImpl.StatusSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.SandboxStatus, error) {
 		return vc.SandboxStatus{
 			ID: sandbox.ID(),
 			State: types.State{
@@ -563,11 +584,11 @@ func TestDeleteCLIFunctionSuccess(t *testing.T) {
 		}, nil
 	}
 
-	testingImpl.StopSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	testingImpl.StopSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return sandbox, nil
 	}
 
-	testingImpl.DeleteSandboxFunc = func(ctx context.Context, sandboxID string) (vc.VCSandbox, error) {
+	testingImpl.DeleteSandboxFunc = func(ctx context.Context, sandboxID SandboxID) (vc.VCSandbox, error) {
 		return sandbox, nil
 	}
 
@@ -588,7 +609,7 @@ func TestDeleteCLIFunctionSuccess(t *testing.T) {
 	assert.False(vcmock.IsMockError(err))
 
 	flagSet = flag.NewFlagSet("container-id", flag.ContinueOnError)
-	flagSet.Parse([]string{sandbox.ID()})
+	flagSet.Parse([]string{string(sandbox.ID())})
 	ctx = createCLIContext(flagSet)
 	assert.NotNil(ctx)
 

@@ -17,6 +17,7 @@ import (
 
 	"github.com/kata-containers/runtime/pkg/katautils"
 	vc "github.com/kata-containers/runtime/virtcontainers"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/opencontainers/runc/libcontainer/utils"
 )
 
@@ -32,7 +33,7 @@ var cgroupsDirPath string
 var procMountInfo = "/proc/self/mountinfo"
 
 // getContainerInfo returns the container status and its sandbox ID.
-func getContainerInfo(ctx context.Context, containerID string) (vc.ContainerStatus, string, error) {
+func getContainerInfo(ctx context.Context, containerID ContainerID) (vc.ContainerStatus, SandboxID, error) {
 	// container ID MUST be provided.
 	if containerID == "" {
 		return vc.ContainerStatus{}, "", fmt.Errorf("Missing container ID")
@@ -57,7 +58,7 @@ func getContainerInfo(ctx context.Context, containerID string) (vc.ContainerStat
 	return ctrStatus, sandboxID, nil
 }
 
-func getExistingContainerInfo(ctx context.Context, containerID string) (vc.ContainerStatus, string, error) {
+func getExistingContainerInfo(ctx context.Context, containerID ContainerID) (vc.ContainerStatus, SandboxID, error) {
 	cStatus, sandboxID, err := getContainerInfo(ctx, containerID)
 	if err != nil {
 		return vc.ContainerStatus{}, "", err
@@ -71,7 +72,7 @@ func getExistingContainerInfo(ctx context.Context, containerID string) (vc.Conta
 	return cStatus, sandboxID, nil
 }
 
-func validCreateParams(ctx context.Context, containerID, bundlePath string) (string, error) {
+func validCreateParams(ctx context.Context, containerID ContainerID, bundlePath string) (string, error) {
 	// container ID MUST be provided.
 	if containerID == "" {
 		return "", fmt.Errorf("Missing container ID")

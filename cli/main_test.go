@@ -25,6 +25,7 @@ import (
 	"github.com/kata-containers/runtime/pkg/katautils"
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/vcmock"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
@@ -445,7 +446,7 @@ func writeOCIConfigFile(spec oci.CompatOCISpec, configPath string) error {
 	return ioutil.WriteFile(configPath, bytes, testFileMode)
 }
 
-func newSingleContainerStatus(containerID string, containerState types.State, annotations map[string]string) vc.ContainerStatus {
+func newSingleContainerStatus(containerID ContainerID, containerState types.State, annotations map[string]string) vc.ContainerStatus {
 	return vc.ContainerStatus{
 		ID:          containerID,
 		State:       containerState,
@@ -1110,7 +1111,7 @@ func TestMainResetCLIGlobals(t *testing.T) {
 	assert.NotNil(savedCLIVersionPrinter)
 }
 
-func createTempContainerIDMapping(containerID, sandboxID string) (string, error) {
+func createTempContainerIDMapping(containerID ContainerID, sandboxID SandboxID) (string, error) {
 	tmpDir, err := ioutil.TempDir("", "containers-mapping")
 	if err != nil {
 		return "", err

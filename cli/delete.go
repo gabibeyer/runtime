@@ -15,6 +15,7 @@ import (
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	vcAnnot "github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
 )
@@ -51,7 +52,7 @@ EXAMPLE:
 
 		force := context.Bool("force")
 		for _, cID := range []string(args) {
-			if err := delete(ctx, cID, force); err != nil {
+			if err := delete(ctx, ContainerID(cID), force); err != nil {
 				return err
 			}
 		}
@@ -60,7 +61,7 @@ EXAMPLE:
 	},
 }
 
-func delete(ctx context.Context, containerID string, force bool) error {
+func delete(ctx context.Context, containerID ContainerID, force bool) error {
 	span, ctx := katautils.Trace(ctx, "delete")
 	defer span.Finish()
 
@@ -124,14 +125,15 @@ func delete(ctx context.Context, containerID string, force bool) error {
 	}
 
 	// Run post-stop OCI hooks.
-	if err := katautils.PostStopHooks(ctx, ociSpec, sandboxID, status.Annotations[vcAnnot.BundlePathKey]); err != nil {
+	// TODO: is this supposed to be sandboxID or containerID
+	if err := katautils.PostStopHooks(ctx, ociSpec, containerID, status.Annotations[vcAnnot.BundlePathKey]); err != nil {
 		return err
 	}
 
 	return katautils.DelContainerIDMapping(ctx, containerID)
 }
 
-func deleteSandbox(ctx context.Context, sandboxID string) error {
+func deleteSandbox(ctx context.Context, sandboxID SandboxID) error {
 	span, _ := katautils.Trace(ctx, "deleteSandbox")
 	defer span.Finish()
 
@@ -153,7 +155,7 @@ func deleteSandbox(ctx context.Context, sandboxID string) error {
 	return nil
 }
 
-func deleteContainer(ctx context.Context, sandboxID, containerID string, forceStop bool) error {
+func deleteContainer(ctx context.Context, sandboxID SandboxID, containerID ContainerID, forceStop bool) error {
 	span, _ := katautils.Trace(ctx, "deleteContainer")
 	defer span.Finish()
 
@@ -170,7 +172,7 @@ func deleteContainer(ctx context.Context, sandboxID, containerID string, forceSt
 	return nil
 }
 
-func removeCgroupsPath(ctx context.Context, containerID string, cgroupsPathList []string) error {
+func removeCgroupsPath(ctx context.Context, containerID ContainerID, cgroupsPathList []string) error {
 	span, _ := katautils.Trace(ctx, "removeCgroupsPath")
 	defer span.Finish()
 

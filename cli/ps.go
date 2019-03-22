@@ -12,6 +12,7 @@ import (
 
 	"github.com/kata-containers/runtime/pkg/katautils"
 	vc "github.com/kata-containers/runtime/virtcontainers"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 
 	"github.com/sirupsen/logrus"
@@ -52,7 +53,7 @@ var psCLICommand = cli.Command{
 	SkipArgReorder: true,
 }
 
-func ps(ctx context.Context, containerID, format string, args []string) error {
+func ps(ctx context.Context, containerID ContainerID, format string, args []string) error {
 	span, _ := katautils.Trace(ctx, "ps")
 	defer span.Finish()
 

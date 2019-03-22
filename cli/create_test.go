@@ -18,6 +18,7 @@ import (
 	"github.com/kata-containers/runtime/pkg/katautils"
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/vcmock"
 	specs "github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/stretchr/testify/assert"
@@ -248,7 +249,7 @@ func TestCreateInvalidArgs(t *testing.T) {
 	}
 
 	for i, d := range data {
-		err := create(context.Background(), d.containerID, d.bundlePath, d.console, d.pidFilePath, d.detach, d.systemdCgroup, d.runtimeConfig)
+		err := create(context.Background(), ContainerID(d.containerID), d.bundlePath, d.console, d.pidFilePath, d.detach, d.systemdCgroup, d.runtimeConfig)
 		assert.Errorf(err, "test %d (%+v)", i, d)
 	}
 }

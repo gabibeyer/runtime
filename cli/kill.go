@@ -15,6 +15,7 @@ import (
 	"github.com/kata-containers/runtime/pkg/katautils"
 	vc "github.com/kata-containers/runtime/virtcontainers"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/oci"
+	. "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -31,7 +32,7 @@ var killCLICommand = cli.Command{
 EXAMPLE:
    If the container id is "ubuntu01" the following will send a "KILL" signal
    to the init process of the "ubuntu01" container:
-	 
+
        # ` + name + ` kill ubuntu01 KILL`,
 	Flags: []cli.Flag{
 		cli.BoolFlag{
@@ -98,7 +99,7 @@ var signalList = map[string]syscall.Signal{
 	"SIGXFSZ":   syscall.SIGXFSZ,
 }
 
-func kill(ctx context.Context, containerID, signal string, all bool) error {
+func kill(ctx context.Context, containerID ContainerID, signal string, all bool) error {
 	span, _ := katautils.Trace(ctx, "kill")
 	defer span.Finish()
 
