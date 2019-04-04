@@ -10,6 +10,7 @@ import (
 	"unsafe"
 
 	"github.com/vishvananda/netlink/nl"
+	"github.com/sirupsen/logrus"
 	"github.com/vishvananda/netns"
 	"golang.org/x/sys/unix"
 )
@@ -1093,19 +1094,34 @@ func LinkByName(name string) (Link, error) {
 
 // LinkByName finds a link by name and returns a pointer to the object.
 func (h *Handle) LinkByName(name string) (Link, error) {
+	logrus.Warnf("LinkByName Name: %s", name)
 	if h.lookupByDump {
+	//	logrus.Infof("Entered h.lookupByDump true")
 		return h.linkByNameDump(name)
 	}
 
 	req := h.newNetlinkRequest(unix.RTM_GETLINK, unix.NLM_F_ACK)
+	//logrus.Infof("After h.newNetlinkRequest. req: %+v", req)
 
 	msg := nl.NewIfInfomsg(unix.AF_UNSPEC)
+	//logrus.Infof("After nl.NewIfInfomsg. msg: %+v", msg)
 	req.AddData(msg)
 
 	nameData := nl.NewRtAttr(unix.IFLA_IFNAME, nl.ZeroTerminated(name))
 	req.AddData(nameData)
+	//logrus.Infof("nameData: %+v || req: %+v", nameData, req)
+
+	//logrus.Infof("Before execGetLink(req): nameData: %+v", nameData)
+	for _, i :=  range(req.Data) {
+		logrus.Warnf("Request Info Rawdata: %+v", i)
+	}
+	//for _, i :=  range(req.Sockets) {
+	//	logrus.Warnf("Request Info Sockets %+v", i)
+	//	logrus.Warnf("Request Info SocketFD %d", i.Socket.GetFd())
+	//}
 
 	link, err := execGetLink(req)
+	//logrus.Infof("After execGetLink(req): link: %+v || err: +%v ", link, err)
 	if err == unix.EINVAL {
 		// older kernels don't support looking up via IFLA_IFNAME
 		// so fall back to dumping all links
@@ -1165,11 +1181,12 @@ func (h *Handle) LinkByIndex(index int) (Link, error) {
 }
 
 func execGetLink(req *nl.NetlinkRequest) (Link, error) {
+//	logrus.Warnf("req nl.NetlinkRequest: %+v", req)
 	msgs, err := req.Execute(unix.NETLINK_ROUTE, 0)
 	if err != nil {
 		if errno, ok := err.(syscall.Errno); ok {
 			if errno == unix.ENODEV {
-				return nil, LinkNotFoundError{fmt.Errorf("Link not found")}
+				return nil, LinkNotFoundError{fmt.Errorf("Link not found one")}
 			}
 		}
 		return nil, err
@@ -1177,7 +1194,7 @@ func execGetLink(req *nl.NetlinkRequest) (Link, error) {
 
 	switch {
 	case len(msgs) == 0:
-		return nil, LinkNotFoundError{fmt.Errorf("Link not found")}
+		return nil, LinkNotFoundError{fmt.Errorf("Link not found two")}
 
 	case len(msgs) == 1:
 		return LinkDeserialize(nil, msgs[0])

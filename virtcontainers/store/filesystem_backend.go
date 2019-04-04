@@ -65,15 +65,15 @@ const VMPathSuffix = "vm"
 
 // ConfigStoragePath is the sandbox configuration directory.
 // It will contain one config.json file for each created sandbox.
-var ConfigStoragePath = filepath.Join("/var/lib", StoragePathSuffix, SandboxPathSuffix)
+var ConfigStoragePath = filepath.Join("/tmp/katapod/var/lib/", StoragePathSuffix, SandboxPathSuffix)
 
 // RunStoragePath is the sandbox runtime directory.
 // It will contain one state.json and one lock file for each created sandbox.
-var RunStoragePath = filepath.Join("/run", StoragePathSuffix, SandboxPathSuffix)
+var RunStoragePath = filepath.Join("/tmp/katapod/run", StoragePathSuffix, SandboxPathSuffix)
 
 // RunVMStoragePath is the vm directory.
 // It will contain all guest vm sockets and shared mountpoints.
-var RunVMStoragePath = filepath.Join("/run", StoragePathSuffix, VMPathSuffix)
+var RunVMStoragePath = filepath.Join("/tmp/katapod/run", StoragePathSuffix, VMPathSuffix)
 
 func itemToFile(item Item) (string, error) {
 	switch item {

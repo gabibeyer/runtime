@@ -7,6 +7,8 @@ package virtcontainers
 
 import (
 	"fmt"
+	"net"
+	"os"
 
 	"github.com/containernetworking/plugins/pkg/ns"
 	"github.com/vishvananda/netlink"
@@ -16,6 +18,7 @@ import (
 
 // TapEndpoint represents just a tap endpoint
 type TapEndpoint struct {
+	NetPair		   NetworkInterfacePair
 	TapInterface       TapInterface
 	EndpointProperties NetworkInfo
 	EndpointType       EndpointType
@@ -54,7 +57,7 @@ func (endpoint *TapEndpoint) SetPciAddr(pciAddr string) {
 
 // NetworkPair returns the network pair of the endpoint.
 func (endpoint *TapEndpoint) NetworkPair() *NetworkInterfacePair {
-	return nil
+	return &endpoint.NetPair
 }
 
 // SetProperties sets the properties for the endpoint.
@@ -64,7 +67,18 @@ func (endpoint *TapEndpoint) SetProperties(properties NetworkInfo) {
 
 // Attach for tap endpoint adds the tap interface to the hypervisor.
 func (endpoint *TapEndpoint) Attach(h hypervisor) error {
-	return fmt.Errorf("TapEndpoint does not support Attach, if you're using docker please use --net none")
+	//if err := tapNetwork(endpoint, h.hypervisorConfig().NumVCPUs, h.hypervisorConfig().DisableVhostNet); err != nil {
+	//	networkLogger().WithError(err).Error("Error bridging tap ep")
+	//	return err
+	//}
+	networkLogger().Warnf("Current PID: %d", os.Getpid())
+	networkLogger().Errorf("ENDPOINT NetworkPair: %+v", endpoint.NetworkPair())
+	if err := xConnectVMNetwork(endpoint, h); err != nil {
+		networkLogger().WithError(err).Error("Error bridging virtual endpoint")
+		return err
+	}
+	networkLogger().Warn("FINISHED xCONN func, now adding device")
+	return h.addDevice(endpoint, netDev)
 }
 
 // Detach for the tap endpoint tears down the tap
@@ -110,25 +124,39 @@ func (endpoint *TapEndpoint) HotDetach(h hypervisor, netNsCreated bool, netNsPat
 	return nil
 }
 
-func createTapNetworkEndpoint(idx int, ifName string) (*TapEndpoint, error) {
+func createTapNetworkEndpoint(idx int, ifName string, hwName net.HardwareAddr, internetworkingModel NetInterworkingModel) (*TapEndpoint, error) {
 	if idx < 0 {
 		return &TapEndpoint{}, fmt.Errorf("invalid network endpoint index: %d", idx)
 	}
 	uniqueID := uuid.Generate().String()
 
+	netPair, err := createNetworkInterfacePair(idx, ifName, internetworkingModel)
+	if err != nil {
+		return nil, err
+	}
+
 	endpoint := &TapEndpoint{
+		NetPair: netPair,
 		TapInterface: TapInterface{
 			ID:   uniqueID,
 			Name: fmt.Sprintf("eth%d", idx),
 			TAPIface: NetworkInterface{
 				Name: fmt.Sprintf("tap%d_kata", idx),
+				HardAddr: fmt.Sprintf("%s", hwName),
 			},
 		},
 		EndpointType: TapEndpointType,
 	}
+	
+	networkLogger().Infof("xxxxxifname : %s", ifName)
 	if ifName != "" {
 		endpoint.TapInterface.Name = ifName
+	} else {
+		networkLogger().Infof("xxxxxxxifName is empty")
 	}
+	networkLogger().Infof("Endpoint.NetworkPair(): %+v", endpoint.NetworkPair().SetModel(tcFilterNetModelStr))
+	networkLogger().Infof("Endpoint Type: %s TapEndpointType: %s", endpoint.EndpointType, TapEndpointType)
+	networkLogger().Infof("Tap endpoint created from createTapNetworkEndpoint: %+v", endpoint)
 
 	return endpoint, nil
 }

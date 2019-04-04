@@ -873,9 +873,9 @@ func (c *Container) create() (err error) {
 	}
 	c.process = *process
 
-	if err = c.newCgroups(); err != nil {
-		return
-	}
+	//if err = c.newCgroups(); err != nil {
+	//	return
+	//}
 
 	if !c.sandbox.supportNewStore() {
 		// Store the container process returned by the agent.

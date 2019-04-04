@@ -97,6 +97,7 @@ func create(ctx context.Context, containerID, bundlePath, console, pidFilePath s
 	setExternalLoggers(ctx, kataLog)
 	span.SetTag("container", containerID)
 
+	kataLog.Warnf("runtimeConfig: %+v", runtimeConfig)
 	if bundlePath == "" {
 		cwd, err := os.Getwd()
 		if err != nil {
@@ -117,6 +118,9 @@ func create(ctx context.Context, containerID, bundlePath, console, pidFilePath s
 	if err != nil {
 		return err
 	}
+	kataLog.Warnf("ociSpec: %+v", ociSpec)
+	kataLog.Warnf("ociSpec Linux: %+v", ociSpec.Linux)
+	kataLog.Warnf("ociSpec linux namespace %+v", ociSpec.Linux.Namespaces)
 
 	containerType, err := ociSpec.ContainerType()
 	if err != nil {
@@ -130,6 +134,7 @@ func create(ctx context.Context, containerID, bundlePath, console, pidFilePath s
 	//rootfs has been mounted by containerd shim
 	rootFs := vc.RootFs{Mounted: true}
 
+	kataLog.Errorf("containerType: %s", containerType)
 	var process vc.Process
 	switch containerType {
 	case vc.PodSandbox:

@@ -1,0 +1,371 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+ALL_ARCHES	Makefile	/^ALL_ARCHES = $(patsubst $(ARCH_DIR)\/%$(ARCH_FILE_SUFFIX),%,$(ARCH_FILES))$/;"	m
+ARCH	Makefile	/^        ARCH = $(GOARCH)$/;"	m
+ARCH	Makefile	/^        ARCH = amd64$/;"	m
+ARCH	Makefile	/^        ARCH = arm64$/;"	m
+ARCH	Makefile	/^    ARCH = $(shell uname -m)$/;"	m
+ARCH_DIR	Makefile	/^ARCH_DIR = arch$/;"	m
+ARCH_FILE	Makefile	/^ARCH_FILE = $(ARCH_DIR)\/$(ARCH)$(ARCH_FILE_SUFFIX)$/;"	m
+ARCH_FILES	Makefile	/^ARCH_FILES = $(wildcard arch\/*$(ARCH_FILE_SUFFIX))$/;"	m
+ARCH_FILE_SUFFIX	Makefile	/^ARCH_FILE_SUFFIX = -options.mk$/;"	m
+BASH_COMPLETIONS	Makefile	/^BASH_COMPLETIONS := data\/completions\/bash\/kata-runtime$/;"	m
+BASH_COMPLETIONSDIR	Makefile	/^BASH_COMPLETIONSDIR := $(SHAREDIR)\/bash-completion\/completions$/;"	m
+BINDIR	Makefile	/^BINDIR        := $(EXEC_PREFIX)\/bin$/;"	m
+BINLIBEXECLIST	Makefile	/^BINLIBEXECLIST :=$/;"	m
+BINLIST	Makefile	/^BINLIST :=$/;"	m
+BIN_DIR	virtcontainers/Makefile	/^BIN_DIR := $(PREFIX)\/bin$/;"	m
+BIN_PREFIX	Makefile	/^BIN_PREFIX = $(PROJECT_TYPE)$/;"	m
+BUILDFLAGS	Makefile	/^BUILDFLAGS := -buildmode=pie$/;"	m
+CC_SHIM_BIN	virtcontainers/Makefile	/^CC_SHIM_BIN := cc-shim$/;"	m
+CC_SHIM_DIR	virtcontainers/Makefile	/^CC_SHIM_DIR := shim\/mock\/cc-shim$/;"	m
+CLI_DIR	Makefile	/^CLI_DIR = cli$/;"	m
+COLLECT_SCRIPT	Makefile	/^COLLECT_SCRIPT = data\/kata-collect-data.sh$/;"	m
+COLLECT_SCRIPT_SRC	Makefile	/^COLLECT_SCRIPT_SRC = $(COLLECT_SCRIPT).in$/;"	m
+COMMIT	Makefile	/^COMMIT := $(if $(shell git status --porcelain --untracked-files=no),${COMMIT_NO}-dirty,${COMMIT_NO})$/;"	m
+COMMIT_NO	Makefile	/^COMMIT_NO := $(shell git rev-parse HEAD 2> \/dev\/null || true)$/;"	m
+CONFDIR	Makefile	/^CONFDIR := $(DEFAULTSDIR)\/$(PROJECT_DIR)$/;"	m
+CONFIGS	Makefile	/^CONFIGS =$/;"	m
+CONFIG_FC	Makefile	/^    CONFIG_FC = $(CLI_DIR)\/config\/$(CONFIG_FILE_FC)$/;"	m
+CONFIG_FC_IN	Makefile	/^    CONFIG_FC_IN = $(CONFIG_FC).in$/;"	m
+CONFIG_FILE	Makefile	/^CONFIG_FILE = configuration.toml$/;"	m
+CONFIG_FILE_FC	Makefile	/^    CONFIG_FILE_FC = configuration-fc.toml$/;"	m
+CONFIG_FILE_QEMU	Makefile	/^    CONFIG_FILE_QEMU = configuration-qemu.toml$/;"	m
+CONFIG_PATH	Makefile	/^CONFIG_PATH := $(abspath $(CONFDIR)\/$(CONFIG_FILE))$/;"	m
+CONFIG_PATHS	Makefile	/^CONFIG_PATHS = $/;"	m
+CONFIG_PATH_FC	Makefile	/^    CONFIG_PATH_FC = $(abspath $(CONFDIR)\/$(CONFIG_FILE_FC))$/;"	m
+CONFIG_PATH_QEMU	Makefile	/^    CONFIG_PATH_QEMU = $(abspath $(CONFDIR)\/$(CONFIG_FILE_QEMU))$/;"	m
+CONFIG_QEMU	Makefile	/^    CONFIG_QEMU = $(CLI_DIR)\/config\/$(CONFIG_FILE_QEMU)$/;"	m
+CONFIG_QEMU_IN	Makefile	/^    CONFIG_QEMU_IN = $(CONFIG_QEMU).in$/;"	m
+DEFAULTEXPFEATURES	Makefile	/^DEFAULTEXPFEATURES := []$/;"	m
+DEFAULTSDIR	Makefile	/^DEFAULTSDIR := $(SHAREDIR)\/defaults$/;"	m
+DEFAULT_HYPERVISOR	Makefile	/^DEFAULT_HYPERVISOR = $(HYPERVISOR_QEMU)$/;"	m
+DEFAULT_HYPERVISOR_CONFIG	Makefile	/^    DEFAULT_HYPERVISOR_CONFIG = $(CONFIG_FILE_FC)$/;"	m
+DEFAULT_HYPERVISOR_CONFIG	Makefile	/^    DEFAULT_HYPERVISOR_CONFIG = $(CONFIG_FILE_QEMU)$/;"	m
+DEFBLOCKSTORAGEDRIVER_FC	Makefile	/^    DEFBLOCKSTORAGEDRIVER_FC := virtio-mmio$/;"	m
+DEFBLOCKSTORAGEDRIVER_QEMU	Makefile	/^    DEFBLOCKSTORAGEDRIVER_QEMU := virtio-scsi$/;"	m
+DEFBRIDGES	Makefile	/^DEFBRIDGES := 1$/;"	m
+DEFDISABLEBLOCK	Makefile	/^DEFDISABLEBLOCK := false$/;"	m
+DEFDISABLEGUESTSECCOMP	Makefile	/^DEFDISABLEGUESTSECCOMP := true$/;"	m
+DEFDISABLENESTINGCHECKS	Makefile	/^DEFDISABLENESTINGCHECKS := false$/;"	m
+DEFENABLEDEBUG	Makefile	/^DEFENABLEDEBUG := false$/;"	m
+DEFENABLEHUGEPAGES	Makefile	/^DEFENABLEHUGEPAGES := false$/;"	m
+DEFENABLEIOTHREADS	Makefile	/^DEFENABLEIOTHREADS := false$/;"	m
+DEFENABLEMEMPREALLOC	Makefile	/^DEFENABLEMEMPREALLOC := false$/;"	m
+DEFENABLESWAP	Makefile	/^DEFENABLESWAP := false$/;"	m
+DEFENTROPYSOURCE	Makefile	/^DEFENTROPYSOURCE := \/dev\/urandom$/;"	m
+DEFHOTPLUGVFIOONROOTBUS	Makefile	/^DEFHOTPLUGVFIOONROOTBUS := false$/;"	m
+DEFMAXVCPUS	Makefile	/^DEFMAXVCPUS := 0$/;"	m
+DEFMEMSLOTS	Makefile	/^DEFMEMSLOTS := 10$/;"	m
+DEFMEMSZ	Makefile	/^DEFMEMSZ := 2048$/;"	m
+DEFMSIZE9P	Makefile	/^DEFMSIZE9P := 8192$/;"	m
+DEFNETWORKMODEL_FC	Makefile	/^    DEFNETWORKMODEL_FC := tcfilter$/;"	m
+DEFNETWORKMODEL_QEMU	Makefile	/^    DEFNETWORKMODEL_QEMU := macvtap$/;"	m
+DEFVCPUS	Makefile	/^DEFVCPUS := 1$/;"	m
+DESTDIR	Makefile	/^DESTDIR := \/$/;"	m
+DIR_EXISTS	Makefile	/^define DIR_EXISTS$/;"	m
+EXEC_PREFIX	Makefile	/^EXEC_PREFIX   := $(PREFIX)$/;"	m
+EXEC_PREFIX	Makefile	/^EXEC_PREFIX   := $(PREFIX)\/local$/;"	m
+EXTRA_DEPS	Makefile	/^    EXTRA_DEPS = clean$/;"	m
+FCBINDIR	Makefile	/^FCBINDIR      := $(PREFIXDEPS)\/bin$/;"	m
+FCCMD	arch/amd64-options.mk	/^FCCMD := firecracker$/;"	m
+FCPATH	Makefile	/^FCPATH = $(FCBINDIR)\/$(FCCMD)$/;"	m
+FILE_SAFE_TO_REMOVE	virtcontainers/Makefile	/^define FILE_SAFE_TO_REMOVE =$/;"	m
+FIRMWAREPATH	Makefile	/^FIRMWAREPATH :=$/;"	m
+GENERATED_CODE	Makefile	/^define GENERATED_CODE$/;"	m
+GENERATED_CONFIG	Makefile	/^GENERATED_CONFIG = $(CLI_DIR)\/config-generated.go$/;"	m
+GOARCH	Makefile	/^    GOARCH=$(shell go env GOARCH)$/;"	m
+GOSYM_PREFIX	vendor/golang.org/x/sys/unix/gccgo_c.c	13;"	d	file:
+HOOK_BIN	virtcontainers/Makefile	/^HOOK_BIN := hook$/;"	m
+HOOK_DIR	virtcontainers/Makefile	/^HOOK_DIR := hook\/mock$/;"	m
+HYPERVISORS	Makefile	/^HYPERVISORS := $(HYPERVISOR_FC) $(HYPERVISOR_QEMU)$/;"	m
+HYPERVISOR_FC	Makefile	/^HYPERVISOR_FC = firecracker$/;"	m
+HYPERVISOR_QEMU	Makefile	/^HYPERVISOR_QEMU = qemu$/;"	m
+IMAGENAME	Makefile	/^IMAGENAME = $(PROJECT_TAG).img$/;"	m
+IMAGEPATH	Makefile	/^IMAGEPATH := $(PKGDATADIR)\/$(IMAGENAME)$/;"	m
+INITRDNAME	Makefile	/^INITRDNAME = $(PROJECT_TAG)-initrd.img$/;"	m
+INITRDPATH	Makefile	/^INITRDPATH := $(PKGDATADIR)\/$(INITRDNAME)$/;"	m
+INSTALL_CONFIG	Makefile	/^define INSTALL_CONFIG$/;"	m
+INSTALL_EXEC	Makefile	/^define INSTALL_EXEC$/;"	m
+INSTALL_EXEC	virtcontainers/Makefile	/^define INSTALL_EXEC$/;"	m
+INSTALL_TEST_EXEC	virtcontainers/Makefile	/^define INSTALL_TEST_EXEC$/;"	m
+KATA_SHIM_BIN	virtcontainers/Makefile	/^KATA_SHIM_BIN := kata-shim$/;"	m
+KATA_SHIM_DIR	virtcontainers/Makefile	/^KATA_SHIM_DIR := shim\/mock\/kata-shim$/;"	m
+KERNELDIR	Makefile	/^KERNELDIR := $(PKGDATADIR)$/;"	m
+KERNELNAME_QEMU	Makefile	/^    KERNELNAME_QEMU = $(call MAKE_KERNEL_NAME,$(KERNELTYPE))$/;"	m
+KERNELPARAMS	arch/amd64-options.mk	/^KERNELPARAMS :=$/;"	m
+KERNELPARAMS	arch/arm64-options.mk	/^KERNELPARAMS :=$/;"	m
+KERNELPARAMS	arch/ppc64le-options.mk	/^KERNELPARAMS :=$/;"	m
+KERNELPARAMS	arch/s390x-options.mk	/^KERNELPARAMS :=$/;"	m
+KERNELPATH_FC	Makefile	/^    KERNELPATH_FC = $(KERNELDIR)\/$(KERNEL_NAME_FC)$/;"	m
+KERNELPATH_QEMU	Makefile	/^    KERNELPATH_QEMU = $(KERNELDIR)\/$(KERNELNAME_QEMU)$/;"	m
+KERNELTYPE	arch/ppc64le-options.mk	/^KERNELTYPE := uncompressed #This architecture must use an uncompressed kernel.$/;"	m
+KERNELTYPE_FC	Makefile	/^    KERNELTYPE_FC = uncompressed$/;"	m
+KERNEL_NAME_FC	Makefile	/^    KERNEL_NAME_FC = $(call MAKE_KERNEL_NAME,$(KERNELTYPE_FC))$/;"	m
+KNOWN_HYPERVISORS	Makefile	/^KNOWN_HYPERVISORS =$/;"	m
+LIBEXECDIR	Makefile	/^LIBEXECDIR := $(PREFIXDEPS)\/libexec$/;"	m
+LOCALSTATEDIR	Makefile	/^LOCALSTATEDIR := \/tmp\/katapod\/var$/;"	m
+MACHINEACCELERATORS	arch/amd64-options.mk	/^MACHINEACCELERATORS :=$/;"	m
+MACHINEACCELERATORS	arch/arm64-options.mk	/^MACHINEACCELERATORS :=$/;"	m
+MACHINEACCELERATORS	arch/ppc64le-options.mk	/^MACHINEACCELERATORS :=$/;"	m
+MACHINEACCELERATORS	arch/s390x-options.mk	/^MACHINEACCELERATORS :=$/;"	m
+MACHINETYPE	arch/amd64-options.mk	/^MACHINETYPE := pc$/;"	m
+MACHINETYPE	arch/arm64-options.mk	/^MACHINETYPE := virt$/;"	m
+MACHINETYPE	arch/ppc64le-options.mk	/^MACHINETYPE := pseries$/;"	m
+MACHINETYPE	arch/s390x-options.mk	/^MACHINETYPE := s390-ccw-virtio$/;"	m
+MAKE_KERNEL_NAME	Makefile	/^define MAKE_KERNEL_NAME$/;"	m
+MK_DIR	virtcontainers/Makefile	/^MK_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))$/;"	m
+NETMONCMD	Makefile	/^NETMONCMD := $(BIN_PREFIX)-netmon$/;"	m
+NETMONPATH	Makefile	/^NETMONPATH := $(PKGLIBEXECDIR)\/$(NETMONCMD)$/;"	m
+NETMON_DIR	Makefile	/^NETMON_DIR = netmon$/;"	m
+NETMON_TARGET	Makefile	/^NETMON_TARGET = $(PROJECT_TYPE)-netmon$/;"	m
+NETMON_TARGET_OUTPUT	Makefile	/^NETMON_TARGET_OUTPUT = $(CURDIR)\/$(NETMON_TARGET)$/;"	m
+PKGDATADIR	Makefile	/^PKGDATADIR := $(PREFIXDEPS)\/share\/$(PROJECT_DIR)$/;"	m
+PKGLIBDIR	Makefile	/^PKGLIBDIR := $(LOCALSTATEDIR)\/lib\/$(PROJECT_DIR)$/;"	m
+PKGLIBEXECDIR	Makefile	/^PKGLIBEXECDIR := $(LIBEXECDIR)\/$(PROJECT_DIR)$/;"	m
+PKGRUNDIR	Makefile	/^PKGRUNDIR := $(LOCALSTATEDIR)\/run\/$(PROJECT_DIR)$/;"	m
+PREFIX	Makefile	/^PREFIX        := \/usr$/;"	m
+PREFIX	virtcontainers/Makefile	/^PREFIX := \/usr$/;"	m
+PREFIXDEPS	Makefile	/^PREFIXDEPS    := $(PREFIX)$/;"	m
+PROJECT_BUG_URL	Makefile	/^PROJECT_BUG_URL = $(PROJECT_URL)\/kata-containers\/issues\/new$/;"	m
+PROJECT_DIR	Makefile	/^PROJECT_DIR = $(PROJECT_TAG)$/;"	m
+PROJECT_NAME	Makefile	/^PROJECT_NAME = Kata Containers$/;"	m
+PROJECT_TAG	Makefile	/^PROJECT_TAG = kata-containers$/;"	m
+PROJECT_TYPE	Makefile	/^PROJECT_TYPE = kata$/;"	m
+PROJECT_URL	Makefile	/^PROJECT_URL = https:\/\/github.com\/kata-containers$/;"	m
+PROXYCMD	Makefile	/^PROXYCMD := $(BIN_PREFIX)-proxy$/;"	m
+PROXYPATH	Makefile	/^PROXYPATH := $(PKGLIBEXECDIR)\/$(PROXYCMD)$/;"	m
+Q	Makefile	/^Q              = $(V:1=)$/;"	m
+Q	virtcontainers/Makefile	/^Q	      = $(V:1=)$/;"	m
+QEMUBINDIR	Makefile	/^QEMUBINDIR    := $(PREFIXDEPS)\/bin$/;"	m
+QEMUCMD	arch/amd64-options.mk	/^QEMUCMD := qemu-lite-system-x86_64$/;"	m
+QEMUCMD	arch/arm64-options.mk	/^QEMUCMD := qemu-system-aarch64$/;"	m
+QEMUCMD	arch/ppc64le-options.mk	/^QEMUCMD := qemu-system-ppc64le$/;"	m
+QEMUCMD	arch/s390x-options.mk	/^QEMUCMD := qemu-system-s390x$/;"	m
+QEMUPATH	Makefile	/^QEMUPATH := $(QEMUBINDIR)\/$(QEMUCMD)$/;"	m
+QUIET_BUILD	Makefile	/^QUIET_BUILD    = $(Q:@=@echo    '     BUILD   '$@;)$/;"	m
+QUIET_CHECK	Makefile	/^QUIET_CHECK    = $(Q:@=@echo    '     CHECK   '$@;)$/;"	m
+QUIET_CLEAN	Makefile	/^QUIET_CLEAN    = $(Q:@=@echo    '     CLEAN   '$@;)$/;"	m
+QUIET_CONFIG	Makefile	/^QUIET_CONFIG   = $(Q:@=@echo    '     CONFIG  '$@;)$/;"	m
+QUIET_GENERATE	Makefile	/^QUIET_GENERATE = $(Q:@=@echo    '     GENERATE '$@;)$/;"	m
+QUIET_GOBUILD	virtcontainers/Makefile	/^QUIET_GOBUILD = $(Q:@=@echo    '     GOBUILD  '$@;)$/;"	m
+QUIET_INST	Makefile	/^QUIET_INST     = $(Q:@=@echo    '     INSTALL '$@;)$/;"	m
+QUIET_TEST	Makefile	/^QUIET_TEST     = $(Q:@=@echo    '     TEST    '$@;)$/;"	m
+SCRIPTS	Makefile	/^SCRIPTS :=$/;"	m
+SCRIPTS_DIR	Makefile	/^SCRIPTS_DIR := $(BINDIR)$/;"	m
+SED	Makefile	/^SED = sed$/;"	m
+SHAREDIR	Makefile	/^SHAREDIR := $(PREFIX)\/share$/;"	m
+SHAREDIR	Makefile	/^SHAREDIR := $(SHAREDIR)$/;"	m
+SHIMCMD	Makefile	/^SHIMCMD := $(BIN_PREFIX)-shim$/;"	m
+SHIMPATH	Makefile	/^SHIMPATH := $(PKGLIBEXECDIR)\/$(SHIMCMD)$/;"	m
+SHIMV2	Makefile	/^SHIMV2 = containerd-shim-kata-v2$/;"	m
+SHIMV2_DIR	Makefile	/^SHIMV2_DIR = $(CLI_DIR)\/$(SHIMV2)$/;"	m
+SHIMV2_OUTPUT	Makefile	/^SHIMV2_OUTPUT = $(CURDIR)\/$(SHIMV2)$/;"	m
+SHOW_ARCH	Makefile	/^define SHOW_ARCH$/;"	m
+SKIP_GO_VERSION_CHECK	Makefile	/^SKIP_GO_VERSION_CHECK=$/;"	m
+SOURCES	Makefile	/^SOURCES := $(shell find . 2>&1 | grep -E '.*\\.(c|h|go)$$')$/;"	m
+SYSCONFDIR	Makefile	/^SYSCONFDIR    := \/etc$/;"	m
+SYSCONFDIR	Makefile	/^SYSCONFDIR := $(SYSCONFDIR)\/$(PROJECT_DIR)$/;"	m
+SYSCONFIG	Makefile	/^SYSCONFIG := $(abspath $(SYSCONFDIR)\/$(CONFIG_FILE))$/;"	m
+SYSCONFIG_FC	Makefile	/^    SYSCONFIG_FC = $(abspath $(SYSCONFDIR)\/$(CONFIG_FILE_FC))$/;"	m
+SYSCONFIG_PATHS	Makefile	/^SYSCONFIG_PATHS =$/;"	m
+SYSCONFIG_QEMU	Makefile	/^    SYSCONFIG_QEMU = $(abspath $(SYSCONFDIR)\/$(CONFIG_FILE_QEMU))$/;"	m
+TARGET	Makefile	/^TARGET = $(BIN_PREFIX)-runtime$/;"	m
+TARGET_OUTPUT	Makefile	/^TARGET_OUTPUT = $(CURDIR)\/$(TARGET)$/;"	m
+TEST_BIN_DIR	virtcontainers/Makefile	/^TEST_BIN_DIR := $(VC_BIN_DIR)\/test$/;"	m
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_386.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_386.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_386.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_386.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_386.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_amd64.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_amd64.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_amd64.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_amd64.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_amd64.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-104$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm64.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm64.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm64.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm64.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_darwin_arm64.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-104$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_dragonfly_amd64.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-88$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_dragonfly_amd64.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-64$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_dragonfly_amd64.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-88$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_dragonfly_amd64.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-112$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_dragonfly_amd64.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-64$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_386.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_386.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_386.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_386.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_386.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_amd64.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_amd64.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_amd64.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_amd64.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-104$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_amd64.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_arm.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_arm.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_arm.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_arm.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_freebsd_arm.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_386.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_386.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_386.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_386.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_386.s	/^TEXT ·rawsocketcall(SB),NOSPLIT,$0-36$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_386.s	/^TEXT ·seek(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_386.s	/^TEXT ·socketcall(SB),NOSPLIT,$0-36$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_amd64.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_amd64.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_amd64.s	/^TEXT ·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_amd64.s	/^TEXT ·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_amd64.s	/^TEXT ·gettimeofday(SB),NOSPLIT,$0-16$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm.s	/^TEXT ·seek(SB),NOSPLIT,$0-32$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm64.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm64.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm64.s	/^TEXT ·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_arm64.s	/^TEXT ·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mips64x.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mips64x.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mips64x.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mips64x.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mipsx.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mipsx.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mipsx.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mipsx.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_mipsx.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_ppc64x.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_ppc64x.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_ppc64x.s	/^TEXT ·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_ppc64x.s	/^TEXT ·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_s390x.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_s390x.s	/^TEXT ·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_s390x.s	/^TEXT ·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_linux_s390x.s	/^TEXT ·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_386.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_386.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_386.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_386.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_386.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_amd64.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_amd64.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_amd64.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_amd64.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_amd64.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-104$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_arm.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_arm.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_arm.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_arm.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_netbsd_arm.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_386.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_386.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_386.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_386.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_386.s	/^TEXT ·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_amd64.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_amd64.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_amd64.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-56$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_amd64.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-80$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_amd64.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-104$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_arm.s	/^TEXT	·RawSyscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_arm.s	/^TEXT	·RawSyscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_arm.s	/^TEXT	·Syscall(SB),NOSPLIT,$0-28$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_arm.s	/^TEXT	·Syscall6(SB),NOSPLIT,$0-40$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_openbsd_arm.s	/^TEXT	·Syscall9(SB),NOSPLIT,$0-52$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_solaris_amd64.s	/^TEXT ·rawSysvicall6(SB),NOSPLIT,$0-88$/;"	l
+TEXT	vendor/golang.org/x/sys/unix/asm_solaris_amd64.s	/^TEXT ·sysvicall6(SB),NOSPLIT,$0-88$/;"	l
+TEXT	vendor/golang.org/x/sys/windows/asm_windows_386.s	/^TEXT ·getprocaddress(SB), 7, $0-8$/;"	l
+TEXT	vendor/golang.org/x/sys/windows/asm_windows_386.s	/^TEXT ·loadlibrary(SB), 7, $0-4$/;"	l
+TEXT	vendor/golang.org/x/sys/windows/asm_windows_amd64.s	/^TEXT ·getprocaddress(SB), 7, $0-32$/;"	l
+TEXT	vendor/golang.org/x/sys/windows/asm_windows_amd64.s	/^TEXT ·loadlibrary(SB), 7, $0-8$/;"	l
+UNINSTALL_EXEC	virtcontainers/Makefile	/^define UNINSTALL_EXEC$/;"	m
+UNINSTALL_TEST_EXEC	virtcontainers/Makefile	/^define UNINSTALL_TEST_EXEC$/;"	m
+V	Makefile	/^V              = @$/;"	m
+V	virtcontainers/Makefile	/^V	      = @$/;"	m
+VC_BIN_DIR	virtcontainers/Makefile	/^VC_BIN_DIR := $(BIN_DIR)\/virtcontainers\/bin$/;"	m
+VERSION	Makefile	/^VERSION := ${shell cat .\/VERSION}$/;"	m
+VIRTC_BIN	virtcontainers/Makefile	/^VIRTC_BIN := virtc$/;"	m
+VIRTC_DIR	virtcontainers/Makefile	/^VIRTC_DIR := hack\/virtc$/;"	m
+_STRINGIFY2_	vendor/golang.org/x/sys/unix/gccgo_c.c	11;"	d	file:
+_STRINGIFY_	vendor/golang.org/x/sys/unix/gccgo_c.c	12;"	d	file:
+clone_tests_repo	.ci/lib.sh	/^clone_tests_repo()$/;"	f
+die	.ci/install-yq.sh	/^die() {$/;"	f
+die	data/kata-collect-data.sh	/^die()$/;"	f
+distro	Makefile	/^distro := $(shell \\$/;"	m
+err	vendor/golang.org/x/sys/unix/gccgo_c.c	/^	uintptr_t err;$/;"	m	struct:ret	file:
+find_system_journal_problems	data/kata-collect-data.sh	/^find_system_journal_problems()$/;"	f
+gccgoRealSyscall	vendor/golang.org/x/sys/unix/gccgo_c.c	/^gccgoRealSyscall(uintptr_t trap, uintptr_t a1, uintptr_t a2, uintptr_t a3, uintptr_t a4, uintptr_t a5, uintptr_t a6, uintptr_t a7, uintptr_t a8, uintptr_t a9)$/;"	f
+get_image_details	data/kata-collect-data.sh	/^get_image_details()$/;"	f
+get_image_file	data/kata-collect-data.sh	/^get_image_file()$/;"	f
+get_initrd_details	data/kata-collect-data.sh	/^get_initrd_details()$/;"	f
+get_initrd_file	data/kata-collect-data.sh	/^get_initrd_file()$/;"	f
+get_partitions	data/kata-collect-data.sh	/^get_partitions()$/;"	f
+golang_major_ok	golang.mk	/^    golang_major_ok=$(shell test $(golang_version_major) -ge $(golang_version_min_major) && echo ok)$/;"	m
+golang_minor_ok	golang.mk	/^    golang_minor_ok=$(shell test $(golang_version_major) -eq $(golang_version_min_major) -a $(golang_version_minor) -ge $(golang_version_min_minor) && echo ok)$/;"	m
+golang_version	golang.mk	/^    golang_version=$(subst go,,$(word 3,$(golang_version_raw)))$/;"	m
+golang_version_fields	golang.mk	/^    golang_version_fields=$(subst ., ,$(golang_version))$/;"	m
+golang_version_major	golang.mk	/^    golang_version_major=$(word 1,$(golang_version_fields))$/;"	m
+golang_version_min	golang.mk	/^    golang_version_min=$(shell $(GOPATH)\/bin\/yq r versions.yaml languages.golang.version)$/;"	m
+golang_version_min_fields	golang.mk	/^    golang_version_min_fields=$(subst ., ,$(golang_version_min))$/;"	m
+golang_version_min_major	golang.mk	/^    golang_version_min_major=$(word 1,$(golang_version_min_fields))$/;"	m
+golang_version_min_minor	golang.mk	/^    golang_version_min_minor=$(word 2,$(golang_version_min_fields))$/;"	m
+golang_version_minor	golang.mk	/^    golang_version_minor=$(word 2,$(golang_version_fields))$/;"	m
+golang_version_needed	golang.mk	/^    golang_version_needed=$(golang_version_min_major).$(golang_version_min_minor)$/;"	m
+golang_version_raw	golang.mk	/^    golang_version_raw=$/;"	m
+golang_version_raw	golang.mk	/^golang_version_raw=$(shell go version 2>\/dev\/null)$/;"	m
+have_cmd	data/kata-collect-data.sh	/^have_cmd()$/;"	f
+have_service	data/kata-collect-data.sh	/^have_service()$/;"	f
+have_yq	golang.mk	/^    have_yq=$(shell if [ -x "$(GOPATH)\/bin\/yq" ]; then echo "true"; else echo ""; fi)$/;"	m
+heading	data/kata-collect-data.sh	/^heading()$/;"	f
+install_yq	.ci/install-yq.sh	/^function install_yq() {$/;"	f
+install_yq	golang.mk	/^        install_yq=$(shell .ci\/install-yq.sh)$/;"	m
+installing	Makefile	/^installing = $(findstring install,$(MAKECMDGOALS))$/;"	m
+loopmount_image	data/kata-collect-data.sh	/^loopmount_image()$/;"	f
+main	data/kata-collect-data.sh	/^main()$/;"	f
+mount_partition	data/kata-collect-data.sh	/^mount_partition()$/;"	f
+msg	data/kata-collect-data.sh	/^msg()$/;"	f
+not_check_version	golang.mk	/^    not_check_version=y$/;"	m
+not_check_version	golang.mk	/^not_check_version=$/;"	m
+r	vendor/golang.org/x/sys/unix/gccgo_c.c	/^	uintptr_t r;$/;"	m	struct:ret	file:
+read_osbuilder_file	data/kata-collect-data.sh	/^read_osbuilder_file()$/;"	f
+release_device	data/kata-collect-data.sh	/^release_device()$/;"	f
+ret	vendor/golang.org/x/sys/unix/gccgo_c.c	/^struct ret {$/;"	s	file:
+run_cmd_and_show_quoted_output	data/kata-collect-data.sh	/^run_cmd_and_show_quoted_output()$/;"	f
+run_go_test	.ci/lib.sh	/^run_go_test()$/;"	f
+run_static_checks	.ci/lib.sh	/^run_static_checks()$/;"	f
+separator	data/kata-collect-data.sh	/^separator()$/;"	f
+show_container_mgr_details	data/kata-collect-data.sh	/^show_container_mgr_details()$/;"	f
+show_details	data/kata-collect-data.sh	/^show_details()$/;"	f
+show_footer	data/kata-collect-data.sh	/^show_footer()$/;"	f
+show_header	data/kata-collect-data.sh	/^show_header()$/;"	f
+show_image_details	data/kata-collect-data.sh	/^show_image_details()$/;"	f
+show_initrd_details	data/kata-collect-data.sh	/^show_initrd_details()$/;"	f
+show_log_details	data/kata-collect-data.sh	/^show_log_details()$/;"	f
+show_meta	data/kata-collect-data.sh	/^show_meta()$/;"	f
+show_package_versions	data/kata-collect-data.sh	/^show_package_versions()$/;"	f
+show_proxy_log_details	data/kata-collect-data.sh	/^show_proxy_log_details()$/;"	f
+show_quoted_text	data/kata-collect-data.sh	/^show_quoted_text()$/;"	f
+show_runtime	data/kata-collect-data.sh	/^show_runtime()$/;"	f
+show_runtime_configs	data/kata-collect-data.sh	/^show_runtime_configs()$/;"	f
+show_runtime_log_details	data/kata-collect-data.sh	/^show_runtime_log_details()$/;"	f
+show_shim_log_details	data/kata-collect-data.sh	/^show_shim_log_details()$/;"	f
+show_throttler_details	data/kata-collect-data.sh	/^show_throttler_details()$/;"	f
+show_throttler_log_details	data/kata-collect-data.sh	/^show_throttler_log_details()$/;"	f
+subheading	data/kata-collect-data.sh	/^subheading()$/;"	f
+unmount_partition	data/kata-collect-data.sh	/^unmount_partition()$/;"	f
+usage	data/kata-collect-data.sh	/^usage()$/;"	f
+use	vendor/golang.org/x/sys/unix/gccgo_c.c	/^use(void *p __attribute__ ((unused)))$/;"	f
+version	data/kata-collect-data.sh	/^version()$/;"	f

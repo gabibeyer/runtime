@@ -60,10 +60,10 @@ var (
 	defaultKataID         = "charch0"
 	errorMissingProxy     = errors.New("Missing proxy pointer")
 	errorMissingOCISpec   = errors.New("Missing OCI specification")
-	kataHostSharedDir     = "/run/kata-containers/shared/sandboxes/"
-	kataGuestSharedDir    = "/run/kata-containers/shared/containers/"
+	kataHostSharedDir     = "/tmp/katapod/run/kata-containers/shared/sandboxes/"
+	kataGuestSharedDir    = "/tmp/katapod/run/kata-containers/shared/containers/"
 	mountGuest9pTag       = "kataShared"
-	kataGuestSandboxDir   = "/run/kata-containers/sandbox/"
+	kataGuestSandboxDir   = "/tmp/katapod/run/kata-containers/sandbox/"
 	type9pFs              = "9p"
 	typeVirtioFS          = "virtio_fs"
 	vsockSocketScheme     = "vsock"

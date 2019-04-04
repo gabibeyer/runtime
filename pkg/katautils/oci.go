@@ -15,7 +15,7 @@ import (
 
 const ctrsMappingDirMode = os.FileMode(0750)
 
-var ctrsMapTreePath = "/var/run/kata-containers/containers-mapping"
+var ctrsMapTreePath = "/tmp/katapod/var/run/kata-containers/containers-mapping"
 
 // SetCtrsMapTreePath let the testcases change the ctrsMapTreePath to a test dir
 func SetCtrsMapTreePath(path string) {

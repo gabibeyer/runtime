@@ -56,7 +56,7 @@ var defaultMaxQemuVCPUs = MaxQemuVCPUs()
 // agnostic list of kernel root parameters for NVDIMM
 var commonNvdimmKernelRootParams = []Param{ //nolint: unused, deadcode, varcheck
 	{"root", "/dev/pmem0p1"},
-	{"rootflags", "dax,data=ordered,errors=remount-ro ro"},
+	{"rootflags", "dax,data=ordered,errors=remount-ro rw"},
 	{"rootfstype", "ext4"},
 }
 

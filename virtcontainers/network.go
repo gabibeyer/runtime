@@ -9,12 +9,15 @@ import (
 	"context"
 	cryptoRand "crypto/rand"
 	"encoding/json"
+	"os/exec"
 	"fmt"
 	"math/rand"
 	"net"
 	"os"
+	"reflect"
 	"runtime"
 	"sort"
+	"syscall"
 	"time"
 
 	"github.com/containernetworking/plugins/pkg/ns"
@@ -313,6 +316,7 @@ func createLink(netHandle *netlink.Handle, name string, expectedLink netlink.Lin
 	var newLink netlink.Link
 	var fds []*os.File
 
+	networkLogger().Infof("create link type: %s, name: %s, queues: %d\n", expectedLink.Type(), name, queues)
 	switch expectedLink.Type() {
 	case (&netlink.Bridge{}).Type():
 		newLink = &netlink.Bridge{
@@ -355,15 +359,18 @@ func createLink(netHandle *netlink.Handle, name string, expectedLink netlink.Lin
 	}
 
 	tuntapLink, ok := newLink.(*netlink.Tuntap)
+	networkLogger().Debugf("createLink. tuntapLink: %+v, ok: %v", tuntapLink, ok)
 	if ok {
 		fds = tuntapLink.Fds
 	}
 
 	newLink, err := getLinkByName(netHandle, name, expectedLink)
+	networkLogger().Warnf("In createLink. After getLinkByName call. newLink %+v, err: %+v name: %s, expectedLink: %+v", newLink, err, name, expectedLink)
 	return newLink, fds, err
 }
 
 func getLinkForEndpoint(endpoint Endpoint, netHandle *netlink.Handle) (netlink.Link, error) {
+	networkLogger().Debugf("Inside getLinkForEndpoint. EP.Type(): %+v ep.VirtIface.Name: %+v", endpoint.Type(), endpoint.NetworkPair().VirtIface.Name)
 	var link netlink.Link
 
 	switch ep := endpoint.(type) {
@@ -373,14 +380,19 @@ func getLinkForEndpoint(endpoint Endpoint, netHandle *netlink.Handle) (netlink.L
 		link = &netlink.Macvlan{}
 	case *IPVlanEndpoint:
 		link = &netlink.IPVlan{}
+	case *TapEndpoint:
+		link = &netlink.Tuntap{}
 	default:
 		return nil, fmt.Errorf("Unexpected endpointType %s", ep.Type())
 	}
 
 	return getLinkByName(netHandle, endpoint.NetworkPair().VirtIface.Name, link)
+	//return getLinkByName(netHandle, endpoint.NetworkPair().Name, link)
+
 }
 
 func getLinkByName(netHandle *netlink.Handle, name string, expectedLink netlink.Link) (netlink.Link, error) {
+	networkLogger().Infof("inside getLinkByName call. Name: %s, expectedLink: %+v", name, expectedLink)
 	link, err := netHandle.LinkByName(name)
 	if err != nil {
 		return nil, fmt.Errorf("LinkByName() failed for %s name %s: %s", expectedLink.Type(), name, err)
@@ -420,6 +432,7 @@ func getLinkByName(netHandle *netlink.Handle, name string, expectedLink netlink.
 
 // The endpoint type should dictate how the connection needs to happen.
 func xConnectVMNetwork(endpoint Endpoint, h hypervisor) error {
+	networkLogger().Debugf("Inside xConnectVMNetwork")
 	netPair := endpoint.NetworkPair()
 
 	queues := 0
@@ -430,6 +443,7 @@ func xConnectVMNetwork(endpoint Endpoint, h hypervisor) error {
 
 	disableVhostNet := h.hypervisorConfig().DisableVhostNet
 
+	networkLogger().Debugf("xConnectVMNetwork. netPair.netInterworkingModel: %+v", netPair.NetInterworkingModel)
 	if netPair.NetInterworkingModel == NetXConnectDefaultModel {
 		netPair.NetInterworkingModel = DefaultNetInterworkingModel
 	}
@@ -652,6 +666,7 @@ func bridgeNetworkPair(endpoint Endpoint, queues int, disableVhostNet bool) erro
 
 	netPair := endpoint.NetworkPair()
 
+	networkLogger().Warnf("Before createLink in bridgeNetworkPair: %+v", netPair.TAPIface.Name)
 	tapLink, fds, err := createLink(netHandle, netPair.TAPIface.Name, &netlink.Tuntap{}, queues)
 	if err != nil {
 		return fmt.Errorf("Could not create TAP interface: %s", err)
@@ -738,6 +753,17 @@ func bridgeNetworkPair(endpoint Endpoint, queues int, disableVhostNet bool) erro
 }
 
 func setupTCFiltering(endpoint Endpoint, queues int, disableVhostNet bool) error {
+	networkLogger().Debug("inside setupTCFiltering")
+
+	networkLogger().Infof("xxxEndpoint %+v", endpoint)
+	if err := syscall.Mount("sysfs", "/mnt", "sysfs", syscall.MS_RDONLY, ""); err != nil {
+		networkLogger().Error("Cannot mount sysfs")
+		return fmt.Errorf("Cannotmount?")
+	}
+	cmd := exec.Command("ls", "-l", "/mnt/class/net")
+        output, err := cmd.CombinedOutput()
+        networkLogger().Warnf("setupTCFiltering. network namespace: %+v Err: %+v", string(output), err)
+
 	netHandle, err := netlink.NewHandle()
 	if err != nil {
 		return err
@@ -751,6 +777,7 @@ func setupTCFiltering(endpoint Endpoint, queues int, disableVhostNet bool) error
 		return fmt.Errorf("Could not create TAP interface: %s", err)
 	}
 	netPair.VMFds = fds
+	networkLogger().Debugf("setupTCFiltering after createLink. tapLink: %+v fds: %+v, netPair.TAPIface.Name: %s", tapLink, fds, netPair.TAPIface.Name)
 
 	if !disableVhostNet {
 		vhostFds, err := createVhostFds(queues)
@@ -763,6 +790,7 @@ func setupTCFiltering(endpoint Endpoint, queues int, disableVhostNet bool) error
 	var attrs *netlink.LinkAttrs
 	var link netlink.Link
 
+	networkLogger().Debugf("setupTCFiltering, before getLinkForEndpoint. ep: %+v, netHandle: %+v", endpoint, netHandle)
 	link, err = getLinkForEndpoint(endpoint, netHandle)
 	if err != nil {
 		return err
@@ -1233,6 +1261,10 @@ func createNetworkInterfacePair(idx int, ifName string, interworkingModel NetInt
 		NetInterworkingModel: interworkingModel,
 	}
 
+	if ifName != "" {
+		netPair.VirtIface.Name = ifName	
+	}
+
 	return netPair, nil
 }
 
@@ -1263,44 +1295,64 @@ func networkInfoFromLink(handle *netlink.Handle, link netlink.Link) (NetworkInfo
 		return NetworkInfo{}, err
 	}
 
-	return NetworkInfo{
+	n:=  NetworkInfo{
 		Iface: NetlinkIface{
 			LinkAttrs: *(link.Attrs()),
 			Type:      link.Type(),
 		},
 		Addrs:  addrs,
 		Routes: routes,
-	}, nil
+	}
+
+	networkLogger().Infof("NetworkInfo: %+v , link %+v", n, link)
+	return n, nil
 }
 
 func createEndpointsFromScan(networkNSPath string, config *NetworkConfig) ([]Endpoint, error) {
 	var endpoints []Endpoint
 
 	netnsHandle, err := netns.GetFromPath(networkNSPath)
+	networkLogger().Warnf("netnsHandle: %s", netnsHandle)
 	if err != nil {
 		return []Endpoint{}, err
 	}
 	defer netnsHandle.Close()
 
 	netlinkHandle, err := netlink.NewHandleAt(netnsHandle)
+	networkLogger().Warnf("netlinkHandle: %+v", netlinkHandle)
 	if err != nil {
 		return []Endpoint{}, err
 	}
 	defer netlinkHandle.Delete()
 
 	linkList, err := netlinkHandle.LinkList()
+	networkLogger().Warnf("linkList: %+v", linkList)
 	if err != nil {
 		return []Endpoint{}, err
 	}
 
+	//networkLogger().Warnf("before syscall to mount")
+	//if err := syscall.Mount("sysfs", "/sys", "sysfs", 0, ""); err != nil {
+	//	networkLogger().Errorf("Cannot mount sysfs")
+	//	return []Endpoint{}, err
+        //}
+	//networkLogger().Warnf("after syscall to mount")
+
+	//cmd := exec.Command("ls", "-lht", "/proc/self/ns/net")
+	cmd := exec.Command("ip", "a")
+	output, err := cmd.CombinedOutput()
+	networkLogger().Warnf("network namespace: %+v Err: %+v", string(output), err)
+
 	idx := 0
 	for _, link := range linkList {
+		networkLogger().Errorf("Link: %+v || %+v", link, reflect.TypeOf(link))
 		var (
 			endpoint  Endpoint
 			errCreate error
 		)
 
 		netInfo, err := networkInfoFromLink(netlinkHandle, link)
+		networkLogger().Warnf("netInfo:  %+v", netInfo)
 		if err != nil {
 			return []Endpoint{}, err
 		}
@@ -1318,8 +1370,10 @@ func createEndpointsFromScan(networkNSPath string, config *NetworkConfig) ([]End
 			continue
 		}
 
+		networkLogger().Warnf("made it here. Config.InterworkingModeL: %+v", config.InterworkingModel)
 		if err := doNetNS(networkNSPath, func(_ ns.NetNS) error {
 			endpoint, errCreate = createEndpoint(netInfo, idx, config.InterworkingModel)
+			networkLogger().Warnf("endpoint: %+v, errCreat %+v", endpoint, errCreate)
 			return errCreate
 		}); err != nil {
 			return []Endpoint{}, err
@@ -1366,6 +1420,7 @@ func createEndpoint(netInfo NetworkInfo, idx int, model NetInterworkingModel) (E
 			return nil, err
 		}
 
+		networkLogger().Warnf("Current netInfo: %+v Model: %+v", netInfo, model)
 		if socketPath != "" {
 			networkLogger().WithField("interface", netInfo.Iface.Name).Info("VhostUser network interface found")
 			endpoint, err = createVhostUserEndpoint(netInfo, socketPath)
@@ -1375,15 +1430,15 @@ func createEndpoint(netInfo NetworkInfo, idx int, model NetInterworkingModel) (E
 		} else if netInfo.Iface.Type == "macvtap" {
 			networkLogger().Infof("macvtap interface found")
 			endpoint, err = createMacvtapNetworkEndpoint(netInfo)
-		} else if netInfo.Iface.Type == "tap" {
+		} else if netInfo.Iface.Type == "tap" || netInfo.Iface.Type == "tun" {
 			networkLogger().Info("tap interface found")
-			endpoint, err = createTapNetworkEndpoint(idx, netInfo.Iface.Name)
+			endpoint, err = createTapNetworkEndpoint(idx, netInfo.Iface.Name, netInfo.Iface.HardwareAddr, model)
 		} else if netInfo.Iface.Type == "veth" {
 			endpoint, err = createVethNetworkEndpoint(idx, netInfo.Iface.Name, model)
 		} else if netInfo.Iface.Type == "ipvlan" {
 			endpoint, err = createIPVlanNetworkEndpoint(idx, netInfo.Iface.Name)
 		} else {
-			return nil, fmt.Errorf("Unsupported network interface")
+			return nil, fmt.Errorf("Unsupported network interface: %+v", netInfo)
 		}
 	}
 
@@ -1418,6 +1473,10 @@ func (n *Network) Add(ctx context.Context, config *NetworkConfig, hypervisor hyp
 	span, _ := n.trace(ctx, "add")
 	defer span.Finish()
 
+	cmd := exec.Command("ls", "-lht", "/proc/self/ns/net")
+	output, err := cmd.CombinedOutput()
+	networkLogger().Warnf("network namespace: %+v Err: %+v", string(output), err)
+	//networkLogger().Warnf("network namespace path from create endpoints from scan: %s", config.NetNSPath)
 	endpoints, err := createEndpointsFromScan(config.NetNSPath, config)
 	if err != nil {
 		return endpoints, err

@@ -388,6 +388,7 @@ func (req *NetlinkRequest) Execute(sockType int, resType uint16) ([][]byte, erro
 		}
 	}
 	sharedSocket := s != nil
+	//log.Printf("socket:  %+v", s)
 
 	if s == nil {
 		s, err = getNetlinkSocket(sockType)
@@ -401,10 +402,12 @@ func (req *NetlinkRequest) Execute(sockType int, resType uint16) ([][]byte, erro
 	}
 
 	if err := s.Send(req); err != nil {
+		//log.Printf("In the s.Send(req): %+v", err)
 		return nil, err
 	}
 
 	pid, err := s.GetPid()
+	//log.Printf("Getting PID of socket: %d || %v", pid, err)
 	if err != nil {
 		return nil, err
 	}
@@ -418,6 +421,8 @@ done:
 			return nil, err
 		}
 		for _, m := range msgs {
+			//log.Printf("Message type: %v", m.Header.Type)
+			//log.Printf("Data: %s", string(m.Data))
 			if m.Header.Seq != req.Seq {
 				if sharedSocket {
 					continue
@@ -431,6 +436,7 @@ done:
 				break done
 			}
 			if m.Header.Type == unix.NLMSG_ERROR {
+			//	log.Printf("Header Type == unix.NLMSG_ERROR")
 				native := NativeEndian()
 				error := int32(native.Uint32(m.Data[0:4]))
 				if error == 0 {
@@ -438,6 +444,7 @@ done:
 				}
 				return nil, syscall.Errno(-error)
 			}
+			//log.Printf("Checking resType: %v", resType)
 			if resType != 0 && m.Header.Type != resType {
 				continue
 			}

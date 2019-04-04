@@ -9,9 +9,9 @@
 package katautils
 
 var defaultHypervisorPath = "/usr/bin/qemu-lite-system-x86_64"
-var defaultImagePath = "/usr/share/kata-containers/kata-containers.img"
-var defaultKernelPath = "/usr/share/kata-containers/vmlinuz.container"
-var defaultInitrdPath = "/usr/share/kata-containers/kata-containers-initrd.img"
+var defaultImagePath = "/tmp/katapod/usr/share/kata-containers/kata-containers.img"
+var defaultKernelPath = "/tmp/katapod/usr/share/kata-containers/vmlinuz.container"
+var defaultInitrdPath = "/tmp/katapod/usr/share/kata-containers/kata-containers-initrd.img"
 var defaultFirmwarePath = ""
 var defaultMachineAccelerators = ""
 var defaultShimPath = "/usr/libexec/kata-containers/kata-shim"
@@ -45,7 +45,7 @@ const defaultEntropySource = "/dev/urandom"
 const defaultGuestHookPath string = ""
 
 const defaultTemplatePath string = "/run/vc/vm/template"
-const defaultVMCacheEndpoint string = "/var/run/kata-containers/cache.sock"
+const defaultVMCacheEndpoint string = "/tmp/katapod/var/run/kata-containers/cache.sock"
 
 // Default config file used by stateless systems.
 var defaultRuntimeConfiguration = "/usr/share/defaults/kata-containers/configuration.toml"

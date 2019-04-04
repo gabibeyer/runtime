@@ -385,6 +385,7 @@ func (q *qemu) buildDevices(initrdPath string) ([]govmmQemu.Device, *govmmQemu.I
 	// Add bridges before any other devices. This way we make sure that
 	// bridge gets the first available PCI address i.e bridgePCIStartAddr
 	devices = q.arch.appendBridges(devices, q.state.Bridges)
+	q.Logger().Infof("Devices frmo appendBridges: %+v", devices)
 
 	devices = q.arch.appendConsole(devices, console)
 
@@ -698,6 +699,7 @@ func (q *qemu) startSandbox(timeout int) error {
 	}
 
 	var strErr string
+	q.Logger().Warnf("q.qemuConfig for Qemu Launch: %+v", q.qemuConfig)
 	strErr, err = govmmQemu.LaunchQemu(q.qemuConfig, newQMPLogger())
 	if err != nil {
 		return fmt.Errorf("%s", strErr)
@@ -891,6 +893,7 @@ func (q *qemu) addDeviceToBridge(ID string) (string, types.PCIBridge, error) {
 
 	// looking for an empty address in the bridges
 	for _, b := range q.state.Bridges {
+		q.Logger().Warnf("Bridge info from qemu scan: %+v", b)
 		addr, err = b.AddDevice(ID)
 		if err == nil {
 			return fmt.Sprintf("%02x", addr), b, nil
@@ -1092,7 +1095,9 @@ func (q *qemu) hotplugNetDevice(endpoint Endpoint, op operation) error {
 		tap = drive.NetPair.TapInterface
 	case TapEndpointType:
 		drive := endpoint.(*TapEndpoint)
-		tap = drive.TapInterface
+		tap = drive.NetPair.TapInterface
+		q.Logger().Infof("xxxxxxxxxxxxtap : %+v", tap)	
+		q.Logger().Infof("\nxxxxxxxxxxxxdrive : %+v", drive)	
 	default:
 		return fmt.Errorf("this endpoint is not supported")
 	}

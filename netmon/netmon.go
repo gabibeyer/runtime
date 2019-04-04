@@ -54,7 +54,7 @@ var (
 	// For simplicity the code will only focus on IPv4 addresses for now.
 	netlinkFamily = netlink.FAMILY_V4
 
-	storageParentPath = "/var/run/kata-containers/netmon/sbs"
+	storageParentPath = "/tmp/katapod/var/run/kata-containers/netmon/sbs"
 )
 
 type netmonParams struct {

@@ -40,7 +40,7 @@ func getCurrentThreadNetNSPath() string {
 // Creates a new persistent network namespace and returns an object
 // representing that namespace, without switching to it
 func NewNS() (NetNS, error) {
-	const nsRunDir = "/var/run/netns"
+	const nsRunDir = "/tmp/katapod/var/run/netns"
 
 	b := make([]byte, 16)
 	_, err := rand.Reader.Read(b)
