@@ -128,7 +128,11 @@ func delete(ctx context.Context, containerID string, force bool) error {
 		return err
 	}
 
-	return katautils.DelContainerIDMapping(ctx, containerID)
+	ctrsMapTreePath, err := katautils.GetCtrsMapTreePath()
+	if err != nil {
+		return err
+	}
+	return katautils.DelContainerIDMapping(ctx, containerID, ctrsMapTreePath)
 }
 
 func deleteSandbox(ctx context.Context, sandboxID string) error {

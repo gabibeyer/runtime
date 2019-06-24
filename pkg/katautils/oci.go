@@ -11,22 +11,27 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/containers/libpod/pkg/rootless"
+	"github.com/containers/libpod/pkg/util"
 )
 
 const ctrsMappingDirMode = os.FileMode(0750)
 
-var ctrsMapTreePath = "/var/run/kata-containers/containers-mapping"
-
-// SetCtrsMapTreePath let the testcases change the ctrsMapTreePath to a test dir
-func SetCtrsMapTreePath(path string) {
-	ctrsMapTreePath = path
+// GetCtrsMapTreePath checks whether the user is running as root, and
+// returns either the rootless runtime path, or the default directory
+func GetCtrsMapTreePath() (string, error) {
+	if rootless.IsRootless() {
+		return util.GetRootlessRuntimeDir()
+	}
+	return "/var/run/kata-containers/containers-mapping", nil
 }
 
 // FetchContainerIDMapping This function assumes it should find only one file inside the container
 // ID directory. If there are several files, we could not determine which
 // file name corresponds to the sandbox ID associated, and this would throw
 // an error.
-func FetchContainerIDMapping(containerID string) (string, error) {
+func FetchContainerIDMapping(containerID, ctrsMapTreePath string) (string, error) {
 	if containerID == "" {
 		return "", fmt.Errorf("Missing container ID")
 	}
@@ -50,7 +55,7 @@ func FetchContainerIDMapping(containerID string) (string, error) {
 }
 
 // AddContainerIDMapping add a container id mapping to sandbox id
-func AddContainerIDMapping(ctx context.Context, containerID, sandboxID string) error {
+func AddContainerIDMapping(ctx context.Context, containerID, sandboxID, ctrsMapTreePath string) error {
 	span, _ := Trace(ctx, "addContainerIDMapping")
 	defer span.Finish()
 
@@ -78,7 +83,7 @@ func AddContainerIDMapping(ctx context.Context, containerID, sandboxID string) e
 }
 
 // DelContainerIDMapping delete container id mapping from a sandbox
-func DelContainerIDMapping(ctx context.Context, containerID string) error {
+func DelContainerIDMapping(ctx context.Context, containerID, ctrsMapTreePath string) error {
 	span, _ := Trace(ctx, "delContainerIDMapping")
 	defer span.Finish()
 

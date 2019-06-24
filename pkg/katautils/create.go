@@ -169,7 +169,12 @@ func CreateSandbox(ctx context.Context, vci vc.VC, ociSpec oci.CompatOCISpec, ru
 	}
 
 	if !builtIn {
-		err = AddContainerIDMapping(ctx, containerID, sandbox.ID())
+		ctrsMapTreePath, err := GetCtrsMapTreePath()
+		if err != nil {
+			return nil, vc.Process{}, err
+		}
+
+		err = AddContainerIDMapping(ctx, containerID, sandbox.ID(), ctrsMapTreePath)
 		if err != nil {
 			return nil, vc.Process{}, err
 		}
@@ -223,7 +228,11 @@ func CreateContainer(ctx context.Context, vci vc.VC, sandbox vc.VCSandbox, ociSp
 			return vc.Process{}, err
 		}
 
-		if err := AddContainerIDMapping(ctx, containerID, sandboxID); err != nil {
+		ctrsMapTreePath, err := GetCtrsMapTreePath()
+		if err != nil {
+			return vc.Process{}, err
+		}
+		if err := AddContainerIDMapping(ctx, containerID, sandboxID, ctrsMapTreePath); err != nil {
 			return vc.Process{}, err
 		}
 	}

@@ -38,7 +38,11 @@ func getContainerInfo(ctx context.Context, containerID string) (vc.ContainerStat
 		return vc.ContainerStatus{}, "", fmt.Errorf("Missing container ID")
 	}
 
-	sandboxID, err := katautils.FetchContainerIDMapping(containerID)
+	ctrsMapTreePath, err := katautils.GetCtrsMapTreePath()
+	if err != nil {
+		return vc.ContainerStatus{}, "", err
+	}
+	sandboxID, err := katautils.FetchContainerIDMapping(containerID, ctrsMapTreePath)
 	if err != nil {
 		return vc.ContainerStatus{}, "", err
 	}
