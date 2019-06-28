@@ -22,6 +22,7 @@ import (
 	aTypes "github.com/kata-containers/agent/pkg/types"
 	kataclient "github.com/kata-containers/agent/protocols/client"
 	"github.com/kata-containers/agent/protocols/grpc"
+	"github.com/kata-containers/runtime/pkg/rootless"
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	vcAnnotations "github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
 	ns "github.com/kata-containers/runtime/virtcontainers/pkg/nsenter"
@@ -165,6 +166,9 @@ func (k *kataAgent) getVMPath(id string) string {
 }
 
 func (k *kataAgent) getSharePath(id string) string {
+	if rootless.IsRootless() {
+		return filepath.Join(rootless.GetRootlessDir(), kataHostSharedDir, id)
+	}
 	return filepath.Join(kataHostSharedDir, id)
 }
 
@@ -1139,6 +1143,9 @@ func (k *kataAgent) createContainer(sandbox *Sandbox, c *Container) (p *Process,
 
 	// This is the guest absolute root path for that container.
 	rootPathParent := filepath.Join(kataGuestSharedDir, c.id)
+	if rootless.IsRootless() {
+		rootPathParent = filepath.Join(rootless.GetRootlessDir(), kataGuestSharedDir, c.id)
+	}
 	rootPath := filepath.Join(rootPathParent, c.rootfsSuffix)
 
 	// In case the container creation fails, the following defer statement
@@ -1164,8 +1171,12 @@ func (k *kataAgent) createContainer(sandbox *Sandbox, c *Container) (p *Process,
 		return nil, err
 	}
 
+	guestDir := kataGuestSharedDir
 	// Handle container mounts
-	newMounts, ignoredMounts, err := c.mountSharedDirMounts(kataHostSharedDir, kataGuestSharedDir)
+	if rootless.IsRootless() {
+		guestDir = filepath.Join(rootless.GetRootlessDir(), kataGuestSharedDir)
+	}
+	newMounts, ignoredMounts, err := c.mountSharedDirMounts(kataHostSharedDir, guestDir)
 	if err != nil {
 		return nil, err
 	}
