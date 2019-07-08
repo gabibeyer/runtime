@@ -48,6 +48,9 @@ const (
 	// TapEndpointType is tap network interface.
 	TapEndpointType EndpointType = "tap"
 
+	// TuntapEndpointType is a tap network interface.
+	TuntapEndpointType EndpointType = "tuntap"
+
 	// IPVlanEndpointType is ipvlan network interface.
 	IPVlanEndpointType EndpointType = "ipvlan"
 )
@@ -73,6 +76,9 @@ func (endpointType *EndpointType) Set(value string) error {
 	case "tap":
 		*endpointType = TapEndpointType
 		return nil
+	case "tuntap":
+		*endpointType = TuntapEndpointType
+		return nil
 	case "ipvlan":
 		*endpointType = IPVlanEndpointType
 		return nil
@@ -96,6 +102,8 @@ func (endpointType *EndpointType) String() string {
 		return string(MacvtapEndpointType)
 	case TapEndpointType:
 		return string(TapEndpointType)
+	case TuntapEndpointType:
+		return string(TuntapEndpointType)
 	case IPVlanEndpointType:
 		return string(IPVlanEndpointType)
 	default:
