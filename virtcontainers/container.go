@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/containerd/cgroups"
+	"github.com/kata-containers/runtime/pkg/rootless"
 	"github.com/kata-containers/runtime/virtcontainers/pkg/annotations"
 	vcTypes "github.com/kata-containers/runtime/virtcontainers/pkg/types"
 	"github.com/kata-containers/runtime/virtcontainers/types"
@@ -873,8 +874,10 @@ func (c *Container) create() (err error) {
 	}
 	c.process = *process
 
-	if err = c.newCgroups(); err != nil {
-		return
+	if !rootless.IsRootless() {
+		if err = c.newCgroups(); err != nil {
+			return
+		}
 	}
 
 	if !c.sandbox.supportNewStore() {
