@@ -489,6 +489,24 @@ func (q *qemuArchBase) appendNetwork(devices []govmmQemu.Device, endpoint Endpoi
 			},
 		)
 		q.networkIndex++
+	case *TuntapEndpoint:
+		netPair := ep.NetworkPair()
+		devices = append(devices,
+			govmmQemu.NetDevice{
+				Type:          govmmQemu.NetDeviceType("tap"),
+				Driver:        govmmQemu.VirtioNet,
+				ID:            fmt.Sprintf("network-%d", q.networkIndex),
+				IFName:        netPair.TAPIface.Name,
+				MACAddress:    netPair.TAPIface.HardAddr,
+				DownScript:    "no",
+				Script:        "no",
+				VHost:         q.vhost,
+				DisableModern: q.nestedRun,
+				FDs:           netPair.VMFds,
+				VhostFDs:      netPair.VhostFds,
+			},
+		)
+		q.networkIndex++
 
 	}
 

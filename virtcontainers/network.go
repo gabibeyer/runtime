@@ -159,6 +159,12 @@ type TapInterface struct {
 	VhostFds []*os.File
 }
 
+// TuntapInterface defines a tap interface
+type TuntapInterface struct {
+	Name     string
+	TAPIface NetworkInterface
+}
+
 // NetworkInterfacePair defines a pair between VM and virtual network interfaces.
 type NetworkInterfacePair struct {
 	TapInterface
@@ -260,6 +266,10 @@ func generateEndpoints(typedEndpoints []TypedJSONEndpoint) ([]Endpoint, error) {
 
 		case IPVlanEndpointType:
 			var endpoint IPVlanEndpoint
+			endpointInf = &endpoint
+
+		case TuntapEndpointType:
+			var endpoint TuntapEndpoint
 			endpointInf = &endpoint
 
 		default:
@@ -373,6 +383,8 @@ func getLinkForEndpoint(endpoint Endpoint, netHandle *netlink.Handle) (netlink.L
 		link = &netlink.Macvlan{}
 	case *IPVlanEndpoint:
 		link = &netlink.IPVlan{}
+	case *TuntapEndpoint:
+		link = &netlink.Tuntap{}
 	default:
 		return nil, fmt.Errorf("Unexpected endpointType %s", ep.Type())
 	}
@@ -392,7 +404,7 @@ func getLinkByName(netHandle *netlink.Handle, name string, expectedLink netlink.
 			return l, nil
 		}
 	case (&netlink.Tuntap{}).Type():
-		if l, ok := link.(*netlink.GenericLink); ok {
+		if l, ok := link.(*netlink.Tuntap); ok {
 			return l, nil
 		}
 	case (&netlink.Veth{}).Type():
@@ -1237,6 +1249,10 @@ func createNetworkInterfacePair(idx int, ifName string, interworkingModel NetInt
 		NetInterworkingModel: interworkingModel,
 	}
 
+	if ifName != "" {
+		netPair.VirtIface.Name = ifName
+	}
+
 	return netPair, nil
 }
 
@@ -1382,12 +1398,15 @@ func createEndpoint(netInfo NetworkInfo, idx int, model NetInterworkingModel) (E
 		} else if netInfo.Iface.Type == "tap" {
 			networkLogger().Info("tap interface found")
 			endpoint, err = createTapNetworkEndpoint(idx, netInfo.Iface.Name)
+		} else if netInfo.Iface.Type == "tuntap" {
+			networkLogger().Info("tuntap interface found")
+			endpoint, err = createTuntapNetworkEndpoint(idx, netInfo.Iface.Name, netInfo.Iface.HardwareAddr, model)
 		} else if netInfo.Iface.Type == "veth" {
 			endpoint, err = createVethNetworkEndpoint(idx, netInfo.Iface.Name, model)
 		} else if netInfo.Iface.Type == "ipvlan" {
 			endpoint, err = createIPVlanNetworkEndpoint(idx, netInfo.Iface.Name)
 		} else {
-			return nil, fmt.Errorf("Unsupported network interface")
+			return nil, fmt.Errorf("Unsupported network interface: %s", netInfo.Iface.Type)
 		}
 	}
 
