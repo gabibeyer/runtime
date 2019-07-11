@@ -361,7 +361,7 @@ func TestHandleEphemeralStorage(t *testing.T) {
 	epheStorages := k.handleEphemeralStorage(ociMounts)
 
 	epheMountPoint := epheStorages[0].GetMountPoint()
-	expected := filepath.Join(ephemeralPath, filepath.Base(mountSource))
+	expected := filepath.Join(ephemeralPath(), filepath.Base(mountSource))
 	assert.Equal(t, epheMountPoint, expected,
 		"Ephemeral mount point didn't match: got %s, expecting %s", epheMountPoint, expected)
 }
@@ -386,7 +386,7 @@ func TestHandleLocalStorage(t *testing.T) {
 	assert.Equal(t, len(localStorages), 1)
 
 	localMountPoint := localStorages[0].GetMountPoint()
-	expected := filepath.Join(kataGuestSharedDir, sandboxID, rootfsSuffix, KataLocalDevType, filepath.Base(mountSource))
+	expected := filepath.Join(kataGuestSharedDir(), sandboxID, rootfsSuffix, KataLocalDevType, filepath.Base(mountSource))
 	assert.Equal(t, localMountPoint, expected)
 }
 
@@ -533,7 +533,7 @@ func TestHandleShm(t *testing.T) {
 	assert.NotEmpty(g.Mounts[0].Destination)
 	assert.Equal(g.Mounts[0].Destination, "/dev/shm")
 	assert.Equal(g.Mounts[0].Type, "bind")
-	assert.NotEmpty(g.Mounts[0].Source, filepath.Join(kataGuestSharedDir, shmDir))
+	assert.NotEmpty(g.Mounts[0].Source, filepath.Join(kataGuestSharedDir(), shmDir))
 	assert.Equal(g.Mounts[0].Options, []string{"rbind"})
 
 	sandbox.shmSize = 0
@@ -921,7 +921,10 @@ func TestKataCleanupSandbox(t *testing.T) {
 	assert := assert.New(t)
 
 	kataHostSharedDirSaved := kataHostSharedDir
-	kataHostSharedDir, _ = ioutil.TempDir("", "kata-cleanup")
+	kataHostSharedDir = func() string {
+		td, _ := ioutil.TempDir("", "kata-cleanup")
+		return td
+	}
 	defer func() {
 		kataHostSharedDir = kataHostSharedDirSaved
 	}()
@@ -929,7 +932,7 @@ func TestKataCleanupSandbox(t *testing.T) {
 	s := Sandbox{
 		id: "testFoo",
 	}
-	dir := path.Join(kataHostSharedDir, s.id)
+	dir := path.Join(kataHostSharedDir(), s.id)
 	err := os.MkdirAll(dir, 0777)
 	assert.Nil(err)
 
