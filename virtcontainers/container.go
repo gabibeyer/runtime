@@ -27,6 +27,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"golang.org/x/sys/unix"
 
+	"github.com/kata-containers/runtime/pkg/rootless"
 	"github.com/kata-containers/runtime/virtcontainers/device/config"
 	"github.com/kata-containers/runtime/virtcontainers/device/manager"
 	"github.com/kata-containers/runtime/virtcontainers/store"
@@ -863,8 +864,11 @@ func (c *Container) create() (err error) {
 	}
 	c.process = *process
 
-	if err = c.newCgroups(); err != nil {
-		return
+	// cgroups are not yet supported with rootless execution
+	if !rootless.IsRootless() {
+		if err = c.newCgroups(); err != nil {
+			return
+		}
 	}
 
 	if !c.sandbox.supportNewStore() {
@@ -892,8 +896,11 @@ func (c *Container) delete() error {
 		return err
 	}
 
-	if err := c.deleteCgroups(); err != nil {
-		return err
+	// If running rootless, there are no cgroups to remove
+	if !rootless.IsRootless() {
+		if err := c.deleteCgroups(); err != nil {
+			return err
+		}
 	}
 
 	return c.store.Delete()
