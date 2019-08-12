@@ -1339,7 +1339,7 @@ func createEndpointsFromScan(networkNSPath string, config *NetworkConfig) ([]End
 		}
 
 		if err := doNetNS(networkNSPath, func(_ ns.NetNS) error {
-			endpoint, errCreate = createEndpoint(netInfo, idx, config.InterworkingModel)
+			endpoint, errCreate = createEndpoint(netInfo, idx, config.InterworkingModel, link)
 			return errCreate
 		}); err != nil {
 			return []Endpoint{}, err
@@ -1360,7 +1360,7 @@ func createEndpointsFromScan(networkNSPath string, config *NetworkConfig) ([]End
 	return endpoints, nil
 }
 
-func createEndpoint(netInfo NetworkInfo, idx int, model NetInterworkingModel) (Endpoint, error) {
+func createEndpoint(netInfo NetworkInfo, idx int, model NetInterworkingModel, link netlink.Link) (Endpoint, error) {
 	var endpoint Endpoint
 	// TODO: This is the incoming interface
 	// based on the incoming interface we should create
@@ -1399,8 +1399,21 @@ func createEndpoint(netInfo NetworkInfo, idx int, model NetInterworkingModel) (E
 			networkLogger().Info("tap interface found")
 			endpoint, err = createTapNetworkEndpoint(idx, netInfo.Iface.Name)
 		} else if netInfo.Iface.Type == "tuntap" {
-			networkLogger().Info("tuntap interface found")
-			endpoint, err = createTuntapNetworkEndpoint(idx, netInfo.Iface.Name, netInfo.Iface.HardwareAddr, model)
+			if link != nil {
+				switch link.(*netlink.Tuntap).Mode {
+				case 0:
+					// kernel is 4.13 or older, mount /sys/class/net to get links
+					networkLogger().Warnf("we gotta zero mode yo")
+
+				case 1:
+					return nil, fmt.Errorf("tun networking device not yet supported")
+				case 2:
+					networkLogger().Info("tuntap tap interface found")
+					endpoint, err = createTuntapNetworkEndpoint(idx, netInfo.Iface.Name, netInfo.Iface.HardwareAddr, model)
+				default:
+					return nil, fmt.Errorf("tuntap network mode unsupported")
+				}
+			}
 		} else if netInfo.Iface.Type == "veth" {
 			endpoint, err = createVethNetworkEndpoint(idx, netInfo.Iface.Name, model)
 		} else if netInfo.Iface.Type == "ipvlan" {
